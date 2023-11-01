@@ -1,4 +1,4 @@
-# minder-references
+# Minder References
 A repository containing Minder rules and profiles recommended by your friends at Stacklok
 
 # Rules types
