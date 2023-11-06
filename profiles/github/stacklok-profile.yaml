@@ -70,7 +70,7 @@ repository:
     params:
       branch: main
     def:
-      required_conversation_resolution: true
+      required_conversation_resolution: false
   - type: branch_protection_require_linear_history
     params:
       branch: main
