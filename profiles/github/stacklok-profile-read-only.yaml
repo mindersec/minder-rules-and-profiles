@@ -1,5 +1,5 @@
 ---
-# sample profile for validating repositories
+# Stacklok profile
 version: v1
 type: profile
 name: stacklok-github-profile
@@ -31,12 +31,12 @@ repository:
   - type: dependabot_configured
     def:
       package_ecosystem: gomod
-      schedule_interval: weekly
+      schedule_interval: daily
       apply_if_file: go.mod
   - type: dependabot_configured
     def:
       package_ecosystem: npm
-      schedule_interval: weekly
+      schedule_interval: daily
       apply_if_file: docs/package.json
   - type: dockerfile_no_latest_tag
     def: {}
@@ -70,7 +70,7 @@ repository:
     params:
       branch: main
     def:
-      required_conversation_resolution: true
+      required_conversation_resolution: false
   - type: branch_protection_require_linear_history
     params:
       branch: main
@@ -110,7 +110,7 @@ artifact:
   - type: artifact_signature
     params:
       tags: [latest]
-      name: mediator/server
+      name: minder/server
     def:
       is_signed: true
       is_verified: true
@@ -118,7 +118,7 @@ artifact:
   - type: artifact_signature
     params:
       tags: [latest]
-      name: mediator/helm/mediator
+      name: minder/helm/mediator
     def:
       is_signed: true
       is_verified: true
