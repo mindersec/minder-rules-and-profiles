@@ -110,6 +110,10 @@ repository:
       branch: main
     def:
       required_signatures: false
+  - type: license
+    def:
+      license_filename: LICENSE
+      license_type: ""
 artifact:
   - type: artifact_signature
     params:
@@ -131,8 +135,21 @@ pull_request:
             url: https://registry.npmjs.org
         - name: go
           vulnerability_database_type: osv
-          vulnerability_database_endpoint: https://vuln.go.dev
+          vulnerability_database_endpoint: https://api.osv.dev/v1/query
           package_repository:
             url: https://proxy.golang.org
           sum_repository:
             url: https://sum.golang.org
+        - name: pypi
+          vulnerability_database_type: osv
+          vulnerability_database_endpoint: https://api.osv.dev/v1/query
+          package_repository:
+            url: https://pypi.org/pypi
+  - type: pr_trusty_check
+    def:
+      action: summary
+      ecosystem_config:
+        - name: npm
+          score: 5
+        - name: pypi
+          score: 5
