@@ -1,5 +1,5 @@
 ---
-# sample profile for validating repositories
+# Stacklok profile
 version: v1
 type: profile
 name: stacklok-github-profile
@@ -110,7 +110,7 @@ artifact:
   - type: artifact_signature
     params:
       tags: [latest]
-      name: mediator/server
+      name: minder/server
     def:
       is_signed: true
       is_verified: true
@@ -118,7 +118,7 @@ artifact:
   - type: artifact_signature
     params:
       tags: [latest]
-      name: mediator/helm/mediator
+      name: minder/helm/mediator
     def:
       is_signed: true
       is_verified: true
