@@ -31,12 +31,12 @@ repository:
   - type: dependabot_configured
     def:
       package_ecosystem: gomod
-      schedule_interval: weekly
+      schedule_interval: daily
       apply_if_file: go.mod
   - type: dependabot_configured
     def:
       package_ecosystem: npm
-      schedule_interval: weekly
+      schedule_interval: daily
       apply_if_file: docs/package.json
   - type: dockerfile_no_latest_tag
     def: {}
