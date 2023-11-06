@@ -44,6 +44,12 @@ def:
       endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}/actions/permissions/selected-actions"
       # This is the method to use to retrieve the data. It should already default to JSON
       parse: json
+      fallback:
+        # If the "github_actions_allowed" rule_type is not set to "selected", this endpoint doesn't exist and gh
+        # returns a 409. Let's emit a fallback here so the evaluator falls as expected
+        - http_code: 409
+          body: |
+            {"http_status": 404, "message": "Not Protected"}
   # Defines the configuration for evaluating data ingested against the given profile
   eval:
     type: jq
