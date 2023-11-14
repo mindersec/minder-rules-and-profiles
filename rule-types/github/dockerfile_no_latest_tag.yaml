@@ -39,12 +39,9 @@ def:
           # Read Dockerfile
           dockerfile := file.read("Dockerfile")
 
-          # Find all lines that start with FROM
-          from_lines := regex.find_n("^FROM \\S+.*", dockerfile, -1)
-
-          # Is there the `latest` tag?
+          # Find all lines that start with FROM and have the latest tag
+          from_lines := regex.find_n("(?m)^(FROM .*:latest|FROM --platform=[^ ]+ [^: ]+|FROM [^: ]+)( (as|AS) [^ ]+)?$", dockerfile, -1)
           from_line := from_lines[_]
-          endswith(from_line, ":latest")
 
           msg := sprintf("Dockerfile contains 'latest' tag in import: %s", [from_line])
         }
