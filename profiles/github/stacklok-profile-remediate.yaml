@@ -8,6 +8,9 @@ context:
 alert: "off"
 remediate: "on"
 repository:
+  - type: automatic_branch_deletion
+    def:
+      enabled: true
   - type: secret_scanning
     def:
       enabled: true
