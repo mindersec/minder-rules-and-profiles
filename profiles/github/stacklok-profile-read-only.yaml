@@ -14,9 +14,11 @@ repository:
   - type: secret_scanning
     def:
       enabled: true
+      skip_private_repos: true
   - type: secret_push_protection
     def:
       enabled: true
+      skip_private_repos: true
   - type: github_actions_allowed
     def:
       allowed_actions: selected

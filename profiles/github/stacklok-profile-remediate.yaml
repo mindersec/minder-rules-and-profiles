@@ -14,9 +14,11 @@ repository:
   - type: secret_scanning
     def:
       enabled: true
+      skip_private_repos: true
   - type: secret_push_protection
     def:
       enabled: true
+      skip_private_repos: true
   - type: dependabot_configured
     def:
       package_ecosystem: gomod
