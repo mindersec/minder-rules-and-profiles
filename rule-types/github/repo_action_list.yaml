@@ -40,11 +40,9 @@ def:
         actions := github_workflow.ls_actions("./.github/workflows")
 
         violations[{"msg": msg}] {
-          intersection := expected_set & actions
-          not count(intersection) == count(actions)
-
-          difference := [x | x := actions[_]; not intersection[x]]
-          msg = format_message(difference, input.output_format)
+          extra := actions - expected_set
+          not count(extra) == 0
+          msg = format_message(extra, input.output_format)
         }
 
         format_message(difference, format) = msg {
