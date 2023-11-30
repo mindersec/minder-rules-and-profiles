@@ -1,0 +1,62 @@
+---
+version: v1
+type: rule-type
+name: repo_action_allow_list
+context:
+  provider: github
+description: |
+  Verifies that the github workflows in a repo only use actions enumerated in the rule.
+guidance: |
+  Having an overview over which actions and reusable workflows are allowed in a repository is important and allows for a better overall security posture.
+
+  For more information, see
+  https://docs.github.com/en/rest/actions/permissions#set-allowed-actions-and-reusable-workflows-for-a-repository
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties:
+      actions:
+        type: array
+        description: |
+          List of actions that are allowed to be used in the repository.
+          The list should be in the format of `owner/repo`
+          For example, `actions/checkout`
+        items:
+            type: string
+  ingest:
+    type: git
+    git:
+      branch: main
+  eval:
+    type: rego
+    rego:
+      type: constraints
+      violation_format: json
+      def: |
+        package minder
+
+        expected_set := {x | x := input.profile.actions[_]}
+        actions := github_workflow.ls_actions("./.github/workflows")
+
+        violations[{"msg": msg}] {
+          extra := actions - expected_set
+          not count(extra) == 0
+          msg = format_message(extra, input.output_format)
+        }
+
+        format_message(difference, format) = msg {
+            format == "json"
+            json_body := {"actions_not_allowed": difference}
+            msg := json.marshal(json_body)
+        }
+
+        format_message(difference, format) = msg {
+            not format == "json"
+            msg := sprintf("extra actions found in workflows but not allowed in the profile: %v", [difference])
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory:
+      severity: "medium"
