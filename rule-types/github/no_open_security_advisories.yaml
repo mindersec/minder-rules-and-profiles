@@ -5,7 +5,10 @@ name: no_open_security_advisories
 context:
   provider: github
 description: |
-  Verifies that a repository has no open security advisories.
+  Verifies that a repository has no open security advisories based on a given severity threshold.
+
+  The threshold will cause the rule to fail if there are any open advisories at or above the threshold.
+  It is set to `high` by default, but can be overridden by setting the `severity` parameter.
 guidance: |
   Ensuring that a repository has no open security advisories helps maintain a secure codebase.
 
@@ -17,11 +20,24 @@ guidance: |
   For more information, see the [GitHub documentation](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/about-repository-security-advisories).
 def:
   in_entity: repository
-  rule_schema: {}
+  rule_schema:
+    type: object
+    properties:
+      severity:
+        type: string
+        enum:
+          - unknown
+          - low
+          - medium
+          - high
+          - critical
+        default: high
+    required:
+      - severity
   ingest:
     type: rest
     rest:
-      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}/security-advisories"
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}/security-advisories?per_page=100&sort=updated&order=asc"
       parse: json
       fallback:
         # If we don't have advisories enabled, we'll get a 404
@@ -40,6 +56,23 @@ def:
         import future.keywords.if
         import future.keywords.in
         
+        severity_to_number := {
+        	null: -1,
+        	"unknown": -1,
+        	"low": 0,
+        	"medium": 1,
+        	"high": 2,
+        	"critical": 3,
+        }
+        
+        default threshold := 1
+        
+        threshold := severity_to_number[input.profile.severity] if input.profile.severity != null
+        
+        above_threshold(severity, threshold) if {
+        	severity_to_number[severity] >= threshold
+        }
+        
         had_fallback if {
         	input.ingested.fallback
         }
@@ -48,7 +81,7 @@ def:
         	had_fallback
         }
         
-        violations contains {"msg": "Open security advisories found"} if {
+        violations contains {"msg": "Found open security advisories in or above threshold"} if {
         	not had_fallback
         
         	some adv in input.ingested
@@ -58,6 +91,9 @@ def:
         
         	adv.state != "closed"
         	adv.state != "published"
+        
+        	# We only care about advisories that are at or above the threshold
+        	above_threshold(adv.severity, threshold)
         }
   alert:
     type: security_advisory
