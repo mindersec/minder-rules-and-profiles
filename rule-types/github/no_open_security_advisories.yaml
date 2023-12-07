@@ -1,0 +1,66 @@
+---
+version: v1
+type: rule-type
+name: no_open_security_advisories
+context:
+  provider: github
+description: |
+  Verifies that a repository has no open security advisories.
+guidance: |
+  Ensuring that a repository has no open security advisories helps maintain a secure codebase.
+
+  This rule will fail if the repository has unacknowledged security advisories.
+  It will also fail if the repository has no security advisories enabled.
+
+  Security advisories that are closed or published are considered to be acknowledged.
+
+  For more information, see the [GitHub documentation](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/about-repository-security-advisories).
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: rest
+    rest:
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}/security-advisories"
+      parse: json
+      fallback:
+        # If we don't have advisories enabled, we'll get a 404
+        - http_code: 404
+          body: |
+            {"fallback": true}
+  eval:
+    type: rego
+    rego:
+      type: constraints
+      violation_format: json
+      def: |
+        package minder
+        
+        import future.keywords.contains
+        import future.keywords.if
+        import future.keywords.in
+        
+        had_fallback if {
+        	input.ingested.fallback
+        }
+        
+        violations contains {"msg": "Security advisories not enabled."} if {
+        	had_fallback
+        }
+        
+        violations contains {"msg": "Open security advisories found"} if {
+        	not had_fallback
+        
+        	some adv in input.ingested
+        
+        	# Is not withdrawn
+        	adv.withdrawn_at == null
+        
+        	adv.state != "closed"
+        	adv.state != "published"
+        }
+  alert:
+    type: security_advisory
+    security_advisory:
+      severity: "medium"
+
