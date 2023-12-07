@@ -117,6 +117,9 @@ repository:
     def:
       license_filename: LICENSE
       license_type: ""
+  - type: no_open_security_advisories
+    def:
+      severity: high
 artifact:
   - type: artifact_signature
     params:
