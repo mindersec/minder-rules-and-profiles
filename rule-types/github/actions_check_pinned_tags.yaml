@@ -64,7 +64,7 @@ def:
 
           # Check if the step has a uses directive
           not is_null(s.uses)
-          
+
           # Split the uses directive at '@'
           parts := split(s.uses, "@")
 
@@ -75,6 +75,26 @@ def:
           not regex.match(`^[a-fA-F0-9]+$`, parts[1])
           msg := sprintf("Workflow '%v' uses an unpinned action '%v' in job '%v' step '%v'", [workflows[w], s.uses, job_name, step_num])
         }
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Replace unpinned actions with pinned action"
+      body: |
+        This is a Minder automated pull request.
+
+        This pull request replaces references to actions by tag to references to actions by SHA.
+
+        Verifies that any actions use pinned tags
+        Pinning an action to a full length commit SHA is currently the only way to use
+        an action as an immutable release. Pinning to a particular SHA helps mitigate
+        the risk of a bad actor adding a backdoor to the action's repository, as they
+        would need to generate a SHA-1 collision for a valid Git object payload.
+        When selecting a SHA, you should verify it is from the action's repository
+        and not a repository fork.
+
+        For more information, see
+        https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-third-party-actions
+      method: minder.actions.replace_tags_with_sha
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
