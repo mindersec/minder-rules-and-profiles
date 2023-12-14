@@ -23,7 +23,16 @@ def:
   in_entity: repository
   # Defines the schema for writing a rule with this rule being checked
   # In this case there are no settings that need to be configured
-  rule_schema: {}
+  rule_schema:
+    type: object
+    properties:
+      exclude:
+        type: array
+        items:
+          type: string
+        description: |
+          Exclude actions from being checked and remediated. Useful for actions that don't support SHA pinning such
+          as slsa-github-generator. Use the full owner/action@tag string here, e.g. actions/checkout@v3
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: git
@@ -42,6 +51,11 @@ def:
       type: constraints
       def: |
         package minder
+
+        is_excluded(action, excludes) {
+          some i
+          action == excludes[i]
+        }
 
         violations[{"msg": msg}] {
           # List all workflows
@@ -64,6 +78,9 @@ def:
 
           # Check if the step has a uses directive
           not is_null(s.uses)
+
+          # Skip if the full name of the action is part of excludes
+          not is_excluded(s.uses, input.profile.exclude)
 
           # Split the uses directive at '@'
           parts := split(s.uses, "@")
