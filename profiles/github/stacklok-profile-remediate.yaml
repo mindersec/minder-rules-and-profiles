@@ -8,6 +8,10 @@ context:
 alert: "off"
 remediate: "on"
 repository:
+  - type: actions_check_pinned_tags
+    def:
+      exclude:
+        - slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.9.0
   - type: automatic_branch_deletion
     def:
       enabled: true
