@@ -9,7 +9,7 @@ into use, you'll need to instantiate them in a Minder instance. For example, to 
 reference rules recommended for GitHub, use the following command:
     
 ```bash
-minder rule_type create -f rule-types/github
+minder ruletype create -f rule-types/github
 ```
 
 # Profiles
