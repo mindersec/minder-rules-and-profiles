@@ -1,0 +1,12 @@
+---
+# This is a simple profile that enables the trivy_action_enabled rule
+version: v1
+type: profile
+name: trivy-github-profile
+context:
+  provider: github
+alert: "on"
+remediate: "off"
+repository:
+  - type: trivy_action_enabled
+    def: {}
