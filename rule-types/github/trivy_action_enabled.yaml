@@ -78,7 +78,7 @@ def:
       body: |
         This is a Minder automated pull request.
 
-        This pull request adds a GitHub actions workflow  that runs Trivy to the repository.
+        This pull request adds a GitHub actions workflow that runs Trivy to the repository.
       contents:
         - path: .github/workflows/trivy.yml
           action: replace
