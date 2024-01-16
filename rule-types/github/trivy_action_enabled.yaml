@@ -71,3 +71,34 @@ def:
     type: security_advisory
     security_advisory:
       severity: "medium"
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Add Trivy repository scan configuration"
+      body: |
+        This is a Minder automated pull request.
+
+        This pull request adds a GitHub actions workflow  that runs Trivy to the repository.
+      contents:
+        - path: .github/workflows/trivy.yml
+          action: replace
+          contents: |
+            name: Trivy Scan
+
+            on:
+              pull_request:
+
+            jobs:
+              trivy-code-security-scan:
+                runs-on: ubuntu-latest
+                name: Trivy 
+                steps:
+                  - name: Checkout
+                    uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+                  - name: Security Scan
+                    uses: aquasecurity/trivy-action@d43c1f16c00cfd3978dde6c07f4bbcf9eb6993ca # 0.16.1
+                    with:
+                      scan-type: 'fs'
+                      scanners: vuln,secret
+                      exit-code: 1
+                      ignore-unfixed: true
