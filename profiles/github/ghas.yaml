@@ -1,0 +1,20 @@
+---
+# Profile showing off feature settings for GitHub Advanced Security
+version: v1
+type: profile
+name: ghas-profile
+context:
+  provider: github
+alert: "on"
+remediate: "off"
+repository:
+  - type: secret_scanning
+    def:
+      enabled: true
+  - type: secret_push_protection
+    def:
+      enabled: true
+  - type: codeql_enabled
+    def:
+      languages: [go, javascript, typescript]
+      schedule_interval: '30 4-6 * * *'
