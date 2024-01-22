@@ -18,3 +18,8 @@ repository:
     def:
       languages: [go, javascript, typescript]
       schedule_interval: '30 4-6 * * *'
+  - type: dependabot_configured
+    def: 
+      package_ecosystem: gomod
+      schedule_interval: weekly
+      apply_if_file: go.mod
