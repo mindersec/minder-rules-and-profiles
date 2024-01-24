@@ -27,16 +27,6 @@ repository:
     def:
       default_workflow_permissions: read
       can_approve_pull_request_reviews: true
-  - type: dependabot_configured
-    def:
-      package_ecosystem: gomod
-      schedule_interval: daily
-      apply_if_file: go.mod
-  - type: dependabot_configured
-    def:
-      package_ecosystem: npm
-      schedule_interval: daily
-      apply_if_file: docs/package.json
   - type: dockerfile_no_latest_tag
     def: {}
   - type: branch_protection_enabled
