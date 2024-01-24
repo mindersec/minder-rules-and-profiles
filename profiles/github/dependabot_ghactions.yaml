@@ -1,0 +1,14 @@
+---
+# Simple profile showing off the dependabot_configured rule
+version: v1
+type: profile
+name: dependabot-github-actions-github-profile
+context:
+  provider: github
+alert: "on"
+remediate: "off"
+repository:
+  - type: dependabot_configured
+    def:
+      package_ecosystem: github-actions
+      schedule_interval: daily
