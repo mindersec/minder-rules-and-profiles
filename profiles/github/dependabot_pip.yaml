@@ -11,5 +11,5 @@ repository:
   - type: dependabot_configured
     def:
       package_ecosystem: pip
-      schedule_interval: weekly
+      schedule_interval: daily
       apply_if_file: requirements.txt
