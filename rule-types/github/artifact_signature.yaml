@@ -68,7 +68,7 @@ def:
         description: "Set to true to enforce checking if the workflow that build this artifact is part of the allowed workflows"
       cert_issuer:
         type: string
-        description: "Set the certificate issuer that is expected to produce the artifact provenance, i.e. https://token.actions.githubusercontent.com
+        description: "Set the certificate issuer that is expected to produce the artifact provenance, i.e. https://token.actions.githubusercontent.com"
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: artifact
