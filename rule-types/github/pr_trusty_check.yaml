@@ -32,7 +32,7 @@ def:
             name:
               type: string
               description: "The name of the ecosystem to check. Currently only `npm` and `pypi` are supported."
-            pi_threshold:
+            score:
               type: number
               description: "The minimum Trusty score for a dependency to be considered safe."
               default: 5
