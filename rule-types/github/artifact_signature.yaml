@@ -35,6 +35,10 @@ def:
         "default": "container"
         "enum": ["container"]
         description: "The type of artifact to check. Currently only container is supported."
+      sigstore:
+        type: string
+        description: "URL of the sigstore TUF root to use for verification."
+        default: "tuf-repo-cdn.sigstore.dev"
     required:
       - tags
   # Defines the schema for writing a rule with this rule being checked
@@ -47,6 +51,24 @@ def:
       is_verified:
         type: boolean
         description: "Set to true to enforce artifact signature being verified."
+      repository:
+        type: string
+        description: "Set the repository that is expected to produce the artifact, i.e. https://github.com/stacklok/minder"
+      branch:
+        type: string
+        description: "Set the repository branch that is expected to produce the artifact, i.e. main"
+      workflow_name:
+        type: string
+        description: "Set the workflow name that is expected to produce the artifact, i.e. docker-image-build-push.yml"
+      runner_environment:
+        type: string
+        description: "Set the runner environment that is expected to produce the artifact, i.e. github-hosted"
+      allowed_workflow:
+        type: boolean
+        description: "Set to true to enforce checking if the workflow that build this artifact is part of the allowed workflows"
+      cert_issuer:
+        type: string
+        description: "Set the certificate issuer that is expected to produce the artifact provenance, i.e. https://token.actions.githubusercontent.com
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: artifact
