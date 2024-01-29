@@ -1,0 +1,48 @@
+---
+version: v1
+type: rule-type
+name: no_binaries_in_repo
+context:
+  provider: github
+description: Verifies that no binary artifacts are commited to the repository
+guidance: |
+  This rule incorporates the check from Scorecard for binary artifacts.
+
+  It determines whether a binary artifact has been committed to the repository.
+
+  If you find that a binary artifact has been committed to the repository, you should
+  consider removing it from the repository and using a package manager to install it instead.
+
+  For more information, see https://github.com/ossf/scorecard/blob/main/docs/checks.md#binary-artifacts
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+    git:
+      branch: main
+  eval:
+    type: rego
+    rego:
+      type: constraints
+      def: |
+        package minder
+
+        import future.keywords.in
+        import future.keywords.if
+
+        violations[{"msg": msg}] if {
+          # Walk all files in the repo
+          files_in_repo := file.walk(".")
+
+          some current_file in files_in_repo
+
+          http_type := file.http_type(current_file)
+          http_type == "application/octet-stream"
+
+          msg := sprintf("Binary artifact found: %s", [current_file])
+        }
+  alert:
+    type: security_advisory
+    security_advisory:
+      severity: "high"
