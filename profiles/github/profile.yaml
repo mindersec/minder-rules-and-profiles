@@ -36,11 +36,13 @@ repository:
   - type: actions_check_pinned_tags
     def: {}
   - type: dependabot_configured
+    name: go_dependabot
     def:
       package_ecosystem: gomod
       schedule_interval: weekly
       apply_if_file: go.mod
   - type: dependabot_configured
+    name: npm_dependabot
     def:
       package_ecosystem: npm
       schedule_interval: weekly
