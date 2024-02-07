@@ -1,0 +1,16 @@
+---
+# sample policy for validating artifact signatures
+version: v1
+type: profile
+name: artifact-signature-simple
+context:
+  provider: github
+artifact:
+  - type: artifact_signature
+    params:
+      tags: [latest]
+      name: your-artifact-name
+    def:
+      is_signed: true
+      is_verified: true
+
