@@ -57,9 +57,9 @@ def:
       branch:
         type: string
         description: "Set the repository branch that is expected to produce the artifact, i.e. main"
-      workflow_name:
+      signer_identity:
         type: string
-        description: "Set the workflow name that is expected to produce the artifact, i.e. docker-image-build-push.yml"
+        description: "Set the signer identity that is expected to produce the artifact, i.e. docker-image-build-push.yml or an email address"
       runner_environment:
         type: string
         description: "Set the runner environment that is expected to produce the artifact, i.e. github-hosted"
