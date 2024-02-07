@@ -130,7 +130,6 @@ artifact:
     def:
       is_signed: true
       is_verified: true
-      is_bundle_verified: true
 pull_request:
   - type: pr_vulnerability_check
     def:

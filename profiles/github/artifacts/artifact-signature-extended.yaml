@@ -1,0 +1,21 @@
+---
+# sample policy for validating artifact signatures
+version: v1
+type: profile
+name: artifact-signature-extended
+context:
+  provider: github
+artifact:
+  - type: artifact_signature
+    params:
+      tags: [latest]
+      name: your-artifact-name
+      sigstore: tuf-repo-cdn.sigstore.dev
+    def:
+      is_signed: true
+      is_verified: true
+      repository: https://github.com/your-org/your-repo
+      branch: main
+      runner_environment: github-hosted
+      signer_identity: build-image-signed.yml # or if signed using Fulcio w/Google for example - johndoe@gmail.com
+      cert_issuer: https://token.actions.githubusercontent.com # or for example - https://accounts.google.com
