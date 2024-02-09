@@ -1,0 +1,23 @@
+version: v1
+type: rule-type
+name: invisible_characters_check
+context:
+  provider: github
+description: Verifies that pull requests do not add any invisible characters
+guidance: >
+  For every pull request submitted to a repository, this rule will check if the
+  pull request adds a new dependency with invisible characters. If it does, the rule will
+  fail and the pull request will be commented on.
+def:
+  in_entity: pull_request
+  param_schema:
+    properties: {}
+  rule_schema: {}
+  ingest:
+    type: diff
+    diff:
+      type: full
+  eval:
+    type: homoglyphs
+    homoglyphs:
+      type: invisible_characters
