@@ -1,0 +1,14 @@
+version: v1
+type: profile
+name: homoglyphs-github-profile
+context:
+  provider: github
+alert: "off"
+remediate: "off"
+pull_request:
+  - type: invisible_characters_check
+    params: {}
+    def: {}
+  - type: mixed_scripts_check
+    params: {}
+    def: {}
