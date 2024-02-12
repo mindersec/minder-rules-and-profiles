@@ -44,7 +44,10 @@ def:
           depfile: package-lock.json
         - name: pypi
           depfile: requirements.txt
+        - name: go
+          depfile: go.mod
   # Defines the configuration for evaluating data ingested against the given profile
   eval:
     type: trusty
-    trusty: {}
+    trusty:
+      endpoint: "https://trusty.stacklok.dev"
