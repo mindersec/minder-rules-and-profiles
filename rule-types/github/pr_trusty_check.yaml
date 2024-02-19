@@ -49,5 +49,3 @@ def:
   # Defines the configuration for evaluating data ingested against the given profile
   eval:
     type: trusty
-    trusty:
-      endpoint: "https://trusty.stacklok.dev"
