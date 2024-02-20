@@ -30,6 +30,9 @@ def:
           "type": "string"
         }
         description: "The tags of the artifact to check. Must be a subset of the tags the artifact has"
+      tag_regex:
+        type: string
+        description: "The regex to match the tags of the artifact to check. Conflicts with tags."
       type:
         "type": string
         "default": "container"
