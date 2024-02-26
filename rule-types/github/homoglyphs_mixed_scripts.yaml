@@ -1,0 +1,31 @@
+version: v1
+type: rule-type
+name: mixed_scripts_check
+context:
+  provider: github
+description: |
+  For every pull request submitted to a repository, this rule will
+  check if the pull request adds a new change patch
+  that contains mixed scripts. 
+  If it does, the rule will fail and the pull request will be commented on.
+guidance: |
+  Detects and highlights the use of strings with mixed scripts 
+  that could potentially hide malicious code.
+  
+  For more information, see
+  https://unicode.org/reports/tr39/#Mixed_Script_Detection
+  and
+  https://www.usenix.org/system/files/usenixsecurity23-boucher.pdf
+def:
+  in_entity: pull_request
+  param_schema:
+    properties: {}
+  rule_schema: {}
+  ingest:
+    type: diff
+    diff:
+      type: full
+  eval:
+    type: homoglyphs
+    homoglyphs:
+      type: mixed_scripts
