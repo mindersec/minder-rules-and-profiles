@@ -8,9 +8,6 @@ context:
 alert: "off"
 remediate: "off"
 repository:
-  # IMPORTANT: This needs to be paired with a rule
-  # that checks that dependabot or renovate (or any other update tool)
-  # is enabled.
   - type: actions_check_pinned_tags
     def:
       exclude:
@@ -25,28 +22,26 @@ repository:
       dismiss_stale_reviews: true
     params:
       branch: main # TODO: make this dynamic
-  # TODO: Let's add this to a multi-contributor health check profile
-  - type: branch_protection_require_pull_request_approving_review_count
-    def:
-      required_approving_review_count: 1
-    params:
-      branch: main # TODO: make this dynamic
-  # TODO: Let's add this to a multi-contributor health check profile
-  - type: branch_protection_require_pull_requests
-    def:
-      required_pull_request_reviews: true
-    params:
-      branch: main # TODO: make this dynamic
   - type: default_workflow_permissions
     def:
       default_workflow_permissions: read
       can_approve_pull_request_reviews: false
-  # TODO: Add rule to check for dependabot or renovate being enabled
+  - type: dependabot_configured
+    name: go_dependabot
+    def:
+      package_ecosystem: gomod
+      apply_if_file: go.mod
+  - type: dependabot_configured
+    name: npm_dependabot
+    def:
+      package_ecosystem: npm
+      apply_if_file: package.json
+  - type: dependabot_configured
+    name: pypi_dependabot
+    def:
+      package_ecosystem: pypi
+      apply_if_file: requirements.txt
   - type: dockerfile_no_latest_tag
-    def: {}
-  - type: invisible_characters_check
-    def: {}
-  - type: mixed_scripts_check
     def: {}
   - type: secret_push_protection
     def:
@@ -56,11 +51,8 @@ repository:
     def:
       enabled: true
       skip_private_repos: true
-# TODO: Should we enable this?
-# artifact:
-#  - type: artifact_signature
-#    params:
-#      sigstore: tuf-repo-cdn.sigstore.dev
-#    def:
-#      is_signed: true
-#      is_verified: true
+pull_request:
+  - type: invisible_characters_check
+    def: {}
+  - type: mixed_scripts_check
+    def: {}
