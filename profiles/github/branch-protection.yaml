@@ -6,7 +6,7 @@ name: branch-protection-github-profile
 context:
   provider: github
 alert: "on"
-remediate: "off"
+remediate: "on"
 repository:
   - type: branch_protection_enabled
     params:

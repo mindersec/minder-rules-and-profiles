@@ -71,7 +71,6 @@ def:
             # Ensure a configuration contains the package ecosystem daily update schedule
             update := config.updates[_]
             update["package-ecosystem"] == input.profile.package_ecosystem
-            update.schedule.interval == input.profile.schedule_interval
         }
 
         # We skip if the apply_if_file is specified and the file does not exist
@@ -100,7 +99,7 @@ def:
               - package-ecosystem: "{{.Profile.package_ecosystem }}"
                 directory: "/"
                 schedule:
-                  interval: "{{.Profile.schedule_interval }}"
+                  interval: "weekly"
                 open-pull-requests-limit: 10
   # Defines the configuration for alerting on the rule
   alert:
