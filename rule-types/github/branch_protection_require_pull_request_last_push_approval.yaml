@@ -20,7 +20,7 @@ def:
     properties:
       branch:
         type: string
-        description: "The name of the branch to check."
+        description: "The name of the branch to check. If left empty, the default branch will be used."
     required:
       - branch
   # Defines the schema for writing a rule with this rule being checked
@@ -38,7 +38,7 @@ def:
       # for each repository in the organization, we use a template that
       # will be evaluated for each repository. The structure to use is the
       # protobuf structure for the entity that is being evaluated.
-      endpoint: '/repos/{{.Entity.Owner}}/{{.Entity.Name}}/branches/{{ index .Params "branch" }}/protection'
+      endpoint: '{{ $branch_param := index .Params "branch" }}/repos/{{.Entity.Owner}}/{{.Entity.Name}}/branches/{{if ne $branch_param "" }}{{ $branch_param }}{{ else }}{{ .Entity.DefaultBranch }}{{ end }}/protection'
       # This is the method to use to retrieve the data. It should already default to JSON
       parse: json
       fallback:
