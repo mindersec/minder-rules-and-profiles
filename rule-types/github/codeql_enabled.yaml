@@ -41,8 +41,7 @@ def:
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: git
-    git:
-      branch: main
+    git: {}
   # Defines the configuration for evaluating data ingested against the given profile
   eval:
     type: rego
