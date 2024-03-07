@@ -11,6 +11,9 @@ repository:
   - type: actions_check_pinned_tags
     def:
       exclude:
+        # generator_generic_slsa3 does not support pinning and will fail to retrieve the
+        # generator binary. We need to exclude it from pinning because of this.
+        # See https://github.com/slsa-framework/slsa-github-generator/issues/2993
         - slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.9.0
   - type: branch_protection_allow_force_pushes
     def: 
