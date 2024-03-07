@@ -16,12 +16,12 @@ repository:
     def: 
       allow_force_pushes: false
     params:
-      branch: main # TODO: make this dynamic
+      branch: ""
   - type: branch_protection_require_pull_request_dismiss_stale_reviews
     def:
       dismiss_stale_reviews: true
     params:
-      branch: main # TODO: make this dynamic
+      branch: ""
   - type: default_workflow_permissions
     def:
       default_workflow_permissions: read
