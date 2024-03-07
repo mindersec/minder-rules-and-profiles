@@ -30,16 +30,19 @@ repository:
     name: go_dependabot
     def:
       package_ecosystem: gomod
+      schedule_interval: ""
       apply_if_file: go.mod
   - type: dependabot_configured
     name: npm_dependabot
     def:
       package_ecosystem: npm
+      schedule_interval: ""
       apply_if_file: package.json
   - type: dependabot_configured
     name: pypi_dependabot
     def:
       package_ecosystem: pypi
+      schedule_interval: ""
       apply_if_file: requirements.txt
   - type: dockerfile_no_latest_tag
     def: {}
@@ -54,5 +57,7 @@ repository:
 pull_request:
   - type: invisible_characters_check
     def: {}
+    params: {}
   - type: mixed_scripts_check
     def: {}
+    params: {}
