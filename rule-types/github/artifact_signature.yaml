@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: artifact_signature
+severity:
+  value: medium
 context:
   provider: github
 description: Verifies that a given artifact has a valid signature.
@@ -100,5 +102,4 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "medium"
+    security_advisory: {}

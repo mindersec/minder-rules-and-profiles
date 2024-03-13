@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: branch_protection_require_linear_history
+severity:
+  value: medium
 context:
   provider: github
 description: Whether the branch requires a linear history with no merge commits
@@ -63,5 +65,4 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "low"
+    security_advisory: {}

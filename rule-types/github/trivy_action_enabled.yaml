@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: trivy_action_enabled
+severity:
+  value: medium
 context:
   provider: github
 description: Verifies that the Trivy action is enabled for the repository and scanning
@@ -69,8 +71,7 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "medium"
+    security_advisory: {}
   remediate:
     type: pull_request
     pull_request:

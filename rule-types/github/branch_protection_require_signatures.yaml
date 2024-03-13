@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: branch_protection_require_signatures
+severity:
+  value: medium
 context:
   provider: github
 description: Whether commits to the branch must be signed
@@ -57,5 +59,4 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "medium"
+    security_advisory: {}

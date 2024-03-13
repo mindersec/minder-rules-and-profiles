@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: dockerfile_no_latest_tag
+severity:
+  value: medium
 context:
   provider: github
 description: Verifies that the Dockerfile image references don't use the latest tag
@@ -48,5 +50,4 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "medium"
+    security_advisory: {}

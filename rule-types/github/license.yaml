@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: license
+severity:
+  value: medium
 context:
   provider: github
 description: Verifies that there's a license file of a given type present in the repository.
@@ -67,5 +69,4 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "low"
+    security_advisory: {}

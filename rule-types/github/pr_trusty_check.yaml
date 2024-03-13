@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: pr_trusty_check
+severity:
+  value: medium
 context:
   provider: github
 description: Verifies that pull requests do not add any dependencies with low Trusty scores
@@ -49,3 +51,6 @@ def:
   # Defines the configuration for evaluating data ingested against the given profile
   eval:
     type: trusty
+  alert:
+    type: security_advisory
+    security_advisory: {}

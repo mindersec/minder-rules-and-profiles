@@ -1,6 +1,8 @@
 version: v1
 type: rule-type
 name: invisible_characters_check
+severity:
+  value: medium
 context:
   provider: github
 description: |  
@@ -29,3 +31,6 @@ def:
     type: homoglyphs
     homoglyphs:
       type: invisible_characters
+  alert:
+    type: security_advisory
+    security_advisory: {}
