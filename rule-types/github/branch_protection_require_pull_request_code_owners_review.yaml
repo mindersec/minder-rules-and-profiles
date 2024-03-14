@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: branch_protection_require_pull_request_code_owners_review
+severity:
+  value: low
 context:
   provider: github
 description: Verifies that a branch requires review from code owners.
@@ -63,5 +65,4 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "medium"
+    security_advisory: {}

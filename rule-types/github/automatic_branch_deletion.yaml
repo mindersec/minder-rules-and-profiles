@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: automatic_branch_deletion
+severity:
+  value: info
 context:
   provider: github
 description: |
@@ -43,5 +45,4 @@ def:
         { "delete_branch_on_merge": {{ .Profile.enabled }} }
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "low"
+    security_advisory: {}

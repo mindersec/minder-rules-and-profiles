@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: default_workflow_permissions
+severity:
+  value: high
 context:
   provider: github
 description: |
@@ -53,5 +55,4 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "medium"
+    security_advisory: {}

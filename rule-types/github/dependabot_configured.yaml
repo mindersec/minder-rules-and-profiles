@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: dependabot_configured
+severity:
+  value: medium
 context:
   provider: github
 description: Verifies that Dependabot is configured for the repository
@@ -102,5 +104,4 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "medium"
+    security_advisory: {}

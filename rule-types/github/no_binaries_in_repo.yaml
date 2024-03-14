@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: no_binaries_in_repo
+severity:
+  value: medium
 context:
   provider: github
 description: Verifies that no binary artifacts are commited to the repository
@@ -44,5 +46,4 @@ def:
         }
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "high"
+    security_advisory: {}

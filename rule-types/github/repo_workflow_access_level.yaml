@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: repo_workflow_access_level
+severity:
+  value: medium
 context:
   provider: github
 description: |
@@ -56,5 +58,4 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "medium"
+    security_advisory: {}

@@ -1,6 +1,8 @@
 version: v1
 type: rule-type
 name: mixed_scripts_check
+severity:
+  value: high
 context:
   provider: github
 description: |
@@ -29,3 +31,6 @@ def:
     type: homoglyphs
     homoglyphs:
       type: mixed_scripts
+  alert:
+    type: security_advisory
+    security_advisory: {}

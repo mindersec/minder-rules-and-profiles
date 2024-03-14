@@ -2,6 +2,8 @@
 version: v1
 type: rule-type
 name: branch_protection_enabled
+severity:
+  value: high
 context:
   provider: github
 description: Verifies that a branch has a branch protection rule
@@ -59,5 +61,4 @@ def:
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
-    security_advisory:
-      severity: "medium"
+    security_advisory: {}
