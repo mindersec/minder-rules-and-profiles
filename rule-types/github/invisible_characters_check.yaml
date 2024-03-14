@@ -2,7 +2,7 @@ version: v1
 type: rule-type
 name: invisible_characters_check
 severity:
-  value: medium
+  value: high
 context:
   provider: github
 description: |  

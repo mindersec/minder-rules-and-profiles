@@ -3,7 +3,7 @@ version: v1
 type: rule-type
 name: branch_protection_require_pull_request_last_push_approval
 severity:
-  value: medium
+  value: low
 context:
   provider: github
 description: Require that the most recent push to a branch be approved by someone other than the person who pushed it.

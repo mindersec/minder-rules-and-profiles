@@ -3,7 +3,7 @@ version: v1
 type: rule-type
 name: repo_action_allow_list
 severity:
-  value: medium
+  value: info
 context:
   provider: github
 description: |

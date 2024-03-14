@@ -3,7 +3,7 @@ version: v1
 type: rule-type
 name: branch_protection_require_conversation_resolution
 severity:
-  value: medium
+  value: info
 context:
   provider: github
 description: Whether PR reviews must be resolved before merging

@@ -3,7 +3,7 @@ version: v1
 type: rule-type
 name: branch_protection_require_linear_history
 severity:
-  value: medium
+  value: info
 context:
   provider: github
 description: Whether the branch requires a linear history with no merge commits

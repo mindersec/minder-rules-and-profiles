@@ -3,7 +3,7 @@ version: v1
 type: rule-type
 name: automatic_branch_deletion
 severity:
-  value: medium
+  value: info
 context:
   provider: github
 description: |

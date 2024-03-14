@@ -3,7 +3,7 @@ version: v1
 type: rule-type
 name: artifact_signature
 severity:
-  value: medium
+  value: high
 context:
   provider: github
 description: Verifies that a given artifact has a valid signature.

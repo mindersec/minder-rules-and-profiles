@@ -3,7 +3,7 @@ version: v1
 type: rule-type
 name: branch_protection_require_pull_request_dismiss_stale_reviews
 severity:
-  value: medium
+  value: info
 context:
   provider: github
 description: Require that new pushes to the branch dismiss old reviews

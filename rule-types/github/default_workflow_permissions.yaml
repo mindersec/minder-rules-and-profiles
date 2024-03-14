@@ -3,7 +3,7 @@ version: v1
 type: rule-type
 name: default_workflow_permissions
 severity:
-  value: medium
+  value: high
 context:
   provider: github
 description: |

@@ -3,7 +3,7 @@ version: v1
 type: rule-type
 name: branch_protection_enabled
 severity:
-  value: medium
+  value: high
 context:
   provider: github
 description: Verifies that a branch has a branch protection rule
