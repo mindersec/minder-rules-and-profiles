@@ -83,7 +83,7 @@ def:
       contents:
         - path: .github/workflows/trivy.yml
           action: replace
-          contents: |
+          content: |
             name: Trivy Scan
 
             on:
