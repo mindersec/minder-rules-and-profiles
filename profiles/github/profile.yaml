@@ -34,7 +34,8 @@ repository:
       languages: [go, javascript, typescript]
       schedule_interval: '30 4-6 * * *'
   - type: actions_check_pinned_tags
-    def: {}
+    def:
+      exclude: []
   - type: dependabot_configured
     name: go_dependabot
     def:
