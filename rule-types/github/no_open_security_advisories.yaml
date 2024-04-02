@@ -14,10 +14,14 @@ description: |
 guidance: |
   Ensuring that a repository has no open security advisories helps maintain a secure codebase.
 
-  This rule will fail if the repository has unacknowledged security advisories.
-  It will also fail if the repository has no security advisories enabled.
+  The rule will fail if:
+  - The repository has unacknowledged open security advisories in a "Triage" state.
+  - Security advisories are not enabled for the repository.
+  
+  Note:
+  Advisories in a "Triage" state are considered if the repository has enabled the 'Private vulnerability reporting' option.
 
-  Security advisories that are closed or published are considered to be acknowledged.
+  Security advisories that are draft, closed or published are considered to be acknowledged.
 
   For more information, see the [GitHub documentation](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/about-repository-security-advisories).
 def:
@@ -91,8 +95,7 @@ def:
         	# Is not withdrawn
         	adv.withdrawn_at == null
         
-        	adv.state != "closed"
-        	adv.state != "published"
+        	not adv.state in {"closed", "published", "draft"}
         
         	# We only care about advisories that are at or above the threshold
         	above_threshold(adv.severity, threshold)
