@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: ghas-profile
+display_name: GitHub Advanced Security settings
 context:
   provider: github
 alert: "on"

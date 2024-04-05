@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: dependabot-github-actions-github-profile
+display_name: Dependabot for GitHub Actions
 context:
   provider: github
 alert: "on"

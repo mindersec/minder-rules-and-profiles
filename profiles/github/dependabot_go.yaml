@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: dependabot-go-github-profile
+display_name: Dependabot for Go projects
 context:
   provider: github
 alert: "on"

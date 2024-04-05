@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: artifact-signature-simple
+display_name: Validate artifact signatures
 context:
   provider: github
 artifact:

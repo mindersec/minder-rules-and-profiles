@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: stacklok-remediate-profile
+display_name: Stacklok example remedation profile
 context:
   provider: github
 alert: "off"

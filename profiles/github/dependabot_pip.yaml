@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: dependabot-pip-github-profile
+display_name: Dependabot for Python projects
 context:
   provider: github
 alert: "on"
