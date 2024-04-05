@@ -1,0 +1,21 @@
+---
+# Profile ensuring that repository settings are configured
+version: v1
+type: profile
+name: repository-github-profile
+display_name: Repository Security
+context:
+  provider: github
+alert: "on"
+remediate: "off"
+repository:
+  - type: secret_scanning
+    def:
+      enabled: true
+  - type: secret_push_protection
+    def:
+      enabled: true
+  - type: codeql_enabled
+    def:
+      languages: [go, javascript, typescript]
+      schedule_interval: '30 4-6 * * *'
