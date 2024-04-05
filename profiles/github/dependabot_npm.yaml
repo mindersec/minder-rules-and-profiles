@@ -13,4 +13,4 @@ repository:
     def:
       package_ecosystem: npm
       schedule_interval: daily
-      apply_if_file: docs/package.json
+      apply_if_file: package.json
