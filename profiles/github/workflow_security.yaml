@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: workflow-security-github-profile
+display_name: GitHub Actions workflow security
 context:
   provider: github
 alert: "on"
@@ -16,3 +17,7 @@ repository:
     def:
       default_workflow_permissions: read
       can_approve_pull_request_reviews: false
+  - type: dependabot_configured
+    def:
+      package_ecosystem: github-actions
+      schedule_interval: daily

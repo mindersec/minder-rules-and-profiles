@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: dependabot-npm-docs-github-profile
+display_name: Dependabot for JavaScript projects
 context:
   provider: github
 alert: "on"
@@ -12,4 +13,4 @@ repository:
     def:
       package_ecosystem: npm
       schedule_interval: daily
-      apply_if_file: docs/package.json
+      apply_if_file: package.json

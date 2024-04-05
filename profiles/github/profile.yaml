@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: acme-github-profile
+display_name: Sample Profile
 context:
   provider: github
 alert: "on"

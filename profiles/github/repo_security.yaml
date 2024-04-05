@@ -1,9 +1,9 @@
 ---
-# Profile showing off feature settings for GitHub Advanced Security
+# Profile ensuring that repository settings are configured
 version: v1
 type: profile
-name: ghas-profile
-display_name: GitHub Advanced Security settings
+name: repository-github-profile
+display_name: Repository Security
 context:
   provider: github
 alert: "on"
@@ -19,8 +19,3 @@ repository:
     def:
       languages: [go, javascript, typescript]
       schedule_interval: '30 4-6 * * *'
-  - type: dependabot_configured
-    def: 
-      package_ecosystem: gomod
-      schedule_interval: weekly
-      apply_if_file: go.mod

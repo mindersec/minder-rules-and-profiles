@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: branch-protection-github-profile
+display_name: GitHub Branch Protection
 context:
   provider: github
 alert: "off"

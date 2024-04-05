@@ -3,6 +3,7 @@
 version: v1
 type: profile
 name: trivy-github-profile
+display_name: Trivy action is enabled
 context:
   provider: github
 alert: "on"
