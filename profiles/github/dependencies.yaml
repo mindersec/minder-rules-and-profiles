@@ -1,5 +1,5 @@
 ---
-# Profile showing off feature settings for GitHub Advanced Security
+# Profile to help secure dependencies
 version: v1
 type: profile
 name: dependencies-github-profile
@@ -38,3 +38,25 @@ pull_request:
           score: 5
         - name: pypi
           score: 5
+repository:
+  - type: dependabot_configured
+    name: dependabot_configured_go
+    displayName: "Dependabot is configured (for Go modules)"
+    def:
+      package_ecosystem: gomod
+      schedule_interval: daily
+      apply_if_file: go.mod
+  - type: dependabot_configured
+    name: dependabot_configured_npm
+    displayName: "Dependabot is configured (for JavaScript packages)"
+    def:
+      package_ecosystem: npm
+      schedule_interval: daily
+      apply_if_file: package.json
+  - type: dependabot_configured
+    name: dependabot_configured_pip
+    displayName: "Dependabot is configured (for Python packages)"
+    def:
+      package_ecosystem: pip
+      schedule_interval: daily
+      apply_if_file: requirements.txt
