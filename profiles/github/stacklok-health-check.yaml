@@ -65,12 +65,3 @@ repository:
     def:
       enabled: true
       skip_private_repos: true
-pull_request:
-  - type: invisible_characters_check
-    name: "Pull requests do not introduce invisible characters"
-    def: {}
-    params: {}
-  - type: mixed_scripts_check
-    name: "Pull requests do not introduce mixed scripts"
-    def: {}
-    params: {}
