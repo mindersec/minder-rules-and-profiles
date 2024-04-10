@@ -8,6 +8,8 @@ context:
   provider: github
 description: Require that new pushes to the branch dismiss old reviews
 guidance: |
+  Ensure that the setting to dismiss stale reviews when someone pushes a new commit to a branch is enabled.
+
   New reviewable commits pushed to a matching branch will dismiss pull request review approvals.
 
   For more information, see

@@ -8,6 +8,8 @@ context:
   provider: github
 description: Whether the branch can be deleted
 guidance: |
+  Ensure that the "Allow deletions" setting is enabled for the branch protection rule.
+
   Allow users with push access to delete matching branches.
 
   For more information, see

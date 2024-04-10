@@ -8,7 +8,7 @@ context:
   provider: github
 description: Whether the protection rules apply to repository administrators
 guidance: |
-  Enforce required status checks for repository administrators
+  Ensure that the "Enforce required status checks for repository administrators" setting is enabled for the branch protection rule.
 
   For more information, see
   https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule

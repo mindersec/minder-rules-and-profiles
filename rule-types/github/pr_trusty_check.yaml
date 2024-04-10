@@ -6,11 +6,14 @@ severity:
   value: medium
 context:
   provider: github
-description: Verifies that pull requests do not add any dependencies with low Trusty scores
-guidance: |
+description: |
+  Verifies that pull requests do not add any dependencies with low Trusty scores
+
   For every pull request submitted to a repository, this rule will check if the pull request
   adds a new dependency with a low Trusty score. If a dependency with a low
   score is added, the PR will be commented on.
+guidance: |
+  Ensure that the pull request does not add any dependencies with low Trusty scores.
 def:
   in_entity: pull_request
   rule_schema:
