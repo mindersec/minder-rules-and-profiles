@@ -8,6 +8,8 @@ context:
   provider: github
 description: Verifies that Dependabot is configured for the repository
 guidance: |
+  Ensure that Dependabot is configured and enabled for the repository.
+
   Dependabot enables Automated dependency updates for repositories.
   It is recommended that repositories have some form of automated dependency updates enabled
   to ensure that vulnerabilities are not introduced into the codebase.

@@ -8,6 +8,8 @@ context:
   provider: github
 description: Whether commits to the branch must be signed
 guidance: |
+  Ensure that the appropriate setting is enabled for the branch protection rule.
+
   Commits pushed to matching branches must have verified signatures.
 
   For more information, see

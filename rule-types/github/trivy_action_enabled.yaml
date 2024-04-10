@@ -8,6 +8,8 @@ context:
   provider: github
 description: Verifies that the Trivy action is enabled for the repository and scanning
 guidance: |
+  Ensure that the Trivy action is enabled for the repository and scanning is performed.
+
   Trivy is an open source vulnerability scanner for repositories, containers and other
   artifacts provided by Aqua Security. It is used to scan for vulnerabilities in the
   codebase and dependencies. This rule ensures that the Trivy action is enabled for

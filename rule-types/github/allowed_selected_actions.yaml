@@ -11,6 +11,9 @@ description: |
   in a repository. To use this rule, the repository profile for allowed_actions must
   be configured to selected.
 guidance: |
+  Ensure that only the actions and reusable workflows that are allowed in the repository
+  are set.
+
   Having an overview over which actions and reusable workflows are allowed in a repository is important and allows for a better overall security posture.
 
   For more information, see

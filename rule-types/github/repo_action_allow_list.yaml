@@ -9,6 +9,8 @@ context:
 description: |
   Verifies that the github workflows in a repo only use actions enumerated in the rule.
 guidance: |
+  Ensure that the workflows in a repository only use actions that are allowed in the profile.
+
   Having an overview over which actions and reusable workflows are allowed in a repository is important and allows for a better overall security posture.
 
   For more information, see

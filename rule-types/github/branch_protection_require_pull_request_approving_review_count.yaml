@@ -8,6 +8,8 @@ context:
   provider: github
 description: Require a certain number of approving reviews before merging
 guidance: |
+  Ensure that the appropriate setting is enabled for the branch protection rule.
+
   Each pull request must have a certain number of approving reviews before it can be merged into a matching branch.
 
   For more information, see

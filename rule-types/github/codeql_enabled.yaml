@@ -8,6 +8,8 @@ context:
   provider: github
 description: Verifies that CodeQL is enabled for the repository
 guidance: |
+  Ensure that CodeQL is configured and enabled for the repository.
+
   CodeQL is a tool that can be used to analyze code for security vulnerabilities.
   It is recommended that repositories have some form of static analysis enabled
   to ensure that vulnerabilities are not introduced into the codebase.

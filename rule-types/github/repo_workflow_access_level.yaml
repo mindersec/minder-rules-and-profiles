@@ -10,6 +10,8 @@ description: |
   Verifies the level of access that workflows outside of the repository have
   to actions and reusable workflows in the repository. This only applies to private repositories.
 guidance: |
+  Ensure that the level of access that workflows outside of the repository have to actions and reusable workflows in the repository is set to the appropriate level.
+
   Actions and reusable workflows in your private repositories can be shared with other private repositories owned by the same user or organization.
 
   For more information, see

@@ -6,16 +6,17 @@ severity:
   value: medium
 context:
   provider: github
-description: Verifies that no binary artifacts are commited to the repository
-guidance: |
+description: |
+  Verifies that no binary artifacts are commited to the repository
+
   This rule incorporates the check from Scorecard for binary artifacts.
 
   It determines whether a binary artifact has been committed to the repository.
 
+  For more information, see https://github.com/ossf/scorecard/blob/main/docs/checks.md#binary-artifacts
+guidance: |
   If you find that a binary artifact has been committed to the repository, you should
   consider removing it from the repository and using a package manager to install it instead.
-
-  For more information, see https://github.com/ossf/scorecard/blob/main/docs/checks.md#binary-artifacts
 def:
   in_entity: repository
   rule_schema: {}

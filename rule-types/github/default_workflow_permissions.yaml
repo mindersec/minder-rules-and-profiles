@@ -11,6 +11,8 @@ description: |
   when running workflows in a repository, as well as if GitHub Actions
   can submit approving pull request reviews.
 guidance: |
+  Ensure that the default workflow permissions granted to the GITHUB_TOKEN when running workflows in a repository are set to read or write, and that GitHub Actions can approve pull requests.
+
   Having control over the default workflow permissions for a repository is important and allows for a better security posture.
 
   For more information, see

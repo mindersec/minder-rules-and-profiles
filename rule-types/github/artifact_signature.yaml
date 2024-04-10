@@ -8,6 +8,8 @@ context:
   provider: github
 description: Verifies that a given artifact has a valid signature.
 guidance: |
+  Ensure that the artifact has been signed and the signature has been verified.
+
   Artifact signing allows a user to add a digital fingerprint to an artifact and verify its trust later.
   It allows the artifact user to verify the source and trust the container image.
   Minder leverages sigstore(cosign) to verify an artifact has been signed.

@@ -10,6 +10,8 @@ description: |
   This rule verifies that branches are deleted automatically once a pull
   request merges.
 guidance: |
+  Ensure that automatic branch deletion is enabled for your repositories.
+
   To manage whether branches should be automatically deleted for your repository
   you need to toggle the "Automatically delete head branches" setting in the
   general configuration of your repository.

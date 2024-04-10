@@ -11,7 +11,7 @@ description: |
 
   The threshold will cause the rule to fail if there are any open advisories at or above the threshold.
   It is set to `high` by default, but can be overridden by setting the `severity` parameter.
-guidance: |
+
   Ensuring that a repository has no open security advisories helps maintain a secure codebase.
 
   The rule will fail if:
@@ -24,6 +24,8 @@ guidance: |
   Security advisories that are draft, closed or published are considered to be acknowledged.
 
   For more information, see the [GitHub documentation](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/about-repository-security-advisories).
+guidance: |
+  Ensure that the repository has no open security advisories at or above the configured severity threshold.
 def:
   in_entity: repository
   rule_schema:
