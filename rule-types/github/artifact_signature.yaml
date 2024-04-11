@@ -57,7 +57,7 @@ def:
         description: "Set to true to enforce artifact being signed. This checks only if there's a signature for this image, but it doesn't verify it."
       is_verified:
         type: boolean
-        description: "Set to true to enforce artifact signature being verified. This checks that the signature is valid."
+        description: "Set to true to enforce artifact signature being verified. This checks that the signature is verified against the configured Sigstore instance."
       repository:
         type: string
         description: "Set the repository that is expected to produce the artifact, i.e. https://github.com/stacklok/minder"
