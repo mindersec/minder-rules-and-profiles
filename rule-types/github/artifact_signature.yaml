@@ -27,7 +27,7 @@ def:
     properties:
       name:
         type: string
-        description: "The name of the artifact to check."
+        description: "The name of the artifact to check. Leave blank to match all names."
       tags:
         "type": array
         "items": {
@@ -54,10 +54,10 @@ def:
     properties:
       is_signed:
         type: boolean
-        description: "Set to true to enforce artifact being signed."
+        description: "Set to true to enforce artifact being signed. This checks only if there's a signature for this image, but it doesn't verify it."
       is_verified:
         type: boolean
-        description: "Set to true to enforce artifact signature being verified."
+        description: "Set to true to enforce artifact signature being verified. This checks that the signature is verified against the configured Sigstore instance."
       repository:
         type: string
         description: "Set the repository that is expected to produce the artifact, i.e. https://github.com/stacklok/minder"
@@ -72,7 +72,7 @@ def:
         description: "Set the runner environment that is expected to produce the artifact, i.e. github-hosted"
       allowed_workflow:
         type: boolean
-        description: "Set to true to enforce checking if the workflow that build this artifact is part of the allowed workflows"
+        description: "Set to true to enforce checking if the workflow that build this artifact is part of the allowed workflows. Note: Not implemented yet."
       cert_issuer:
         type: string
         description: "Set the certificate issuer that is expected to produce the artifact provenance, i.e. https://token.actions.githubusercontent.com"
