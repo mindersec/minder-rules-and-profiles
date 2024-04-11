@@ -1,0 +1,54 @@
+---
+# This workflow tests that rule types and profiles are installable
+name: Install
+
+on:
+  pull_request:
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Set up Go
+        uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5
+        with:
+          check-latest: true
+      
+      - name: Run minder server in the background
+        run:
+          go run github.com/stacklok/minder/cmd/dev@latest testserver &
+
+      - name: install grpcurl
+        run: |
+          go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+
+      - name: Persist local configuration
+        run:  |
+          cat <<EOF > /tmp/minder.yaml
+          grpc_server:
+            host: localhost
+            port: 8090
+            insecure: true
+
+          identity:
+            cli:
+              issuer_url: http://localhost:8081
+              client_id: minder-cli
+          EOF
+
+      - name: Create user using grpcul
+        timeout-minutes: 5
+        run: |
+          # Don't fail the job if the command fails
+          set +e
+
+          while true; do
+            grpcurl -plaintext -H "Authorization: Bearer foo" localhost:8090 minder.v1.UserService/CreateUser
+            if [ $? -eq 0 ]; then
+              break
+            fi
+            sleep 1
+          done
