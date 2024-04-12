@@ -49,7 +49,7 @@ repository:
   - type: dependabot_configured
     name: "Dependabot configured for Python projects"
     def:
-      package_ecosystem: pypi
+      package_ecosystem: pip
       schedule_interval: ""
       apply_if_file: requirements.txt
   - type: dockerfile_no_latest_tag
