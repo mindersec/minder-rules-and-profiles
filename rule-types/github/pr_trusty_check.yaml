@@ -30,7 +30,7 @@ def:
         default: review
       ecosystem_config:
         type: array
-        description: "The configuration for the ecosystems to check."
+        description: "The configuration for the ecosystems to check. Leave empty to use the default configuration."
         items:
           type: object
           properties:
