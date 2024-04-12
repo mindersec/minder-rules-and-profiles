@@ -35,7 +35,7 @@ def:
           type: string
         description: |
           Exclude actions from being checked and remediated. Useful for actions that don't support SHA pinning such
-          as slsa-github-generator. Use the full owner/action@tag string here, e.g. actions/checkout@v3
+          as slsa-github-generator. Use the full owner/action format here, e.g. actions/checkout
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: git

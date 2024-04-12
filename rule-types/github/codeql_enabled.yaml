@@ -38,7 +38,8 @@ def:
       schedule_interval:
         type: string
         description: |
-          Only applicable for remediation. Sets the schedule interval for the workflow.
+          Sets the schedule interval in cron format for the workflow. Only applicable for remediation.
+        default: '30 * * * *'
     required:
       - languages
       - schedule_interval

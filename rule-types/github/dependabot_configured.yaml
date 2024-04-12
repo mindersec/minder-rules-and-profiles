@@ -30,7 +30,7 @@ def:
         type: string
         description: |
           The package ecosystem that the rule applies to.
-          For example, npm, docker, github-actions, etc.
+          For example pip, gomod, npm, docker, github-actions, etc.
       schedule_interval:
         type: string
         description: |
