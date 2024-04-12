@@ -10,7 +10,7 @@ alert: "off"
 remediate: "off"
 repository:
   - type: actions_check_pinned_tags
-    name: "Actions workflows reference pinned tags"
+    name: "GitHub Actions workflows reference pinned tags"
     def:
       exclude:
         # generator_generic_slsa3 does not support pinning and will fail to retrieve the
@@ -18,7 +18,7 @@ repository:
         # See https://github.com/slsa-framework/slsa-github-generator/issues/2993
         - slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.9.0
   - type: branch_protection_allow_force_pushes
-    name: "Branch protection disallows force pushes"
+    name: "Branch Protection disallows force pushes"
     def: 
       allow_force_pushes: false
     params:
@@ -35,25 +35,25 @@ repository:
       default_workflow_permissions: read
       can_approve_pull_request_reviews: false
   - type: dependabot_configured
-    name: "Dependabot configured for Go projects"
+    name: "Dependabot is configured for Go projects"
     def:
       package_ecosystem: gomod
       schedule_interval: ""
       apply_if_file: go.mod
   - type: dependabot_configured
-    name: "Dependabot configured for JavaScript projects"
+    name: "Dependabot is configured for JavaScript projects"
     def:
       package_ecosystem: npm
       schedule_interval: ""
       apply_if_file: package.json
   - type: dependabot_configured
-    name: "Dependabot configured for Python projects"
+    name: "Dependabot is configured for Python projects"
     def:
       package_ecosystem: pip
       schedule_interval: ""
       apply_if_file: requirements.txt
   - type: dockerfile_no_latest_tag
-    name: "Dockerfile references a specific tags"
+    name: "Dockerfiles reference specific tags"
     def: {}
   - type: secret_push_protection
     name: "Secret push protection is enabled"
@@ -61,7 +61,7 @@ repository:
       enabled: true
       skip_private_repos: true
   - type: secret_scanning
-    name: "Secret scanning is enabled"
+    name: "Secret Scanning is enabled"
     def:
       enabled: true
       skip_private_repos: true
