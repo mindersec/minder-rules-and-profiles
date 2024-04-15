@@ -87,6 +87,9 @@ def:
           # Split the uses directive at '@'
           parts := split(s.uses, "@")
 
+          # Skip if the action name is part of excludes
+          not is_excluded(parts[0], input.profile.exclude)
+
           # Check if the string after '@' is 40 characters long (SHA-1 hash length)
           count(parts[1]) != 40
 
