@@ -41,6 +41,13 @@ def:
               type: number
               description: "The minimum Trusty score for a dependency to be considered safe."
               default: 5
+            evaluate_score:
+              type: string
+              description: "Which score to use for evaluation. When empty, the overall score is used."
+              enum:
+                  - score
+                  - provenance
+              default: score
   ingest:
     type: diff
     diff:
