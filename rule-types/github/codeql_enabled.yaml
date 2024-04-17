@@ -34,7 +34,9 @@ def:
           type: string
         description: |
           Only applicable for remediation. Sets the CodeQL languages to use in the workflow.
+          Leave empty (`[]`) to automatically detect the languages in the repository.
           CodeQL supports 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift'
+        default: []
       schedule_interval:
         type: string
         description: |
@@ -116,12 +118,14 @@ def:
 
                 strategy:
                   fail-fast: false
+                  {{ if .Profile.languages | len }}
                   matrix:
                     language: [{{range $index, $pattern := .Profile.languages}}{{if $index}},{{end}}"{{ $pattern }}"{{end}}]
                     # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
                     # Use only 'java-kotlin' to analyze code written in Java, Kotlin or both
                     # Use only 'javascript-typescript' to analyze code written in JavaScript, TypeScript or both
                     # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+                  {{ end }}
 
                 steps:
                   - name: Checkout repository
@@ -130,6 +134,7 @@ def:
                   # Initializes the CodeQL tools for scanning.
                   - name: Initialize CodeQL
                     uses: github/codeql-action/init@v2
+                    {{ if .Profile.languages | len }}
                     with:
                       languages: ${{"{{"}} matrix.language {{"}}"}}
                         # If you wish to specify custom queries, you can do so here or in a config file.
@@ -138,6 +143,7 @@ def:
                         
                         # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
                         # queries: security-extended,security-and-quality
+                    {{ end }}
 
                   # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
                   # If this step fails, then you should remove it and run the build manually (see below)
@@ -156,8 +162,10 @@ def:
 
                   - name: Perform CodeQL Analysis
                     uses: github/codeql-action/analyze@v3
+                    {{ if .Profile.languages | len }}
                     with:
                       category: "/language:${{"{{"}} matrix.language {{"}}"}}"
+                    {{ end }}
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
