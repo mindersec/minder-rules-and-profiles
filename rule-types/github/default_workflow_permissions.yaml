@@ -54,6 +54,13 @@ def:
           def: ".can_approve_pull_request_reviews"
         profile:
           def: ".can_approve_pull_request_reviews"
+  remediate:
+    type: rest
+    rest:
+      method: PUT
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}/actions/permissions/workflow"
+      body: |
+        {"default_workflow_permissions": "{{ .Profile.default_workflow_permissions }}", "can_approve_pull_request_reviews": {{ .Profile.can_approve_pull_request_reviews }} }
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
