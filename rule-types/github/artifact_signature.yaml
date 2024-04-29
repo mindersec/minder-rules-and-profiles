@@ -85,21 +85,25 @@ def:
   eval:
     type: rego
     rego:
-      type: deny-by-default
+      type: constraints
       def: |
         package minder
 
         import future.keywords.every
         import future.keywords.if
 
-        default allow := false
+        violations[{"msg": msg}] {
+          # iterate over the artifacts. We want all artifacts to be checked individually
+          artifactVersion := input.ingested[_]
 
-        allow if {
-          every artifactVersion in input.ingested {
-            every key, value in input.profile {
-              artifactVersion.Verification[key] == value
-            }
-          }
+          # for each artifact, iterate over all the profile keys
+          keys := object.keys(input.profile)
+          key := keys[_]
+          value := input.profile[key]
+
+          artifactVersion.Verification[key] != value
+
+          msg := sprintf("Verification failed for on key '%s': expected '%v', got '%v'", [key, value, artifactVersion.Verification[key]])
         }
   # Defines the configuration for alerting on the rule
   alert:
