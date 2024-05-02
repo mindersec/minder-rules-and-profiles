@@ -1,16 +1,18 @@
 ---
 version: v1
 type: rule-type
-name: attestation_slsa_github
+name: artifact_attestation_slsa
 context:
   provider: github
 description: |
-  Verifies a provenance attestation with a GitHub build definition matches the
-  expected values. 
+  Verifies a SLSA provenance attestation
 guidance: |
-  Provenance attestation capture the build environment and parameters where a
+  Provenance attestations capture the build environment and parameters where a
   software artifact was created. By controlling the build environment, developers
-  can make sure no malicious artifacts where injected into the build process.
+  can check the integity of the build environment and that no malicious code
+  was injected into the build process.
+
+  For more information visit https://slsa.dev
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts
@@ -86,6 +88,9 @@ def:
         default allow := false
         default skip := false
         
+        workflow_ref := input.profile.workflow_ref
+        default workflow_ref := "refs/heads/main"
+        
         artifacts_github_provenance = {artifact |
           some artifact in input.ingested
           artifact.Verification.attestation.predicate_type == "https://slsa.dev/provenance/v1"
@@ -94,7 +99,7 @@ def:
 
         allow if {
           count(artifacts_github_provenance) > 0
-
+        
           every artifact in artifacts_github_provenance {
             # we use not == false here because that handles the case where the field is not present
             # the fields are also not exposed as parameters, we might want to change them while we reword the
@@ -103,7 +108,7 @@ def:
             not artifact.Verification.is_signed == false
 
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.path == input.profile.signer_identity
-            artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.ref == input.profile.workflow_ref
+            artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.ref == workflow_ref
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == input.profile.workflow_repository
             artifact.Verification.attestation.predicate.runDetails.builder.id == input.profile.runner_environment
 
