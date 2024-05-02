@@ -1,7 +1,7 @@
 ---
 version: v1
 type: rule-type
-name: artifact_signature
+name: artifact_signature_slsa
 context:
   provider: github
 description: |
@@ -50,13 +50,15 @@ def:
       event:
         type: array
         description: "Events allowed to trigger a build"
-        enum:
-          - worflow_dispatch
-          - push
-        default: ["worflow_dispatch", "push"]
+        items:
+          type: string
+          enum:
+            - workflow_dispatch
+            - push
+        default: ["workflow_dispatch", "push"]
       workflow_repository:
         type: string
-        description: "Tepository expected to produce the artifact, i.e. https://github.com/stacklok/minder"
+        description: "Repository expected to produce the artifact, i.e. https://github.com/stacklok/minder"
       workflow_ref:
         type: string
         description: "The git reference of the executed workflow"
@@ -91,43 +93,30 @@ def:
         import rego.v1
 
         default allow := false
+        default skip := false
         
-        allow if {
+        artifacts_github_provenance = {artifact |
           some artifact in input.ingested
           artifact.Verification.attestation.predicate_type == "https://slsa.dev/provenance/v1"
-
-          # These parameters only apply when the slsa attestation has a 
-          # buildDefinition.buildType of https://slsa-framework.github.io/github-actions-buildtypes/workflow/v1
-          
-          # Check the external parameters
-          artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.path == ".github/workflows/build-image-signed-ghat.yml"
-          artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.ref == "refs/heads/main"
-          artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == "https://github.com/jakubtestorg/good-repo-go"
-          
-          # Internal parameters 
-          # Event is anm arrau
-          artifact.Verification.attestation.predicate.buildDefinition.internalParameters.github.event_name == "workflow_dispatch"
+          artifact.Verification.attestation.predicate.buildDefinition.buildType == "https://slsa-framework.github.io/github-actions-buildtypes/workflow/v1"
         }
 
+        allow if {
+          count(artifacts_github_provenance) > 0
 
-        #every artifactVersion in input.ingested {
-        #  some x in artifactVersion.Verification.attestation.predicateType
-        #  x == "https://slsa.dev/provenance/v1"
-          ##artifactVersion.Verification.attestation.predicateType == "https://slsa.dev/provenance/v1" {
-          #  artifactVersion.Verification["is_signed"]
-          #}
-        #}
+          every artifact in artifacts_github_provenance {
+            artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.path == input.profile.signer_identity
+            artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.ref == input.profile.workflow_ref
+            artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == input.profile.workflow_repository
 
-        #allow if {
-        #  every artifactVersion in input.ingested {
-        #    if artifactVersion.Verification.attestation.predicateType == "https://slsa.dev/provenance/v1" {
-        #      artifactVersion.Verification["is_signed"]
-        #    }
-        ##    #every key, value in input.profile {
-        # #   #  artifactVersion.Verification[key] == value
-        #    #}
-        #  }
-        #}
+            some event in input.profile.event
+            artifact.Verification.attestation.predicate.buildDefinition.internalParameters.github.event_name == event
+          }
+        }
+
+        skip if {
+          count(artifacts_github_provenance) == 0
+        }
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
