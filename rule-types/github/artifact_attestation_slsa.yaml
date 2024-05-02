@@ -1,0 +1,127 @@
+---
+version: v1
+type: rule-type
+name: artifact_attestation_slsa
+context:
+  provider: github
+description: |
+  Verifies a SLSA provenance attestation
+guidance: |
+  Provenance attestations capture the build environment and parameters where a
+  software artifact was created. By controlling the build environment, developers
+  can check the integity of the build environment and that no malicious code
+  was injected into the build process.
+
+  For more information visit https://slsa.dev
+def:
+  # Defines the section of the pipeline the rule will appear in.
+  # This will affect the template used to render multiple parts
+  # of the rule.
+  in_entity: artifact
+  # Defines the schema for parameters that will be passed to the rule
+  param_schema:
+    type: object
+    properties:
+      name:
+        type: string
+        description: "The name of the artifact to check."
+      tags:
+        "type": array
+        "items": {
+          "type": "string"
+        }
+        description: "The tags of the artifact to check. Must be a subset of the tags the artifact has"
+      tag_regex:
+        type: string
+        description: "The regex to match the tags of the artifact to check. Conflicts with tags."
+      type:
+        "type": string
+        "default": "container"
+        "enum": ["container"]
+        description: "The type of artifact to check. Currently only container is supported."
+      sigstore:
+        type: string
+        description: "URL of the sigstore TUF root to use for verification."
+        default: "tuf-repo-cdn.sigstore.dev"
+    required:
+      - tags
+  # Defines the schema for writing a rule with this rule being checked
+  rule_schema:
+    type: "object"
+    properties:
+      event:
+        type: array
+        description: "Events allowed to trigger a build"
+        items:
+          type: string
+          enum:
+            - workflow_dispatch
+            - push
+        default: ["workflow_dispatch", "push"]
+      workflow_repository:
+        type: string
+        description: "Repository expected to produce the artifact, i.e. https://github.com/stacklok/minder"
+      workflow_ref:
+        type: string
+        description: "The git reference of the executed workflow"
+      signer_identity:
+        type: string
+        description: "Set the signer identity that is expected to produce the artifact, e.g. .github/workflows/build-image-signed-ghat-malicious.yml or an email address"
+      runner_environment:
+        type: string
+        description: "Set the runner environment that is expected to produce the artifact, e.g. https://github.com/actions/runner/github-hosted"
+  # Defines the configuration for ingesting data relevant for the rule
+  ingest:
+    type: artifact
+    # Currently no configuration
+    artifact: {}
+  # Defines the configuration for evaluating data ingested against the given profile
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import rego.v1
+
+        default allow := false
+        default skip := false
+        
+        workflow_ref := input.profile.workflow_ref
+        default workflow_ref := "refs/heads/main"
+        
+        artifacts_github_provenance = {artifact |
+          some artifact in input.ingested
+          artifact.Verification.attestation.predicate_type == "https://slsa.dev/provenance/v1"
+          artifact.Verification.attestation.predicate.buildDefinition.buildType == "https://slsa-framework.github.io/github-actions-buildtypes/workflow/v1"
+        }
+
+        allow if {
+          count(artifacts_github_provenance) > 0
+        
+          every artifact in artifacts_github_provenance {
+            # we use not == false here because that handles the case where the field is not present
+            # the fields are also not exposed as parameters, we might want to change them while we reword the
+            # the artifact_signature rule so let's not depend on them in a new rule
+            not artifact.Verification.is_verified == false
+            not artifact.Verification.is_signed == false
+
+            artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.path == input.profile.signer_identity
+            artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.ref == workflow_ref
+            artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == input.profile.workflow_repository
+            artifact.Verification.attestation.predicate.runDetails.builder.id == input.profile.runner_environment
+
+            some event in input.profile.event
+            artifact.Verification.attestation.predicate.buildDefinition.internalParameters.github.event_name == event
+          }
+        }
+
+        skip if {
+          count(artifacts_github_provenance) == 0
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory:
+      severity: "medium"
