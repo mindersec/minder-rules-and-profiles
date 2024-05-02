@@ -1,7 +1,7 @@
 ---
 version: v1
 type: rule-type
-name: artifact_signature_slsa
+name: attestation_slsa_github
 context:
   provider: github
 description: |
@@ -62,21 +62,12 @@ def:
       workflow_ref:
         type: string
         description: "The git reference of the executed workflow"
-      is_verified:
-        type: boolean
-        description: "Set to true to enforce artifact signature being verified."
       signer_identity:
         type: string
-        description: "Set the signer identity that is expected to produce the artifact, i.e. docker-image-build-push.yml or an email address"
+        description: "Set the signer identity that is expected to produce the artifact, e.g. .github/workflows/build-image-signed-ghat-malicious.yml or an email address"
       runner_environment:
         type: string
-        description: "Set the runner environment that is expected to produce the artifact, i.e. github-hosted"
-      allowed_workflow:
-        type: boolean
-        description: "Set to true to enforce checking if the workflow that build this artifact is part of the allowed workflows"
-      cert_issuer:
-        type: string
-        description: "Set the certificate issuer that is expected to produce the artifact provenance, i.e. https://token.actions.githubusercontent.com"
+        description: "Set the runner environment that is expected to produce the artifact, e.g. https://github.com/actions/runner/github-hosted"
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: artifact
@@ -105,9 +96,16 @@ def:
           count(artifacts_github_provenance) > 0
 
           every artifact in artifacts_github_provenance {
+            # we use not == false here because that handles the case where the field is not present
+            # the fields are also not exposed as parameters, we might want to change them while we reword the
+            # the artifact_signature rule so let's not depend on them in a new rule
+            not artifact.Verification.is_verified == false
+            not artifact.Verification.is_signed == false
+
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.path == input.profile.signer_identity
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.ref == input.profile.workflow_ref
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == input.profile.workflow_repository
+            artifact.Verification.attestation.predicate.runDetails.builder.id == input.profile.runner_environment
 
             some event in input.profile.event
             artifact.Verification.attestation.predicate.buildDefinition.internalParameters.github.event_name == event
