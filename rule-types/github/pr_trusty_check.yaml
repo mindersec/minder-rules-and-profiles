@@ -36,18 +36,20 @@ def:
           properties:
             name:
               type: string
-              description: "The name of the ecosystem to check. Currently `npm`, `go` and `pypi` are supported."
+              description: "The name of the ecosystem to check. Currently only `go`, `npm` and `pypi` are supported."
             score:
               type: number
               description: "The minimum Trusty score for a dependency to be considered safe."
               default: 5
-            evaluate_score:
-              type: string
-              description: "Which score to use for evaluation. When empty, the overall score is used."
-              enum:
-                  - score
-                  - provenance
-              default: score
+            provenance:
+              type: number
+              description: "Minimum provenance score to consider. Values are 0-10 where 10 represents the highest confidence in the computed origin of the package."
+              default: 0
+            activity: 
+              type: number
+              description: "Minimum level of activity to consider as healthy. Values are 0-10 where 10 represents the most active."
+              default: 0
+            
   ingest:
     type: diff
     diff:
