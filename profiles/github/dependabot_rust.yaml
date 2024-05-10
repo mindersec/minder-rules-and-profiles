@@ -1,0 +1,16 @@
+---
+# Simple profile showing off the dependabot_configured rule
+version: v1
+type: profile
+name: dependabot-rust-github-profile
+display_name: Dependabot for Rust projects
+context:
+  provider: github
+alert: "on"
+remediate: "off"
+repository:
+  - type: dependabot_configured
+    def:
+      package_ecosystem: cargo
+      schedule_interval: daily
+      apply_if_file: Cargo.toml
