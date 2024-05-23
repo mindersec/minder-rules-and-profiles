@@ -32,12 +32,17 @@ pull_request:
             url: https://pypi.org/pypi
   - type: pr_trusty_check
     def:
-      action: summary
+      action: review
       ecosystem_config:
         - name: npm
           score: 5
+          allow_malicious: false
         - name: pypi
           score: 5
+          allow_malicious: false
+        - name: go
+          score: 5
+          allow_malicious: false
 repository:
   - type: dependabot_configured
     name: dependabot_configured_go
