@@ -54,6 +54,10 @@ def:
               type: number
               description: "Minimum level of activity to consider as healthy. Values are 0-10 where 10 represents the most active."
               default: 0
+            allow_malicious:
+              type: boolean
+              description: "Don't block PRs when malicious packages are found (not recommended)"
+              default: false
             
   ingest:
     type: diff
