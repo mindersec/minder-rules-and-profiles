@@ -25,6 +25,11 @@ def:
         enum:
           # the evaluator engine will merely pass on an error, marking the profile as failed if packages with low scores are found
           - profile_only
+          # minder will post a review to any offending PR when malicious deps are
+          # found. If blocking is disabled with block[malicious]=true or with
+          # block[deprecated]=true, minder will still post its review but merely
+          # commenting instead of reuqesting changes. 
+          - review
           # the evaluator engine will add a single summary comment with a table listing the packages with low scores found
           - summary
         default: review
@@ -49,6 +54,10 @@ def:
               type: number
               description: "Minimum level of activity to consider as healthy. Values are 0-10 where 10 represents the most active."
               default: 0
+            allow_malicious:
+              type: boolean
+              description: "Don't block PRs when malicious packages are found (not recommended)"
+              default: false
             
   ingest:
     type: diff
