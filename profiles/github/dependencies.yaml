@@ -6,7 +6,7 @@ name: dependencies-github-profile
 display_name: Dependencies Security
 context:
   provider: github
-alert: "on"
+alert: "off"
 remediate: "off"
 pull_request:
   - type: pr_vulnerability_check

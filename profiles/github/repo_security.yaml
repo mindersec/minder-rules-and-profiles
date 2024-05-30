@@ -6,7 +6,7 @@ name: repository-github-profile
 display_name: Repository Security
 context:
   provider: github
-alert: "on"
+alert: "off"
 remediate: "off"
 repository:
   - type: secret_scanning

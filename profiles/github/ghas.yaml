@@ -6,7 +6,7 @@ name: ghas-profile
 display_name: GitHub Advanced Security settings
 context:
   provider: github
-alert: "on"
+alert: "off"
 remediate: "off"
 repository:
   - type: secret_scanning

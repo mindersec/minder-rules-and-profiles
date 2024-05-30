@@ -6,7 +6,7 @@ name: workflow-security-github-profile
 display_name: GitHub Actions workflow security
 context:
   provider: github
-alert: "on"
+alert: "off"
 remediate: "off"
 repository:
   - type: actions_check_pinned_tags

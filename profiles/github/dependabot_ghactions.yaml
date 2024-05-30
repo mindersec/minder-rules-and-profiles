@@ -6,7 +6,7 @@ name: dependabot-github-actions-github-profile
 display_name: Dependabot for GitHub Actions
 context:
   provider: github
-alert: "on"
+alert: "off"
 remediate: "off"
 repository:
   - type: dependabot_configured
