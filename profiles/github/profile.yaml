@@ -6,7 +6,7 @@ name: acme-github-profile
 display_name: Sample Profile
 context:
   provider: github
-alert: "on"
+alert: "off"
 remediate: "off"
 repository:
   - type: automatic_branch_deletion

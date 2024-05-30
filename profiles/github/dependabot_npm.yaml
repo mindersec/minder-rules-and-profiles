@@ -6,7 +6,7 @@ name: dependabot-npm-docs-github-profile
 display_name: Dependabot for JavaScript projects
 context:
   provider: github
-alert: "on"
+alert: "off"
 remediate: "on"
 repository:
   - type: dependabot_configured

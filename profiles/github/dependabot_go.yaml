@@ -6,7 +6,7 @@ name: dependabot-go-github-profile
 display_name: Dependabot for Go projects
 context:
   provider: github
-alert: "on"
+alert: "off"
 remediate: "off"
 repository:
   - type: dependabot_configured

@@ -6,7 +6,7 @@ name: trivy-github-profile
 display_name: Trivy action is enabled
 context:
   provider: github
-alert: "on"
+alert: "off"
 remediate: "off"
 repository:
   - type: trivy_action_enabled
