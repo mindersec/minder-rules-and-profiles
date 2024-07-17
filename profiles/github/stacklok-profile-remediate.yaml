@@ -100,7 +100,7 @@ artifact:
       repository: https://github.com/stacklok/minder
       branch: main
       runner_environment: github-hosted
-      signer_identity: chart-publish.yml
+      signer_identity: /.github/workflows/chart-publish.yml
       cert_issuer: https://token.actions.githubusercontent.com
 pull_request:
   - type: pr_vulnerability_check
