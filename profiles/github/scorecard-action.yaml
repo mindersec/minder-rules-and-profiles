@@ -1,0 +1,18 @@
+---
+# Provisioning configuration for the OpenSSF Scorecard Action
+version: v1
+type: profile
+name: scorecard-action-profile
+display_name: OpenSSF Scorecard Action
+context:
+  provider: github
+alert: "off"
+remediate: "on"
+repository:
+  - type: scorecard_enabled
+    def:
+      schedule_interval: "30 4-6 * * *" # Run every day between 4-6am
+      publish_results: true
+      retention-days: 5
+      sarif_file: "results.sarif"
+      results_format: "sarif"
