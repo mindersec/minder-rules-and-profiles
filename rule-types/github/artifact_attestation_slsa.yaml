@@ -88,10 +88,10 @@ def:
         default allow := false
         default skip := false
         
-        workflow_ref := input.profile.workflow_ref
         default workflow_ref := "refs/heads/main"
+        workflow_ref := input.profile.workflow_ref
         
-        artifacts_github_provenance = {artifact |
+        artifacts_github_provenance := {artifact |
           some artifact in input.ingested
           artifact.Verification.attestation.predicate_type == "https://slsa.dev/provenance/v1"
           artifact.Verification.attestation.predicate.buildDefinition.buildType == "https://actions.github.io/buildtypes/workflow/v1"
