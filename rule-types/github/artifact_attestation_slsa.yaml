@@ -110,7 +110,7 @@ def:
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.path == input.profile.signer_identity
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.ref == workflow_ref
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == input.profile.workflow_repository
-            artifact.Verification.attestation.predicate.runDetails.builder.id == input.profile.runner_environment
+            artifact.Verification.attestation.predicate.buildDefinition.internalParameters.github.runner_environment == input.profile.runner_environment
 
             some event in input.profile.event
             artifact.Verification.attestation.predicate.buildDefinition.internalParameters.github.event_name == event
