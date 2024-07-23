@@ -109,12 +109,20 @@ def:
 
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.path == input.profile.signer_identity
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.ref == workflow_ref
-            artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == input.profile.workflow_repository
+            repo_ok(artifact, input.profile)
             artifact.Verification.attestation.predicate.buildDefinition.internalParameters.github.runner_environment == input.profile.runner_environment
 
             some event in input.profile.event
             artifact.Verification.attestation.predicate.buildDefinition.internalParameters.github.event_name == event
           }
+        }
+
+        repo_ok(_, profile) if {
+          not profile.workflow_repository
+        }
+
+        repo_ok(artifact, profile) if {
+          artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == profile.workflow_repository
         }
 
         skip if {
