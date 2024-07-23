@@ -1,0 +1,18 @@
+---
+# sample policy for validating SLSA provenance attestations
+version: v1
+type: profile
+name: slsa-gh-attestation-provenance
+context:
+  provider: github
+artifact:
+  - type: artifact_attestation_slsa
+    params:
+      tags: ["latest"]
+      name: your-artifact-name
+    def:
+      workflow_repository: https://github.com/yourorg/yourrepo
+      workflow_ref: refs/heads/main
+      signer_identity: .github/workflows/your-workflow.yml
+      event: ["workflow_dispatch"]
+      runner_environment: github-hosted
