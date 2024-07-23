@@ -94,7 +94,7 @@ def:
         artifacts_github_provenance = {artifact |
           some artifact in input.ingested
           artifact.Verification.attestation.predicate_type == "https://slsa.dev/provenance/v1"
-          artifact.Verification.attestation.predicate.buildDefinition.buildType == "https://slsa-framework.github.io/github-actions-buildtypes/workflow/v1"
+          artifact.Verification.attestation.predicate.buildDefinition.buildType == "https://actions.github.io/buildtypes/workflow/v1"
         }
 
         allow if {
