@@ -39,7 +39,19 @@ repository:
       filename: SECURITY-INSIGHTS.yml
 
   # (TODO) Dependency Policy published
-  # (TODO) Pinned dependencies
+
+  # Pinned dependencies
+  # This rule tells Minder to run Frizbee (https://github.com/stacklok/frizbee/) 
+  # in the repository to check and remediate GitHub actions referenced with tags
+  - type: actions_check_pinned_tags
+    name: "GitHub Actions workflows reference pinned tags"
+    def:
+      exclude:
+        # generator_generic_slsa3 does not support pinning and will fail to retrieve the
+        # generator binary. We need to exclude it from pinning because of this.
+        # See https://github.com/slsa-framework/slsa-github-generator/issues/2993
+        - slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml
+
   # (TODO) Hardened Workflows
 
   # Static code analysis: CodeQL
