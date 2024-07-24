@@ -41,7 +41,12 @@ repository:
   # (TODO) Dependency Policy published
   # (TODO) Pinned dependencies
   # (TODO) Hardened Workflows
-  # (TODO) Static code analysis
+
+  # Static code analysis: CodeQL
+  - type: codeql_enabled
+    def:
+      languages: []
+      schedule_interval: '30 4-6 * * *'
 
   # Force two-person review on pull requests before merging
   - type: branch_protection_require_pull_request_approving_review_count
