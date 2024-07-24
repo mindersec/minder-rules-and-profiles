@@ -12,9 +12,16 @@ remediate: "off"
 repository:
   # (TODO) Memory Safety
   # (TODO) 2FA
-  # (TODO) Secret scanning
+  
+  # Secret scanning
+  - type: secret_scanning
+    def:
+      enabled: true
+  - type: secret_push_protection
+    def:
+      enabled: true
+  
   # Branch protection.
-
   # This enables general branch protection on the main branch, for
   # other branch rules check the branch-protection.yaml profile 
   - type: branch_protection_enabled
