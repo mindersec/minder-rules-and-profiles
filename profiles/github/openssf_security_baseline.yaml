@@ -1,0 +1,32 @@
+---
+# Profile to help comply with the Open Source Security Foundation's Security
+# Baseline, a framework of minimal security recommended to projects.
+version: v1
+type: profile
+name: openssf_security_baseline
+display_name: OpenSSF Security Baseline
+context:
+  provider: github
+alert: "on"
+remediate: "off"
+repository:
+  # (TODO) Memory Safety
+  # (TODO) 2FA
+  # (TODO) Secret scanning
+  # (TODO) Push protection
+  # (TODO) Credentials with minimal permissions
+  # (TODO) Security Insights
+  # (TODO) Dependency Policy published
+  # (TODO) Pinned dependencies
+  # (TODO) Hardened Workflows
+  # (TODO) Static code analysis
+  # (TODO) 2 person review
+  # (TODO) Security policy published
+  # (TODO) No vulnerabilities
+  # (TODO) 60 day SLA on HIGH/MED vulnerabilities
+  # (TODO) No checked-in binaries
+  # (TODO) SBOM generated with releases
+  # (TODO) SBOM conforms to NTIA minimal elements
+  # (TODO) Artifacts are signed
+  # (TODO) SLSA build attestation
+  # (TODO) Project VEX feed
