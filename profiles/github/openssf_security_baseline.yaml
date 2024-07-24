@@ -13,8 +13,17 @@ repository:
   # (TODO) Memory Safety
   # (TODO) 2FA
   # (TODO) Secret scanning
-  # (TODO) Push protection
+  # Branch protection.
+  
+  # This enables general branch protection on the main branch, for
+  # other branch rules check the branch-protection.yaml profile 
+  - type: branch_protection_enabled
+    params:
+      branch: ""
+    def: {}
+
   # (TODO) Credentials with minimal permissions
+
   # Check for a Security Insights file in the repo
   - type: security_insights
     name: security_insights
