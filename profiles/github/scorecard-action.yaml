@@ -13,6 +13,6 @@ repository:
     def:
       schedule_interval: "30 4-6 * * *" # Run every day between 4-6am
       publish_results: true
-      retention-days: 5
+      retention_days: 5
       sarif_file: "results.sarif"
       results_format: "sarif"

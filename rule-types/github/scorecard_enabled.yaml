@@ -40,7 +40,7 @@ def:
         description: |
           Publish the results of the analysis.
         default: true
-      retention-days:
+      retention_days:
         type: integer
         description: |
           Number of days to retain the SARIF file.
@@ -133,9 +133,9 @@ def:
                     with:
                       name: SARIF file
                       path: '{{ .Profile.sarif_file }}'
-                      retention-days: '{{ .Profile.retention-days }}'
+                      retention-days: '{{ .Profile.retention_days }}'
                   # Upload the results to GitHub's code scanning dashboard (optional).
-                    # Commenting out will disable upload of results to your repo's Code Scanning dashboard
+                  # Commenting out will disable upload of results to your repo's Code Scanning dashboard
                   - name: "Upload to code-scanning"
                     uses: github/codeql-action/upload-sarif@v3.25.11
                     with:
