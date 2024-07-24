@@ -1,0 +1,59 @@
+---
+version: v1
+type: rule-type
+name: security_insights
+severity:
+  value: low
+context:
+  provider: github
+description: |
+  Verifies that a repository contains a `SECURITY_INSIGHTS.yaml` file. 
+
+  [Security Insights](https://github.com/ossf/security-insights-spec/) is a 
+  specification that lets projects publish data and pointers to resources about
+  the repository, maintainers, releases and other security aspects in a 
+  machine-readable format to make it easy for automated tools to locate them.
+
+  This initial rule type checks for the existence of the file only. 
+
+guidance: |
+  Check that your repository contains a Security Insights file to ensure your security data
+  can be located by automated processes. For more information on how to create one, refer to
+  the SI specification at https://github.com/ossf/security-insights-spec/
+def:
+  # Defines the section of the pipeline the rule will appear in.
+  # This will affect the template used to render multiple parts
+  # of the rule.
+  in_entity: repository
+  # Defines the schema for writing a rule with this rule being checked
+  # In this case there are no settings that need to be configured
+  rule_schema:
+    type: object
+    properties:
+      filename:
+        type: string
+        description: |
+          The path to the Security Insights file
+        default: SECURITY-INSIGHTS.yml
+    required:
+      - filename
+  # Defines the configuration for ingesting data relevant for the rule
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        import rego.v1
+
+        default allow := false
+        allow if {
+          file.exists(input.profile.filename)
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}

@@ -15,7 +15,13 @@ repository:
   # (TODO) Secret scanning
   # (TODO) Push protection
   # (TODO) Credentials with minimal permissions
-  # (TODO) Security Insights
+  # Check for a Security Insights file in the repo
+  - type: security_insights
+    name: security_insights
+    displayName: "Check for a Security Insights file in the repository"
+    def:
+      filename: SECURITY-INSIGHTS.yml
+
   # (TODO) Dependency Policy published
   # (TODO) Pinned dependencies
   # (TODO) Hardened Workflows
