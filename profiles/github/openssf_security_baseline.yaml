@@ -14,7 +14,7 @@ repository:
   # (TODO) 2FA
   # (TODO) Secret scanning
   # Branch protection.
-  
+
   # This enables general branch protection on the main branch, for
   # other branch rules check the branch-protection.yaml profile 
   - type: branch_protection_enabled
@@ -35,7 +35,14 @@ repository:
   # (TODO) Pinned dependencies
   # (TODO) Hardened Workflows
   # (TODO) Static code analysis
-  # (TODO) 2 person review
+
+  # Force two-person review on pull requests before merging
+  - type: branch_protection_require_pull_request_approving_review_count
+    params:
+      branch: ""
+    def:
+      required_approving_review_count: 2
+
   # (TODO) Security policy published
   # (TODO) No vulnerabilities
   # (TODO) 60 day SLA on HIGH/MED vulnerabilities
