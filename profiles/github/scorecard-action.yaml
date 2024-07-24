@@ -15,4 +15,3 @@ repository:
       publish_results: true
       retention_days: 5
       sarif_file: "results.sarif"
-      results_format: "sarif"
