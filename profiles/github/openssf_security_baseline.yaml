@@ -30,6 +30,7 @@ repository:
     def: {}
 
   # (TODO) Credentials with minimal permissions
+  # TBD: https://github.com/stacklok/minder-rules-and-profiles/pull/126
 
   # Check for a Security Insights file in the repo
   - type: security_insights
@@ -38,7 +39,13 @@ repository:
     def:
       filename: SECURITY-INSIGHTS.yml
 
-  # (TODO) Dependency Policy published
+  # Dependency Policy published
+  # Check for an dependency policy entry in the security insights file.
+  - type: security_insights_dep_policy
+    name: security_insights_dep_policy
+    displayName: "Check for a dependency polcicy in the Security Insights file."
+    def:
+      filename: SECURITY-INSIGHTS.yml
 
   # Pinned dependencies
   # This rule tells Minder to run Frizbee (https://github.com/stacklok/frizbee/) 
@@ -53,7 +60,7 @@ repository:
         - slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml
 
   # (TODO) Hardened Workflows
-
+  
   # Static code analysis: CodeQL
   - type: codeql_enabled
     def:
