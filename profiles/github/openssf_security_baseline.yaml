@@ -29,8 +29,11 @@ repository:
       branch: ""
     def: {}
 
-  # (TODO) Credentials with minimal permissions
-  # TBD: https://github.com/stacklok/minder-rules-and-profiles/pull/126
+  # Check workflows to ensure they have default permissions
+  - type: actions_check_default_permissions
+    name: actions_check_default_permissions
+    displayName: "Check that workflows have default permissions"
+    
 
   # Check for a Security Insights file in the repo
   - type: security_insights
