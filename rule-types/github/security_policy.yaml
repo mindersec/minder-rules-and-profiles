@@ -1,0 +1,46 @@
+version: v1
+type: rule-type
+name: security_policy
+severity:
+  value: medium
+context:
+  provider: github
+description: Raise an alert if a repository is missing a security policy file.
+guidance: |
+  Ensure that a repository has a security policy file
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties:
+      filename:
+        type: string
+        description: |
+          Path to the security policy file
+        default: SECURITY.md
+    required:
+      - filename
+  # Defines the configuration for ingesting data relevant for the rule
+  ingest:
+    type: git
+    git:
+      branch: master
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        import rego.v1
+
+        default allow := false
+        allow if {
+          file.exists(input.profile.filename)
+        }
+  
+  # We don't have a remediation method in place yet.
+  
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}

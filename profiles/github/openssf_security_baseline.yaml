@@ -67,7 +67,14 @@ repository:
     def:
       required_approving_review_count: 2
 
-  # (TODO) Security policy published
+  # Security policy published
+  # Check for a Security Insights file in the repo
+  - type: security_policy
+    name: security_policy
+    displayName: "Ensure there is a security policy file"
+    def:
+      filename: SECURITY.md
+      
   # (TODO) No vulnerabilities
   # (TODO) 60 day SLA on HIGH/MED vulnerabilities
   # (TODO) No checked-in binaries
