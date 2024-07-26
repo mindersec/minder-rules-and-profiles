@@ -74,10 +74,14 @@ repository:
     displayName: "Ensure there is a security policy file"
     def:
       filename: SECURITY.md
-      
+
+  # No checked-in binaries
+  - type: no_binaries_in_repo
+    name: no_binaries_in_repo
+    displayName: "Ensure that there are no binaries checked in the repository"
+
   # (TODO) No vulnerabilities
   # (TODO) 60 day SLA on HIGH/MED vulnerabilities
-  # (TODO) No checked-in binaries
   # (TODO) SBOM generated with releases
   # (TODO) SBOM conforms to NTIA minimal elements
   # (TODO) Artifacts are signed
