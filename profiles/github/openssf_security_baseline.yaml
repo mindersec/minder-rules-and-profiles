@@ -46,7 +46,7 @@ repository:
   # Check for an dependency policy entry in the security insights file.
   - type: security_insights_dep_policy
     name: security_insights_dep_policy
-    displayName: "Check for a dependency polcicy in the Security Insights file."
+    displayName: "Check for a dependency policy in the Security Insights file."
     def:
       filename: SECURITY-INSIGHTS.yml
 

@@ -8,6 +8,9 @@ context:
 description: Raise an alert if a repository is missing a security policy file.
 guidance: |
   Ensure that a repository has a security policy file
+
+  For more details on security policies on GitHub, see
+  https://docs.github.com/en/code-security/getting-started/adding-a-security-policy-to-your-repository
 def:
   in_entity: repository
   rule_schema:
