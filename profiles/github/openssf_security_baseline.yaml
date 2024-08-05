@@ -1,0 +1,99 @@
+---
+# Profile to help comply with the Open Source Security Foundation's Security
+# Baseline, a framework of minimal security recommended to projects.
+version: v1
+type: profile
+name: openssf_security_baseline
+display_name: OpenSSF Security Baseline
+context:
+  provider: github
+alert: "on"
+remediate: "off"
+repository:
+  # (TODO) Memory Safety
+  # (TODO) 2FA
+  
+  # Secret scanning
+  - type: secret_scanning
+    def:
+      enabled: true
+  - type: secret_push_protection
+    def:
+      enabled: true
+  
+  # Branch protection.
+  # This enables general branch protection on the main branch, for
+  # other branch rules check the branch-protection.yaml profile 
+  - type: branch_protection_enabled
+    params:
+      branch: ""
+    def: {}
+
+  # Check workflows to ensure they have default permissions
+  - type: actions_check_default_permissions
+    name: actions_check_default_permissions
+    displayName: "Check that workflows have default permissions"
+    
+
+  # Check for a Security Insights file in the repo
+  - type: security_insights
+    name: security_insights
+    displayName: "Check for a Security Insights file in the repository"
+    def:
+      filename: SECURITY-INSIGHTS.yml
+
+  # Dependency Policy published
+  # Check for an dependency policy entry in the security insights file.
+  - type: security_insights_dep_policy
+    name: security_insights_dep_policy
+    displayName: "Check for a dependency polcicy in the Security Insights file."
+    def:
+      filename: SECURITY-INSIGHTS.yml
+
+  # Pinned dependencies
+  # This rule tells Minder to run Frizbee (https://github.com/stacklok/frizbee/) 
+  # in the repository to check and remediate GitHub actions referenced with tags
+  - type: actions_check_pinned_tags
+    name: "GitHub Actions workflows reference pinned tags"
+    def:
+      exclude:
+        # generator_generic_slsa3 does not support pinning and will fail to retrieve the
+        # generator binary. We need to exclude it from pinning because of this.
+        # See https://github.com/slsa-framework/slsa-github-generator/issues/2993
+        - slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml
+
+  # (TODO) Hardened Workflows
+  
+  # Static code analysis: CodeQL
+  - type: codeql_enabled
+    def:
+      languages: []
+      schedule_interval: '30 4-6 * * *'
+
+  # Force two-person review on pull requests before merging
+  - type: branch_protection_require_pull_request_approving_review_count
+    params:
+      branch: ""
+    def:
+      required_approving_review_count: 2
+
+  # Security policy published
+  # Check for a Security Insights file in the repo
+  - type: security_policy
+    name: security_policy
+    displayName: "Ensure there is a security policy file"
+    def:
+      filename: SECURITY.md
+
+  # No checked-in binaries
+  - type: no_binaries_in_repo
+    name: no_binaries_in_repo
+    displayName: "Ensure that there are no binaries checked in the repository"
+
+  # (TODO) No vulnerabilities
+  # (TODO) 60 day SLA on HIGH/MED vulnerabilities
+  # (TODO) SBOM generated with releases
+  # (TODO) SBOM conforms to NTIA minimal elements
+  # (TODO) Artifacts are signed
+  # (TODO) SLSA build attestation
+  # (TODO) Project VEX feed
