@@ -88,10 +88,10 @@ def:
         default allow := false
         default skip := false
         
-        workflow_ref := input.profile.workflow_ref
         default workflow_ref := "refs/heads/main"
+        workflow_ref := input.profile.workflow_ref
         
-        artifacts_github_provenance = {artifact |
+        artifacts_github_provenance := {artifact |
           some artifact in input.ingested
           artifact.Verification.attestation.predicate_type == "https://slsa.dev/provenance/v1"
           artifact.Verification.attestation.predicate.buildDefinition.buildType == "https://actions.github.io/buildtypes/workflow/v1"
@@ -109,12 +109,20 @@ def:
 
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.path == input.profile.signer_identity
             artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.ref == workflow_ref
-            artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == input.profile.workflow_repository
+            repo_ok(artifact, input.profile)
             artifact.Verification.attestation.predicate.buildDefinition.internalParameters.github.runner_environment == input.profile.runner_environment
 
             some event in input.profile.event
             artifact.Verification.attestation.predicate.buildDefinition.internalParameters.github.event_name == event
           }
+        }
+
+        repo_ok(_, profile) if {
+          not profile.workflow_repository
+        }
+
+        repo_ok(artifact, profile) if {
+          artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == profile.workflow_repository
         }
 
         skip if {
