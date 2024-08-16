@@ -60,6 +60,12 @@ def:
         allow if {
           input.ingested.url != ""
         }
+  # Defines the configuration for remediating the rule
+  remediate:
+    type: gh_branch_protection
+    gh_branch_protection:
+      patch: |
+        {}
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
