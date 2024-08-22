@@ -1,5 +1,6 @@
 ---
 version: v1
+state: alpha
 type: rule-type
 name: default_workflow_permissions
 severity:

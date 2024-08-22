@@ -1,5 +1,6 @@
 ---
 version: v1
+state: alpha
 type: rule-type
 name: automatic_branch_deletion
 severity:

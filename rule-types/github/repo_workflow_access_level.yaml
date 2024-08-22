@@ -1,5 +1,6 @@
 ---
 version: v1
+state: alpha
 type: rule-type
 name: repo_workflow_access_level
 severity:
