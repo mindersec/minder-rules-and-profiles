@@ -21,3 +21,42 @@ jobs:
 
       - name: Lint Rule Types
         run: go run github.com/stacklok/minder/cmd/dev@latest ruletype lint -r rule-types/github --skip-rego
+
+      - name: Ensure rule type state is set
+        run: |
+          # Directory containing YAML files
+          DIRECTORY="rule-types/github"
+
+          # Allowed values for the "state" field
+          ALLOWED_VALUES=("alpha" "beta" "ga" "deprecated")
+
+          # Iterate over all YAML files in the directory
+          for file in "$DIRECTORY"/*.yaml; do
+            echo "Checking file: $file"
+
+            # Extract the value of the "state" field
+            state_value=$(yq e '.state' "$file")
+
+            # Check if the "state" field is null or missing
+            if [ "$state_value" == "null" ] || [ -z "$state_value" ]; then
+              echo "Error: The file '$file' does not have the 'state' field set or it is empty."
+              exit 1
+            else
+              # Validate if the "state" value is one of the allowed values
+              is_valid=false
+              for allowed_value in "${ALLOWED_VALUES[@]}"; do
+                if [ "$state_value" == "$allowed_value" ]; then
+                  is_valid=true
+                  break
+                fi
+              done
+
+              if [ "$is_valid" == false ]; then
+                echo "Error: The file '$file' has an invalid 'state' value: $state_value"
+                echo "       Allowed values are: ${ALLOWED_VALUES[*]}"
+                exit 1
+              else
+                echo "The file '$file' has a valid 'state' field set to: $state_value"
+              fi
+            fi
+          done
