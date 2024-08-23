@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: trivy_action_enabled
+display_name: Ensure Trivy is enabled for vulnerability scanning
 severity:
   value: medium
 context:

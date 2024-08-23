@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: codeql_enabled
+display_name: Enable CodeQL for vulnerability scanning
 severity:
   value: medium
 context:

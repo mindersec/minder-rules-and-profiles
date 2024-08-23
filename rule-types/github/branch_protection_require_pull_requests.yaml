@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: branch_protection_require_pull_requests
+display_name: Only merge code from pull requests
 severity:
   value: medium
 context:

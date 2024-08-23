@@ -1,6 +1,7 @@
 version: v1
 type: rule-type
 name: security_policy
+display_name: Ensure a security policy file exists
 severity:
   value: medium
 context:

@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: branch_protection_require_pull_request_approving_review_count
+display_name: Require a number of reviews before merging a PR
 severity:
   value: medium
 context:

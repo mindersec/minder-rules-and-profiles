@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: dockerfile_no_latest_tag
+display_name: Prevent Dockerfile from using volatile 'latest' tag
 severity:
   value: medium
 context:

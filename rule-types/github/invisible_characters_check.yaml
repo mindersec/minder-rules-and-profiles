@@ -1,6 +1,7 @@
 version: v1
 type: rule-type
 name: invisible_characters_check
+display_name: Check for invisible characters in pull requests
 severity:
   value: high
 context:

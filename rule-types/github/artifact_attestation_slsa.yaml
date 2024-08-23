@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: artifact_attestation_slsa
+display_name: Verify the integrity of an artifact
 context:
   provider: github
 description: |

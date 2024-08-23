@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: branch_protection_lock_branch
+display_name: Set a branch as read-only
 severity:
   value: medium
 context:

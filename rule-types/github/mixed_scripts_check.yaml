@@ -1,6 +1,7 @@
 version: v1
 type: rule-type
 name: mixed_scripts_check
+display_name: Check for mixed scripts in pull requests
 severity:
   value: high
 context:

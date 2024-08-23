@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: branch_protection_enabled
+display_name: Ensure a branch protection rule is set up
 severity:
   value: high
 context:

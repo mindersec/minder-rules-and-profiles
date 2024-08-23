@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: license
+display_name: Ensure a license file is present
 severity:
   value: low
 context:

@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: automatic_branch_deletion
+display_name: Automatically delete branch after merge
 severity:
   value: info
 context:

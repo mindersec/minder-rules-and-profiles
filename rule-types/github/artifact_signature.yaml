@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: artifact_signature
+display_name: Ensure artifacts are signed and verified
 severity:
   value: high
 context:

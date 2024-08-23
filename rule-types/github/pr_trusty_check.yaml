@@ -2,6 +2,7 @@
 version: v1
 type: rule-type
 name: pr_trusty_check
+display_name: Ensure pull requests do not add dependencies with a low Trusty
 severity:
   value: medium
 context:
