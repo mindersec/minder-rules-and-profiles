@@ -1,5 +1,5 @@
 version: v1
-state: alpha
+release_phase: alpha
 type: rule-type
 name: security_policy
 severity:

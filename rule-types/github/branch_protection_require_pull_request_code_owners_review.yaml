@@ -1,6 +1,6 @@
 ---
 version: v1
-state: alpha
+release_phase: alpha
 type: rule-type
 name: branch_protection_require_pull_request_code_owners_review
 severity:
