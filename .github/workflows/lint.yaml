@@ -21,3 +21,42 @@ jobs:
 
       - name: Lint Rule Types
         run: go run github.com/stacklok/minder/cmd/dev@latest ruletype lint -r rule-types/github --skip-rego
+
+      - name: Ensure rule type release_phase is set
+        run: |
+          # Directory containing YAML files
+          DIRECTORY="rule-types/github"
+
+          # Allowed values for the "release_phase" field
+          ALLOWED_VALUES=("alpha" "beta" "ga" "deprecated")
+
+          # Iterate over all YAML files in the directory
+          for file in "$DIRECTORY"/*.yaml; do
+            echo "Checking file: $file"
+
+            # Extract the value of the "release_phase" field
+            release_phase_value=$(yq e '.release_phase' "$file")
+
+            # Check if the "release_phase" field is null or missing
+            if [ "$release_phase_value" == "null" ] || [ -z "$release_phase_value" ]; then
+              echo "Error: The file '$file' does not have the 'release_phase' field set or it is empty."
+              exit 1
+            else
+              # Validate if the "release_phase" value is one of the allowed values
+              is_valid=false
+              for allowed_value in "${ALLOWED_VALUES[@]}"; do
+                if [ "$release_phase_value" == "$allowed_value" ]; then
+                  is_valid=true
+                  break
+                fi
+              done
+
+              if [ "$is_valid" == false ]; then
+                echo "Error: The file '$file' has an invalid 'release_phase' value: $release_phase_value"
+                echo "       Allowed values are: ${ALLOWED_VALUES[*]}"
+                exit 1
+              else
+                echo "The file '$file' has a valid 'release_phase' field set to: $release_phase_value"
+              fi
+            fi
+          done
