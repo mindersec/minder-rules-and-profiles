@@ -9,12 +9,14 @@ context:
   provider: github
 description: Verifies that the Trivy action is enabled for the repository and scanning
 guidance: |
-  Ensure that the Trivy action is enabled for the repository and scanning is performed.
+  Ensure that the Trivy action is enabled for the repository and
+  scanning is performed.
 
-  Trivy is an open source vulnerability scanner for repositories, containers and other
-  artifacts provided by Aqua Security. It is used to scan for vulnerabilities in the
-  codebase and dependencies. This rule ensures that the Trivy action is enabled for
-  the repository and scanning is performed.
+  Trivy is an open source vulnerability scanner for repositories,
+  containers and other artifacts provided by Aqua Security. It is used
+  to scan for vulnerabilities in the codebase and dependencies. This
+  rule ensures that the Trivy action is enabled for the repository and
+  scanning is performed.
 
   Set it up by adding the following to your workflow:
 
@@ -27,8 +29,8 @@ guidance: |
       exit-code: 1
   ```
   
-  For more information, see
-  https://github.com/marketplace/actions/aqua-security-trivy
+  For more information, see [Trivy Action's
+  documentation](https://github.com/marketplace/actions/aqua-security-trivy).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

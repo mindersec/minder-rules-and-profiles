@@ -9,10 +9,12 @@ context:
   provider: github
 description: Verifies that the Dockerfile image references don't use the latest tag
 guidance: |
-  Ensure that the Dockerfile does not use the 'latest' tag for images.
+  Ensure that the Dockerfile does not use the `latest` tag for images.
 
-  Using the latest tag for Docker images is not recommended as it can lead to unexpected behavior.
-  It is recommended to use a checksum instead, as that's immutable and will always point to the same image.
+  Using the latest tag for Docker images is not recommended as it can
+  lead to unexpected behavior. It is recommended to use a checksum
+  instead, as that's immutable and will always point to the same
+  image.
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

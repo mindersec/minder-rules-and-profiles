@@ -11,21 +11,22 @@ description: |
   Parses the repository's `SECURITY_INSIGHTS.yaml` file and looks for a 
   pointer to a dependency policy.
 
-  [Security Insights](https://github.com/ossf/security-insights-spec/) is a 
-  specification that lets projects publish data and pointers to resources about
-  the repository, maintainers, releases and other security aspects in a 
-  machine-readable format to make it easy for automated tools to locate them.
-
   This ruletype parses the security insights yaml and checks for a pointer to
   the dependencies policy (`policy-url`). No attempt to retrieve it is done.
 
 guidance: |
-  If you have a security insights file (defaults to `SECURITY-INSIGHTS.yml`),
-  ensure that the dependency policy field is defined
-  (`dependencies.env-dependencies-policy.policy-url`).
+  If you have a security insights file (defaults to
+  `SECURITY-INSIGHTS.yml`), ensure that the dependency policy field is
+  defined (`dependencies.env-dependencies-policy.policy-url`).
+
+  [Security Insights](https://github.com/ossf/security-insights-spec/)
+  is a specification that lets projects publish data and pointers to
+  resources about the repository, maintainers, releases and other
+  security aspects in a machine-readable format to make it easy for
+  automated tools to locate them.
   
-  For more information on how to create one, refer to the SI specification at
-  https://github.com/ossf/security-insights-spec/
+  For more information on how to create one, refer to the [SI
+  specification](https://github.com/ossf/security-insights-spec/).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

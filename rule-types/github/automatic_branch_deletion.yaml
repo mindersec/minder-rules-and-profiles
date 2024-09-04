@@ -11,13 +11,15 @@ description: |
   This rule verifies that branches are deleted automatically once a pull
   request merges.
 guidance: |
-  Ensure that automatic branch deletion is enabled for your repositories.
+  Ensure that automatic branch deletion is enabled for your
+  repositories.
 
-  To manage whether branches should be automatically deleted for your repository
-  you need to toggle the "Automatically delete head branches" setting in the
-  general configuration of your repository.
+  To manage whether branches should be automatically deleted for your
+  repository you need to toggle the "Automatically delete head
+  branches" setting in the general configuration of your repository.
 
-  For more information, see the GitHub documentation on the topic: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-the-automatic-deletion-of-branches
+  For more information, see the [GitHub's
+  documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-the-automatic-deletion-of-branches).
 def:
   in_entity: repository
   rule_schema:
