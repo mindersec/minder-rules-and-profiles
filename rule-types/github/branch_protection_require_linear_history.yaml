@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: branch_protection_require_linear_history
+display_name: Forbid merge commits
 severity:
   value: info
 context:

@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: branch_protection_require_conversation_resolution
+display_name: Prevent merging PRs with unresolved conversations
 severity:
   value: info
 context:

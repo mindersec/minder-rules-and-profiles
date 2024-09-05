@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: branch_protection_enforce_admins
+display_name: Enforce branch protection rules for admins
 severity:
   value: medium
 context:

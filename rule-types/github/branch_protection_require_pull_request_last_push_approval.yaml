@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: branch_protection_require_pull_request_last_push_approval
+display_name: Disregard self-approvals on PRs
 severity:
   value: low
 context:

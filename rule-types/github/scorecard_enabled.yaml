@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: scorecard_enabled
+display_name: Enable the Scorecard GitHub Action
 severity:
   value: medium
 context:

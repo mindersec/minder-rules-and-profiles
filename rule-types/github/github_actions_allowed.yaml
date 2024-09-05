@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: github_actions_allowed
+display_name: Limit the permitted GitHub actions by type
 severity:
   value: medium
 context:

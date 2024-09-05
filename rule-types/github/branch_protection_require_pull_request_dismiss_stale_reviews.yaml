@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: branch_protection_require_pull_request_dismiss_stale_reviews
+display_name: Forbid merging PRs with un-approved commits
 severity:
   value: info
 context:

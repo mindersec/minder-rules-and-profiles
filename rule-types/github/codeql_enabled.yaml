@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: codeql_enabled
+display_name: Enable CodeQL for vulnerability scanning
 severity:
   value: medium
 context:

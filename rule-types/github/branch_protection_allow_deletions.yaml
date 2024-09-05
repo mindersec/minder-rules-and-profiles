@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: branch_protection_allow_deletions
+display_name: Prevent permanent branch deletion
 severity:
   value: medium
 context:

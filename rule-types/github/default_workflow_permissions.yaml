@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: default_workflow_permissions
+display_name: Customize the default GitHub workflow permissions
 severity:
   value: high
 context:

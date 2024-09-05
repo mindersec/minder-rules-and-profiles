@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: allowed_selected_actions
+display_name: Limit the permitted GitHub actions by creator
 severity:
   value: medium
 context:

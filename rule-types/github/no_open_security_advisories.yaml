@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: no_open_security_advisories
+display_name: Verify there are no open security advisories
 severity:
   value: low
 context:

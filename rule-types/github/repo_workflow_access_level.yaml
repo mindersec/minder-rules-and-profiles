@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: repo_workflow_access_level
+display_name: Limit the external access of private repositories
 severity:
   value: medium
 context:

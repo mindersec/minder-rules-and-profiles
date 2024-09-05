@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: branch_protection_allow_fork_syncing
+display_name: Allow forks to pull changes from locked branches
 severity:
   value: low
 context:

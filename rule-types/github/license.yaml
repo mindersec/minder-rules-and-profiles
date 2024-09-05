@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: license
+display_name: Ensure a license file is present
 severity:
   value: low
 context:

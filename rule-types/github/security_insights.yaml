@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: security_insights
+display_name: Verify the presence of a Security Insights file
 severity:
   value: low
 context:

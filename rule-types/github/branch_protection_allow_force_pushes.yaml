@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: branch_protection_allow_force_pushes
+display_name: Prevent overwriting git history
 severity:
   value: medium
 context:

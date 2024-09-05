@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: repo_action_allow_list
+display_name: Ensure that only allowed GitHub actions run in a repository
 severity:
   value: info
 context:

@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: branch_protection_require_signatures
+display_name: Require commits to be signed
 severity:
   value: medium
 context:

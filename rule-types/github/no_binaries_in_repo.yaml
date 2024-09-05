@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: no_binaries_in_repo
+display_name: Ensure no binary artifacts are committed
 severity:
   value: medium
 context:

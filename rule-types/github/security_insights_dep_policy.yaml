@@ -3,6 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: security_insights_dep_policy
+display_name: Verify a dependency policy exists in the Security Insights file
 severity:
   value: low
 context:
