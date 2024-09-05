@@ -3,7 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: pr_trusty_check
-display_name: Ensure pull requests do not add dependencies with a low Trusty
+display_name: Ensure pull requests do not add dependencies with a low Trusty score
 severity:
   value: medium
 context:
