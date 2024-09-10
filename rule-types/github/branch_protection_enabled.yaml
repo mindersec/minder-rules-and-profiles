@@ -12,12 +12,13 @@ description: Verifies that a branch has a branch protection rule
 guidance: |
   Verify that the branch has a branch protection rule set up.
 
-  You can protect important branches by setting branch protection rules, which define whether
-  collaborators can delete or force push to the branch and set requirements for any pushes to the branch,
+  You can protect important branches by setting branch protection
+  rules, which define whether collaborators can delete or force push
+  to the branch and set requirements for any pushes to the branch,
   such as passing status checks or a linear commit history.
 
-  For more information, see
-  https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

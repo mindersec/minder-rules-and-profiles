@@ -10,13 +10,13 @@ context:
   provider: github
 description: Verifies that Scorecard action is present and configured
 guidance: |
-  Ensure that Scorecard Action is configured and enabled for the repository.
+  Ensure that Scorecard Action is configured and enabled for the
+  repository.
 
-  Scorecard is a tool by the OpenSSF that can be used to analyze repositories 
-  for security best practises.
+  Scorecard is a tool by the OpenSSF that can be used to analyze
+  repositories for security best practises.
 
-  For more information, see
-  https://scorecard.dev/
+  For more information, see [scorecard.dev](https://scorecard.dev/).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

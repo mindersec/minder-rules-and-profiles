@@ -9,12 +9,13 @@ context:
 description: |
   Verifies a SLSA provenance attestation
 guidance: |
-  Provenance attestations capture the build environment and parameters where a
-  software artifact was created. By controlling the build environment, developers
-  can check the integity of the build environment and that no malicious code
-  was injected into the build process.
+  Provenance attestations capture the build environment and parameters
+  where a software artifact was created. By controlling the build
+  environment, developers can check the integity of the build
+  environment and that no malicious code was injected into the build
+  process.
 
-  For more information visit https://slsa.dev
+  For more information visit [slsa.dev](https://slsa.dev).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

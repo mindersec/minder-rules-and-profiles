@@ -12,10 +12,11 @@ description: Whether the branch is locked
 guidance: |
   Ensure that the branch is locked.
 
-  With this settingthe branch is marked as read-only. Users cannot push to the branch.
+  With this settingthe branch is marked as read-only. Users cannot
+  push to the branch.
 
-  For more information, see
-  https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

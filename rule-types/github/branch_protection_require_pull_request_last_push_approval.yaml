@@ -10,12 +10,14 @@ context:
   provider: github
 description: Require that the most recent push to a branch be approved by someone other than the person who pushed it.
 guidance: |
-  Ensure that the appropriate setting is enabled for the branch protection rule.
+  Ensure that the appropriate setting is enabled for the branch
+  protection rule.
 
-  The most recent push to a branch must be approved by someone other than the person who pushed it.
+  The most recent push to a branch must be approved by someone other
+  than the person who pushed it.
 
-  For more information, see
-  https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

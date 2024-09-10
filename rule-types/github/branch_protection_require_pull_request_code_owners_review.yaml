@@ -10,12 +10,15 @@ context:
   provider: github
 description: Verifies that a branch requires review from code owners.
 guidance: |
-  Ensure that the setting to require an approved review in pull requests including files with a designated code owner is enabled for the branch protection rule.
+  Ensure that the setting to require an approved review in pull
+  requests including files with a designated code owner is enabled for
+  the branch protection rule.
 
-  This requires an approved review in pull requests including files with a designated code owner.
+  This requires an approved review in pull requests including files
+  with a designated code owner.
 
-  For more information, see
-  https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

@@ -21,11 +21,16 @@ description: |
   For more information on the potential security implications, see
   https://www.usenix.org/system/files/usenixsecurity23-boucher.pdf
 guidance: |
-  Ensure that the pull request does not contain any invisible characters.
-  Invisible characters can be used to hide malicious code and can be difficult to detect.
-  It is important to ensure that the code is clean and does not contain any hidden characters.
-  For more information on the potential security implications, see
-  https://www.usenix.org/system/files/usenixsecurity23-boucher.pdf
+  Ensure that the pull request does not contain any invisible
+  characters.
+
+  Invisible characters can be used to hide malicious code and can be
+  difficult to detect. It is important to ensure that the code is
+  clean and does not contain any hidden characters.
+
+  For more information on the potential security implications, see the
+  article ["Trojan Source: Invisible
+  Vulnerabilities"](https://www.usenix.org/system/files/usenixsecurity23-boucher.pdf).
 def:
   in_entity: pull_request
   param_schema:

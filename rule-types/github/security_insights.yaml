@@ -9,19 +9,21 @@ severity:
 context:
   provider: github
 description: |
-  Verifies that a repository contains a `SECURITY_INSIGHTS.yaml` file. 
+  Verifies that a repository contains a `SECURITY_INSIGHTS.yaml` file.
 
-  [Security Insights](https://github.com/ossf/security-insights-spec/) is a 
-  specification that lets projects publish data and pointers to resources about
-  the repository, maintainers, releases and other security aspects in a 
-  machine-readable format to make it easy for automated tools to locate them.
-
-  This initial rule type checks for the existence of the file only. 
-
+  This initial rule type checks for the existence of the file only.
 guidance: |
-  Check that your repository contains a Security Insights file to ensure your security data
-  can be located by automated processes. For more information on how to create one, refer to
-  the SI specification at https://github.com/ossf/security-insights-spec/
+  Check that your repository contains a Security Insights file to
+  ensure your security data can be located by automated processes.
+
+  [Security Insights](https://github.com/ossf/security-insights-spec/)
+  is a specification that lets projects publish data and pointers to
+  resources about the repository, maintainers, releases and other
+  security aspects in a machine-readable format to make it easy for
+  automated tools to locate them.
+
+  For more information on how to create one, refer to the [SI
+  specification](https://github.com/ossf/security-insights-spec/).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

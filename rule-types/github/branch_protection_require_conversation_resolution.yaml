@@ -10,12 +10,15 @@ context:
   provider: github
 description: Whether PR reviews must be resolved before merging
 guidance: |
-  Ensure that the setting to require all conversations on code to be resolved before a pull request can be merged into a branch that matches this rule is enabled.
+  Ensure that the setting to require all conversations on code to be
+  resolved before a pull request can be merged into a branch that
+  matches this rule is enabled.
 
-  When enabled, all conversations on code must be resolved before a pull request can be merged into a branch that matches this rule
+  When enabled, all conversations on code must be resolved before a
+  pull request can be merged into a branch that matches this rule
 
-  For more information, see
-  https://docs.github.com/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#require-conversation-resolution-before-merging
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#require-conversation-resolution-before-merging).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

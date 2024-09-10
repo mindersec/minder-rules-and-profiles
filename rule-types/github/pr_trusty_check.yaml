@@ -15,7 +15,8 @@ description: |
   adds a new dependency with a low Trusty score. If a dependency with a low
   score is added, the PR will be commented on.
 guidance: |
-  Ensure that the pull request does not add any dependencies with low Trusty scores.
+  Ensure that the pull request does not add any dependencies with low
+  Trusty scores.
 def:
   in_entity: pull_request
   rule_schema:

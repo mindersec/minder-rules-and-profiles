@@ -11,14 +11,14 @@ description: Alerts on default GitHub Actions permissions
 guidance: |
   Ensure that GitHub Actions have permissions specified.
 
-  The default permissions for GitHub Actions allow broad access to the repository,
-  including the ability to update repo contents, approve pull requests, and update
-  releases, packages, and deployments.  To limit these permissions, specify
-  permissions explicitly either in the top level of the workflow file, or for each
-  job in the workflow.
+  The default permissions for GitHub Actions allow broad access to the
+  repository, including the ability to update repo contents, approve
+  pull requests, and update releases, packages, and deployments.  To
+  limit these permissions, specify permissions explicitly either in
+  the top level of the workflow file, or for each job in the workflow.
 
-  For more information, see
-  https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions).
 def:
   in_entity: repository
   # Defines the schema for writing a rule with this rule being checked

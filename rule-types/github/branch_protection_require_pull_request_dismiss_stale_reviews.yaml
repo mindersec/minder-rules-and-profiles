@@ -10,12 +10,14 @@ context:
   provider: github
 description: Require that new pushes to the branch dismiss old reviews
 guidance: |
-  Ensure that the setting to dismiss stale reviews when someone pushes a new commit to a branch is enabled.
+  Ensure that the setting to dismiss stale reviews when someone pushes
+  a new commit to a branch is enabled.
 
-  New reviewable commits pushed to a matching branch will dismiss pull request review approvals.
+  New reviewable commits pushed to a matching branch will dismiss pull
+  request review approvals.
 
-  For more information, see
-  https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

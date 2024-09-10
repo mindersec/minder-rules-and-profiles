@@ -10,14 +10,16 @@ context:
   provider: github
 description: Verifies that a given artifact has a valid signature.
 guidance: |
-  Ensure that the artifact has been signed and the signature has been verified.
+  Ensure that the artifact has been signed and the signature has been
+  verified.
 
-  Artifact signing allows a user to add a digital fingerprint to an artifact and verify its trust later.
-  It allows the artifact user to verify the source and trust the container image.
-  Minder leverages sigstore(cosign) to verify an artifact has been signed.
+  Artifact signing allows a user to add a digital fingerprint to an
+  artifact and verify its trust later. It allows the artifact user to
+  verify the source and trust the container image. Minder leverages
+  sigstore (cosign) to verify an artifact has been signed.
 
-  For more information, see
-  https://docs.sigstore.dev/signing/signing_with_containers
+  For more information, see [Sigstore's
+  documentation](https://docs.sigstore.dev/signing/signing_with_containers).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

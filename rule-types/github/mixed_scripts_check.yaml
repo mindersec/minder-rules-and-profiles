@@ -8,21 +8,22 @@ severity:
 context:
   provider: github
 description: |
+  Ensure that the pull request does not contain any mixed scripts.
+guidance: |
   For every pull request submitted to a repository, this rule will
-  check if the pull request adds a new change patch
-  that contains mixed scripts. 
+  check if the pull request adds a new change patch that contains
+  mixed scripts.
 
-  If it does, the rule will fail and the pull request will be commented on.
+  If it does, the rule will fail and the pull request will be
+  commented on.
 
-  This detects and highlights the use of strings with mixed scripts 
+  This detects and highlights the use of strings with mixed scripts
   that could potentially hide malicious code.
   
-  For more information, see
-  https://unicode.org/reports/tr39/#Mixed_Script_Detection
-  and
-  https://www.usenix.org/system/files/usenixsecurity23-boucher.pdf
-guidance: |
-  Ensure that the pull request does not contain any mixed scripts.
+  For more information, see unicode.org's ["Mixed-Script
+  Detection"](https://unicode.org/reports/tr39/#Mixed_Script_Detection)
+  and ["Trojan Source: Invisible
+  Vulnerabilities"](https://www.usenix.org/system/files/usenixsecurity23-boucher.pdf).
 def:
   in_entity: pull_request
   param_schema:

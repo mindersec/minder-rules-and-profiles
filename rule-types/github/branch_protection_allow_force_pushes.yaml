@@ -10,12 +10,14 @@ context:
   provider: github
 description: Whether force pushes are allowed to the branch
 guidance: |
-  Ensure that the appropriate setting is enabled for the branch protection rule.
+  Ensure that the appropriate setting is enabled for the branch
+  protection rule.
 
-  This setting allows users with push access to force push to the branch.
+  This setting allows users with push access to force push to the
+  branch.
 
-  For more information, see
-  https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts

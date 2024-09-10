@@ -13,11 +13,12 @@ guidance: |
   Ensure that Dependabot is configured and enabled for the repository.
 
   Dependabot enables Automated dependency updates for repositories.
-  It is recommended that repositories have some form of automated dependency updates enabled
-  to ensure that vulnerabilities are not introduced into the codebase.
+  It is recommended that repositories have some form of automated
+  dependency updates enabled to ensure that vulnerabilities are not
+  introduced into the codebase.
 
-  For more information, see
-  https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file).
 def:
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts
