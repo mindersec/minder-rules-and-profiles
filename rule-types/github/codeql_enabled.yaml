@@ -1,6 +1,6 @@
 ---
 version: v1
-release_phase: alpha
+release_phase: beta
 type: rule-type
 name: codeql_enabled
 display_name: Enable CodeQL for vulnerability scanning

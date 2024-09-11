@@ -79,7 +79,7 @@ def:
 
             workflow := yaml.unmarshal(workflowstr)
 
-            # Ensure a workflow contains the codel-ql action
+            # Ensure a workflow contains the scorecard action
             some i
             steps := workflow.jobs.analyze.steps[i]
             startswith(steps.uses, "ossf/scorecard-action@")
