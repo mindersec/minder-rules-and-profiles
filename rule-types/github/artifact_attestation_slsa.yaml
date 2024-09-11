@@ -3,7 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: artifact_attestation_slsa
-display_name: Verify the integrity of an artifact
+display_name: Verify the integrity of an artifact using SLSA
 context:
   provider: github
 description: |
@@ -11,7 +11,7 @@ description: |
 guidance: |
   Provenance attestations capture the build environment and parameters
   where a software artifact was created. By controlling the build
-  environment, developers can check the integity of the build
+  environment, developers can check the integrity of the build
   environment and that no malicious code was injected into the build
   process.
 
