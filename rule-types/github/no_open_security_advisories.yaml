@@ -1,6 +1,6 @@
 ---
 version: v1
-release_phase: alpha
+release_phase: beta
 type: rule-type
 name: no_open_security_advisories
 display_name: Verify there are no open security advisories

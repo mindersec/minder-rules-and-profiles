@@ -1,6 +1,6 @@
 ---
 version: v1
-release_phase: alpha
+release_phase: beta
 type: rule-type
 name: dependabot_configured
 display_name: Enable Dependabot for automated dependency updates

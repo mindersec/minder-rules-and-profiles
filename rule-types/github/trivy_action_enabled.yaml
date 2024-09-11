@@ -1,6 +1,6 @@
 ---
 version: v1
-release_phase: alpha
+release_phase: beta
 type: rule-type
 name: trivy_action_enabled
 display_name: Ensure Trivy is enabled for vulnerability scanning

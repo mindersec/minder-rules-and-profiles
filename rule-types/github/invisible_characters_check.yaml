@@ -1,5 +1,5 @@
 version: v1
-release_phase: alpha
+release_phase: beta
 type: rule-type
 name: invisible_characters_check
 display_name: Check for invisible characters in pull requests

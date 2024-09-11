@@ -1,6 +1,6 @@
 ---
 version: v1
-release_phase: alpha
+release_phase: beta
 type: rule-type
 name: branch_protection_allow_force_pushes
 display_name: Prevent overwriting git history
