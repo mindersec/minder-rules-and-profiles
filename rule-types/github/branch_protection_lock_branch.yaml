@@ -12,7 +12,7 @@ description: Whether the branch is locked
 guidance: |
   Ensure that the branch is locked.
 
-  With this settingthe branch is marked as read-only. Users cannot
+  With this settings the branch is marked as read-only. Users cannot
   push to the branch.
 
   For more information, see [GitHub's
