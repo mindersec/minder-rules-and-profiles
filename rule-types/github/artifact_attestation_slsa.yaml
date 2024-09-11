@@ -127,10 +127,6 @@ def:
         repo_ok(artifact, profile) if {
           artifact.Verification.attestation.predicate.buildDefinition.externalParameters.workflow.repository == profile.workflow_repository
         }
-
-        skip if {
-          count(artifacts_github_provenance) == 0
-        }
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
