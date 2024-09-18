@@ -10,14 +10,11 @@ alert: "off"
 remediate: "off"
 repository:
   - type: automatic_branch_deletion
-    def:
-      enabled: true
+    def: {}
   - type: secret_scanning
-    def:
-      enabled: true
+    def: {}
   - type: secret_push_protection
-    def:
-      enabled: true
+    def: {}
   - type: github_actions_allowed
     def:
       allowed_actions: selected
@@ -60,13 +57,11 @@ repository:
   - type: branch_protection_allow_deletions
     params:
       branch: main
-    def:
-      allow_deletions: false
+    def: {}
   - type: branch_protection_allow_force_pushes
     params:
       branch: main
-    def:
-      allow_force_pushes: false
+    def: {}
   - type: branch_protection_enforce_admins
     params:
       branch: main
@@ -115,8 +110,7 @@ repository:
   - type: branch_protection_require_signatures
     params:
       branch: main
-    def:
-      required_signatures: false
+    def: {}
   - type: license
     def:
       license_filename: LICENSE

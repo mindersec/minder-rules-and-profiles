@@ -14,15 +14,12 @@ repository:
       exclude:
         - slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.9.0
   - type: automatic_branch_deletion
-    def:
-      enabled: true
+    def: {}
   - type: secret_scanning
     def:
-      enabled: true
       skip_private_repos: true
   - type: secret_push_protection
     def:
-      enabled: true
       skip_private_repos: true
   - type: default_workflow_permissions
     def:
@@ -37,13 +34,11 @@ repository:
   - type: branch_protection_allow_deletions
     params:
       branch: main
-    def:
-      allow_deletions: false
+    def: {}
   - type: branch_protection_allow_force_pushes
     params:
       branch: main
-    def:
-      allow_force_pushes: false
+    def: {}
   - type: branch_protection_enforce_admins
     params:
       branch: main
@@ -87,8 +82,7 @@ repository:
   - type: branch_protection_require_signatures
     params:
       branch: main
-    def:
-      required_signatures: false
+    def: {}
 artifact:
   - type: artifact_signature
     params:

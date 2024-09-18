@@ -15,11 +15,9 @@ repository:
   
   # Secret scanning
   - type: secret_scanning
-    def:
-      enabled: true
+    def: {}
   - type: secret_push_protection
-    def:
-      enabled: true
+    def: {}
   
   # Branch protection.
   # This enables general branch protection on the main branch, for

@@ -16,13 +16,11 @@ repository:
   - type: branch_protection_allow_deletions
     params:
       branch: ""
-    def:
-      allow_deletions: false
+    def: {}
   - type: branch_protection_allow_force_pushes
     params:
       branch: ""
-    def:
-      allow_force_pushes: false
+    def: {}
   - type: branch_protection_enforce_admins
     params:
       branch: ""
@@ -66,5 +64,4 @@ repository:
   - type: branch_protection_require_signatures
     params:
       branch: ""
-    def:
-      required_signatures: false
+    def: {}

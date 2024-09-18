@@ -25,11 +25,7 @@ def:
   in_entity: repository
   rule_schema:
     type: object
-    properties:
-      enabled:
-        type: boolean
-    required:
-      - enabled
+    properties: {}
   ingest:
     type: rest
     rest:
@@ -40,15 +36,14 @@ def:
     jq:
     - ingested:
         def: '.delete_branch_on_merge'
-      profile:
-        def: ".enabled"
+      constant: true
   remediate:
     type: rest
     rest:
       method: PATCH
       endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
       body: |
-        { "delete_branch_on_merge": {{ .Profile.enabled }} }
+        { "delete_branch_on_merge": true }
   alert:
     type: security_advisory
     security_advisory: {}

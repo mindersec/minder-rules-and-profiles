@@ -8,12 +8,12 @@ severity:
   value: medium
 context:
   provider: github
-description: Whether the branch can be deleted
+description: Prevents the branch from being deleted
 guidance: |
-  Ensure that the "Allow deletions" setting is enabled for the branch
+  Ensure that the "Allow deletions" setting is disabled for the branch
   protection rule.
 
-  Allow users with push access to delete matching branches.
+  Prevent users from deleting matching branches.
 
   For more information, see [GitHub's
   documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
@@ -32,11 +32,8 @@ def:
       - branch
   # Defines the schema for writing a rule with this rule being checked
   rule_schema:
-    properties:
-      allow_deletions:
-        type: boolean
-        description: "Allows deletion of the protected branch by anyone with write access to the repository."
-        default: false
+    type: object
+    properties: {}
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: rest
@@ -58,14 +55,13 @@ def:
     jq:
       - ingested:
           def: ".allow_deletions.enabled"
-        profile:
-          def: ".allow_deletions"
+        constant: false
   # Defines the configuration for remediating the rule
   remediate:
     type: gh_branch_protection
     gh_branch_protection:
       patch: |
-        {"allow_deletions":{{ .Profile.allow_deletions }} }
+        {"allow_deletions": false }
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory

@@ -8,7 +8,7 @@ severity:
   value: medium
 context:
   provider: github
-description: Whether commits to the branch must be signed
+description: Commits to the branch must be signed
 guidance: |
   Ensure that the appropriate setting is enabled for the branch
   protection rule.
@@ -32,12 +32,8 @@ def:
       - branch
   # Defines the schema for writing a rule with this rule being checked
   rule_schema:
-    properties:
-      required_signatures:
-        description: "Specifies whether commits to the branch must be signed."
-        type: boolean
-    required:
-      - required_signatures
+    type: object
+    properties: {}
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: rest
@@ -59,8 +55,7 @@ def:
     jq:
       - ingested:
           def: ".required_signatures.enabled"
-        profile:
-          def: ".required_signatures"
+        constant: true
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
