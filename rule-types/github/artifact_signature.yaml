@@ -4,6 +4,7 @@ release_phase: alpha
 type: rule-type
 name: artifact_signature
 display_name: Ensure artifacts are signed and verified
+short_failure_message: Artifact is not signed or its signature is unverified, compromising its trust and integrity.
 severity:
   value: high
 context:

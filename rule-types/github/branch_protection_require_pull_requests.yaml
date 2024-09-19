@@ -4,6 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_require_pull_requests
 display_name: Only merge code from pull requests
+short_failure_message: Branch does not require pull requests, allowing direct merges without review.
 severity:
   value: medium
 context:

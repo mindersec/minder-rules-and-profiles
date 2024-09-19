@@ -4,6 +4,7 @@ release_phase: alpha
 type: rule-type
 name: pr_trusty_check
 display_name: Ensure pull requests do not add dependencies with a low Trusty score
+short_failure_message: Pull request adds dependencies with low Trusty scores, posing potential security and stability risks.
 severity:
   value: medium
 context:

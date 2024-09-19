@@ -4,6 +4,7 @@ release_phase: beta
 type: rule-type
 name: actions_check_pinned_tags
 display_name: Ensure immutable version of GitHub action
+short_failure_message: GitHub Actions are not pinned to specific SHA-1 hashes, leading to potential security vulnerabilities.
 severity:
   value: medium
 context:

@@ -4,6 +4,7 @@ release_phase: alpha
 type: rule-type
 name: allowed_selected_actions
 display_name: Limit the permitted GitHub actions by creator
+short_failure_message: Repository allows unauthorized actions or workflows, which may increase security risks.
 severity:
   value: medium
 context:

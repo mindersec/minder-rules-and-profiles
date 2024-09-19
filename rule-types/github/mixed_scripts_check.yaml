@@ -3,6 +3,7 @@ release_phase: beta
 type: rule-type
 name: mixed_scripts_check
 display_name: Check for mixed scripts in pull requests
+short_failure_message: Pull request contains mixed scripts, which may hide malicious code.
 severity:
   value: high
 context:

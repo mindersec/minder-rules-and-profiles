@@ -4,6 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_require_pull_request_last_push_approval
 display_name: Disregard self-approvals on PRs
+short_failure_message: Self-approvals are allowed, bypassing the requirement for independent review of the most recent push.
 severity:
   value: low
 context:

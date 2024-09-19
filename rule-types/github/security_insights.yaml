@@ -4,6 +4,7 @@ release_phase: alpha
 type: rule-type
 name: security_insights
 display_name: Verify the presence of a Security Insights file
+short_failure_message: Security Insights file is missing, hindering the ability to automate security data discovery.
 severity:
   value: low
 context:

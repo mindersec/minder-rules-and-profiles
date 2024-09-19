@@ -4,6 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_lock_branch
 display_name: Set a branch as read-only
+short_failure_message: Branch is not locked, allowing unauthorized pushes to a protected branch.
 severity:
   value: medium
 context:

@@ -4,6 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_require_pull_request_code_owners_review
 display_name: Require a code owner review before merging a PR
+short_failure_message: Code owner reviews are not required, allowing pull requests to bypass designated ownership approval.
 severity:
   value: low
 context:

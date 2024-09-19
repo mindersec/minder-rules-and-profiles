@@ -3,6 +3,7 @@ release_phase: alpha
 type: rule-type
 name: security_policy
 display_name: Ensure a security policy file exists
+short_failure_message: Security policy file is missing, which may leave the repository without clear security guidelines.
 severity:
   value: medium
 context:
