@@ -4,6 +4,7 @@ release_phase: alpha
 type: rule-type
 name: repo_workflow_access_level
 display_name: Limit the external access of private repositories
+short_failure_message: External access to workflows in this private repository is not restricted to the appropriate level, risking unauthorized access.
 severity:
   value: medium
 context:

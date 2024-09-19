@@ -4,6 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_require_linear_history
 display_name: Forbid merge commits
+short_failure_message: Branch does not enforce a linear history, allowing merge commits that complicate Git history.
 severity:
   value: info
 context:

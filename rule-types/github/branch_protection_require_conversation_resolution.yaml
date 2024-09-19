@@ -4,6 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_require_conversation_resolution
 display_name: Prevent merging PRs with unresolved conversations
+short_failure_message: PRs can be merged with unresolved conversations, potentially bypassing important feedback.
 severity:
   value: info
 context:

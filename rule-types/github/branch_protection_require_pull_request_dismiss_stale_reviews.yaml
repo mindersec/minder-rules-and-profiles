@@ -4,6 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_require_pull_request_dismiss_stale_reviews
 display_name: Forbid merging PRs with un-approved commits
+short_failure_message: Stale reviews are not dismissed after new commits, allowing pull requests to be merged without re-approval.
 severity:
   value: info
 context:

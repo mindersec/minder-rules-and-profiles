@@ -4,6 +4,7 @@ release_phase: alpha
 type: rule-type
 name: security_insights_dep_policy
 display_name: Verify a dependency policy exists in the Security Insights file
+short_failure_message: Dependency policy is missing from the Security Insights file, potentially leaving dependency management unaddressed.
 severity:
   value: low
 context:

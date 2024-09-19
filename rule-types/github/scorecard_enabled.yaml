@@ -4,6 +4,7 @@ release_phase: alpha
 type: rule-type
 name: scorecard_enabled
 display_name: Enable the Scorecard GitHub Action
+short_failure_message: Scorecard Action is not configured, missing important security best practices checks.
 severity:
   value: medium
 context:

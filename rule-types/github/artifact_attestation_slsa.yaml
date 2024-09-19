@@ -4,6 +4,7 @@ release_phase: alpha
 type: rule-type
 name: artifact_attestation_slsa
 display_name: Verify the integrity of an artifact using SLSA
+short_failure_message: Artifact lacks verified SLSA provenance attestation, risking build integrity and security.
 context:
   provider: github
 description: |
