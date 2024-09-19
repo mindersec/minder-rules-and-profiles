@@ -10,11 +10,9 @@ alert: "off"
 remediate: "off"
 repository:
   - type: secret_scanning
-    def:
-      enabled: true
+    def: {}
   - type: secret_push_protection
-    def:
-      enabled: true
+    def: {}
   - type: codeql_enabled
     def:
       languages: [go, javascript, typescript]

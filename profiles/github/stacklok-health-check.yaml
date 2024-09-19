@@ -12,12 +12,10 @@ repository:
   - type: secret_scanning
     name: "Secret Scanning is enabled"
     def:
-      enabled: true
       skip_private_repos: true
   - type: secret_push_protection
     name: "Secret push protection is enabled"
     def:
-      enabled: true
       skip_private_repos: true
   - type: actions_check_pinned_tags
     name: "GitHub Actions workflows reference pinned tags"
@@ -29,8 +27,7 @@ repository:
         - slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml
   - type: branch_protection_allow_force_pushes
     name: "Branch Protection disallows force pushes"
-    def: 
-      allow_force_pushes: false
+    def: {}
     params:
       branch: ""
   - type: branch_protection_require_pull_request_dismiss_stale_reviews
