@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_enforce_admins
 display_name: Enforce branch protection rules for admins
-short_failure_message: Branch protection rules are not enforced for administrators, risking unauthorized changes.
+short_failure_message: Branch protection rules are not enforced for administrators
 severity:
   value: medium
 context:

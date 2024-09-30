@@ -4,7 +4,7 @@ release_phase: alpha
 type: rule-type
 name: github_actions_allowed
 display_name: Limit the permitted GitHub actions by type
-short_failure_message: GitHub Actions permissions are not properly configured, potentially allowing unauthorized actions to run.
+short_failure_message: GitHub Actions permissions are not properly configured
 severity:
   value: medium
 context:

@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: no_open_security_advisories
 display_name: Verify there are no open security advisories
-short_failure_message: Open security advisories found or security advisories are not enabled, risking vulnerabilities in the repository.
+short_failure_message: Open security advisories found or security advisories are not enabled
 severity:
   value: low
 context:

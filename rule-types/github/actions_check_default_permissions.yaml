@@ -3,7 +3,7 @@ release_phase: alpha
 type: rule-type
 name: actions_check_default_permissions
 display_name: Ensure GitHub Actions workflows set their permissions
-short_failure_message: GitHub Actions workflows do not explicitly set permissions, leading to potential overexposure of repository access.
+short_failure_message: GitHub Actions workflows do not explicitly set permissions
 severity:
   value: medium
 context:

@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: codeql_enabled
 display_name: Enable CodeQL for vulnerability scanning
-short_failure_message: CodeQL is not enabled, leaving the repository vulnerable to undiscovered security issues.
+short_failure_message: CodeQL is not enabled
 severity:
   value: medium
 context:

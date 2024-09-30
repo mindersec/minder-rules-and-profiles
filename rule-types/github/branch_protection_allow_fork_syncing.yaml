@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_allow_fork_syncing
 display_name: Allow forks to pull changes from locked branches
-short_failure_message: Fork syncing is not enabled, preventing users from pulling changes from upstream when the branch is locked.
+short_failure_message: Fork syncing is not enabled
 severity:
   value: low
 context:

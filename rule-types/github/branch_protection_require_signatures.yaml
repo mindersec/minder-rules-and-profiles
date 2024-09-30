@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_require_signatures
 display_name: Require commits to be signed
-short_failure_message: Commits are not required to be signed, allowing unverified commits to be pushed to the branch.
+short_failure_message: Commits are not required to be signed
 severity:
   value: medium
 context:

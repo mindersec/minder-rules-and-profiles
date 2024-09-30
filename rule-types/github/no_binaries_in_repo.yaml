@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: no_binaries_in_repo
 display_name: Ensure no binary artifacts are committed
-short_failure_message: Binary artifacts found in the repository, which should be removed and managed through a package manager.
+short_failure_message: Binary artifacts found in the repository
 severity:
   value: medium
 context:

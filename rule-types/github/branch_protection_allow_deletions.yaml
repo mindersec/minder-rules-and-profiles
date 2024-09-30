@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_allow_deletions
 display_name: Prevent permanent branch deletion
-short_failure_message: Branch protection allows deletions, risking the unintended removal of important branches.
+short_failure_message: Branch protection allows deletions
 severity:
   value: medium
 context:
