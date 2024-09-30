@@ -4,7 +4,7 @@ release_phase: alpha
 type: rule-type
 name: default_workflow_permissions
 display_name: Customize the default GitHub workflow permissions
-short_failure_message: Default GitHub workflow permissions are not properly configured, increasing the risk of unauthorized access or actions.
+short_failure_message: Default GitHub workflow permissions are not properly configured
 severity:
   value: high
 context:

@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_enabled
 display_name: Ensure a branch protection rule is set up
-short_failure_message: No branch protection rule is set, leaving the branch vulnerable to force pushes and deletions.
+short_failure_message: No branch protection rule is set
 severity:
   value: high
 context:

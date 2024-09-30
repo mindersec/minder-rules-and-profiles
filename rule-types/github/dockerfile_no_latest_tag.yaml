@@ -4,7 +4,7 @@ release_phase: alpha
 type: rule-type
 name: dockerfile_no_latest_tag
 display_name: Prevent Dockerfile from using volatile 'latest' tag
-short_failure_message: Dockerfile uses the 'latest' tag, which may lead to unpredictable behavior due to version volatility.
+short_failure_message: Dockerfile uses the 'latest' tag
 severity:
   value: medium
 context:

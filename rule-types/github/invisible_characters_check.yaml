@@ -3,7 +3,7 @@ release_phase: beta
 type: rule-type
 name: invisible_characters_check
 display_name: Check for invisible characters in pull requests
-short_failure_message: Pull request contains invisible characters that may hide malicious code.
+short_failure_message: Pull request contains invisible characters
 severity:
   value: high
 context:

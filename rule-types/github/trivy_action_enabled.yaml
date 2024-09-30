@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: trivy_action_enabled
 display_name: Ensure Trivy is enabled for vulnerability scanning
-short_failure_message: Trivy action is not enabled, leaving the repository vulnerable to unscanned security risks.
+short_failure_message: Trivy action is not enabled
 severity:
   value: medium
 context:

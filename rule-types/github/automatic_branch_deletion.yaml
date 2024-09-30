@@ -4,7 +4,7 @@ release_phase: alpha
 type: rule-type
 name: automatic_branch_deletion
 display_name: Automatically delete branch after merge
-short_failure_message: Automatic branch deletion is not enabled after pull request merges, leading to potential branch clutter.
+short_failure_message: Automatic branch deletion is not enabled after pull request merges
 severity:
   value: info
 context:

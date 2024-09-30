@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: branch_protection_allow_force_pushes
 display_name: Prevent overwriting git history
-short_failure_message: Force pushes are allowed, risking overwriting branch history and causing potential data loss.
+short_failure_message: Force pushes are allowed
 severity:
   value: medium
 context:

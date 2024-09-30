@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: license
 display_name: Ensure a license file is present
-short_failure_message: License file is missing or does not match the expected license type.
+short_failure_message: License file does not match the expected license type
 severity:
   value: low
 context:

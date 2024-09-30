@@ -4,7 +4,7 @@ release_phase: beta
 type: rule-type
 name: repo_action_allow_list
 display_name: Ensure that only allowed GitHub actions run in a repository
-short_failure_message: Repository uses actions not allowed by the profile, potentially compromising security.
+short_failure_message: Repository uses actions not allowed by the profile
 severity:
   value: info
 context:
