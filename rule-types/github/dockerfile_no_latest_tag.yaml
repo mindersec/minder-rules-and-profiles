@@ -29,7 +29,6 @@ def:
   ingest:
     type: git
     git:
-      branch: main
   # Defines the configuration for evaluating data ingested against the given profile
   # This example verifies that image in the Dockerfile do not use the 'latest' tag
   # For example, this will fail:
