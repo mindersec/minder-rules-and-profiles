@@ -7,8 +7,7 @@ display_name: Ensure a license file is present
 short_failure_message: License file does not match the expected license type
 severity:
   value: low
-context:
-  provider: github
+context: {}
 description: |
   Verifies that there's a license file of a given type present in the repository.
 guidance: |
@@ -47,7 +46,6 @@ def:
   ingest:
     type: git
     git:
-      branch: main
   # Defines the configuration for evaluating data ingested against the given profile
   # The following example checks for the presence of a license file and the license type.
   # If the license type is not specified (license_type = ""), then only the presence of the license file is checked.
