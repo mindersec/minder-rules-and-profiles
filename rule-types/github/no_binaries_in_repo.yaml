@@ -28,7 +28,6 @@ def:
   ingest:
     type: git
     git:
-      branch: main
   eval:
     type: rego
     rego:
