@@ -7,8 +7,7 @@ display_name: Prevent Dockerfile from using volatile 'latest' tag
 short_failure_message: Dockerfile uses the 'latest' tag
 severity:
   value: medium
-context:
-  provider: github
+context: {}
 description: Verifies that the Dockerfile image references don't use the latest tag
 guidance: |
   Ensure that the Dockerfile does not use the `latest` tag for images.
