@@ -1,0 +1,53 @@
+---
+version: v1
+type: rule-type
+name: gitlab_require_merge_requests
+display_name: Require everyone to submit merge requests for a protected branch
+short_failure_message: Branch is not set to require merge requests
+severity:
+  value: medium
+context:
+  provider: gitlab
+release_phase: alpha
+description: |
+  Merge requests are a way to propose changes to a branch and allow for code review before merging.
+  This rule leverages the protected branch feature to ensure that all changes to a branch are submitted via a merge request.
+guidance: |
+  Ensure that the given branch is set as protected. You should ensure that the "Allowed to merge"
+  setting is set to "Maintainers" or "Developers + Maintainers", and that the "Allowed to push and merge"
+  setting is set to "No one".
+
+  For more information, see the [GitLab documentation](https://docs.gitlab.com/ee/user/project/protected_branches.html).
+def:
+  in_entity: repository
+  rule_schema: {}
+  param_schema:
+    properties:
+      branch:
+        type: string
+        description: "The name of the branch to check. If left empty, the default branch will be used."
+  ingest:
+    type: rest
+    rest:
+      endpoint: '{{ $branch_param := index .Params "branch" }}/projects/{{.Entity.RepoId}}/protected_branches?search={{if ne $branch_param "" }}{{ $branch_param }}{{ else }}{{ .Entity.DefaultBranch }}{{ end }}'
+      parse: json
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        default allow := false
+
+        allow {
+          # Check that there is at least one protected branch
+          count(input.ingested) > 0
+
+          # Check there's only one access level set for pushing to the branch
+          count(input.ingested[_].push_access_levels) == 1
+
+          # Check that the access level is to "no one"
+          input.ingested[_].push_access_levels[_].access_level == 0
+        }
+
