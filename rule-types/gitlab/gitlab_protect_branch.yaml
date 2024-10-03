@@ -1,0 +1,51 @@
+---
+version: v1
+type: rule-type
+name: gitlab_protect_branch
+display_name: Set a branch as protected
+short_failure_message: Branch is not set as protected
+severity:
+  value: medium
+context:
+  provider: gitlab
+release_phase: alpha
+description: |
+  Protected branches are useful for ensuring that certain branches cannot be deleted or force-pushed to.
+  This rule checks if a branch is set as protected and that allowing force-pushes is disabled.
+guidance: |
+  Ensure that the given branch is set as protected to prevent accidental deletions or force-pushes.
+
+  For more information, see the [GitLab documentation](https://docs.gitlab.com/ee/user/project/protected_branches.html).
+def:
+  in_entity: repository
+  rule_schema: {}
+  param_schema:
+    properties:
+      branch:
+        type: string
+        description: "The name of the branch to check. If left empty, the default branch will be used."
+  ingest:
+    type: rest
+    rest:
+      endpoint: '{{ $branch_param := index .Params "branch" }}/projects/{{.Entity.RepoId}}/protected_branches?search={{if ne $branch_param "" }}{{ $branch_param }}{{ else }}{{ .Entity.DefaultBranch }}{{ end }}'
+      parse: json
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        default allow := false
+
+        allow {
+          # Check that there is at least one protected branch
+          count(input.ingested) > 0
+
+          # Check that the branch is protected
+          some i
+
+          # Check that the branch is protected
+          input.ingested[i].allow_force_push == false
+        }
+
