@@ -1,0 +1,56 @@
+---
+version: v1
+type: rule-type
+name: gitlab_dependency_scanning_enabled
+display_name: Enable GitLab Dependency Scanning
+short_failure_message: GitLab Dependency Scanning is not enabled
+severity:
+  value: medium
+context:
+  provider: gitlab
+release_phase: alpha
+description: |
+  GitLab Dependency Scanning is a feature that helps you find known vulnerabilities in your dependencies. It is recommended to enable this feature to help secure your codebase.
+
+  For more information, see the [GitLab documentation](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/).
+guidance: |
+  Ensure that GitLab Dependency Scanning is enabled for the repository. This can be done by navigating to the repository settings in GitLab and enabling the Dependency Scanning feature.
+
+  To enable GitLab Dependency Scanning:
+  * Enable [Auto DevOps](https://docs.gitlab.com/ee/topics/autodevops/) in the project settings.
+  * Add the following to your `.gitlab-ci.yml` file:
+
+  ```yaml
+  include:
+    - template: Dependency-Scanning.gitlab-ci.yml
+  ```
+
+  For more information, see the [GitLab documentation](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/).
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+    git:
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        default allow := false
+
+        allow {
+          # Read the .gitlab-ci.yml file
+          pipelinestr := file.read("./.gitlab-ci.yml")
+
+          pipeline := yaml.unmarshal(pipelinestr)
+
+          # Check if the Dependency-Scanning.gitlab-ci.yml template is included
+          includes := pipeline.include[_]
+
+          # Check that one of the included templates is Dependency-Scanning.gitlab-ci.yml
+          includes.template == "Security/Dependency-Scanning.gitlab-ci.yml"
+        }
+
