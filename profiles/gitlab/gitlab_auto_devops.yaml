@@ -1,0 +1,13 @@
+---
+# Profile showing off GitLab Auto DevOps capabilities
+version: v1
+type: profile
+name: gitlab-autodevops-profile
+display_name: Gitlab Auto DevOps showcase
+context:
+  provider: gitlab
+alert: "off"
+remediate: "off"
+repository:
+  - type: gitlab_dependency_scanning_enabled
+    def: {}
