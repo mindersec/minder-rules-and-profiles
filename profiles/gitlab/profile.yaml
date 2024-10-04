@@ -1,0 +1,25 @@
+---
+# Profile showing off some of the Gitlab capabilities
+version: v1
+type: profile
+name: gitlab-profile
+display_name: Gitlab showcase
+context:
+  provider: gitlab
+alert: "off"
+remediate: "off"
+repository:
+  - type: license
+    def:
+      license_filename: LICENSE
+      license_type: MIT
+  - type: dockerfile_no_latest_tag
+    def: {}
+  - type: gitlab_protect_branch
+    def: {}
+    params:
+      branch: master
+  - type: gitlab_require_merge_requests
+    def: {}
+    params:
+      branch: master
