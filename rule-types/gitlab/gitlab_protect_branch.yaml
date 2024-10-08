@@ -37,6 +37,7 @@ def:
         package minder
 
         default allow := false
+        default message := "Branch is not set as protected"
 
         allow {
           # Check that there is at least one protected branch

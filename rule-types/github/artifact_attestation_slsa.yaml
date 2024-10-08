@@ -91,6 +91,7 @@ def:
 
         default allow := false
         default skip := false
+        default message := "Cannot verify SLSA provenance"
         
         default workflow_ref := "refs/heads/main"
         workflow_ref := input.profile.workflow_ref

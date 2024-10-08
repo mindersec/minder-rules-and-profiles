@@ -65,6 +65,7 @@ def:
         package minder
 
         default allow := false
+        default message := "Dependabot is not configured"
 
         # Set allow if we don't need to skip and the rule evaluation passes
         allow {

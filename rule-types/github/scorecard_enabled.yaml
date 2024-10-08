@@ -69,6 +69,7 @@ def:
         package minder
 
         default allow := false
+        default message := "Scorecard Action is not configured for any workflow"
 
         allow {
             # List all workflows

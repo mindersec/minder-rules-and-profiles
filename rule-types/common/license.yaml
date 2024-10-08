@@ -59,16 +59,23 @@ def:
         import future.keywords.if
 
         default allow := false
+        fileStr := file.read(input.profile.license_filename)
 
         allow if {
             # Read the license file and check if it contains the license type
-            fileStr := file.read(input.profile.license_filename)
             contains(fileStr, input.profile.license_type)
         } else if {
             # Check if the file exists and the license type is left blank
             file.exists(input.profile.license_filename)
             input.profile.license_type == ""
         }
+        
+        message := sprintf("License file %v does not exist", [input.profile.license_filename]) if {
+            not file.exists(input.profile.license_filename)
+        } else := sprintf("License file %v does not match the expected license type %v", [input.profile.license_filename, input.profile.license_type]) if {
+            not contains(fileStr, input.profile.license_type)
+        }
+
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory

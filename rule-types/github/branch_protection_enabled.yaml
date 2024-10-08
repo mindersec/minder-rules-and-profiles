@@ -60,6 +60,7 @@ def:
         import future.keywords.if
         
         default allow := false
+        default message := "No branch protection rule is set"
         
         allow if {
           input.ingested.url != ""
