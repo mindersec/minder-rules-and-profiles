@@ -39,6 +39,7 @@ def:
         package minder
 
         default allow := false
+        default message := "Merge requests are not required"
 
         allow {
           # Check that there is at least one protected branch

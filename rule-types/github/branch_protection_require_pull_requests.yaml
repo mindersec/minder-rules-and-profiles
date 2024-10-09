@@ -70,6 +70,7 @@ def:
         import future.keywords.if
         
         default allow := false
+        default message := "Pull requests are not required"
         
         allow if {
           input.ingested.required_pull_request_reviews.url != ""

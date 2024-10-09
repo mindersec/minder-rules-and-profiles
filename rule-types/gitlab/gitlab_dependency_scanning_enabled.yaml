@@ -40,6 +40,7 @@ def:
         package minder
 
         default allow := false
+        default message := "GitLab Dependency Scanning is not enabled"
 
         allow {
           # Read the .gitlab-ci.yml file

@@ -69,6 +69,19 @@ def:
             count(job.permissions) >= 0
           }
         }
+        
+        # Get the list of workflows that do not have permissions and create the error message
+        missing_permissions_workflows = [workflow_name | 
+          filename := workflows[_]  # Iterate over each workflow filename
+          workflowstr := file.read(filename)
+          workflow := yaml.unmarshal(workflowstr) 
+
+          not permissions_ok(workflow)
+          workflow_name = workflow.name 
+        ]
+
+        # Construct the final message
+        message := sprintf("Workflows %s do not explicitly set their permissions", [concat(",", missing_permissions_workflows)])
   # We don't have a remediation method in place yet.
 
   # Defines the configuration for alerting on the rule

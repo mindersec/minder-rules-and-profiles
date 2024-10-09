@@ -54,6 +54,7 @@ def:
         package minder
 
         default allow := false
+        default message := "Trivy action is not enabled"
 
         allow {
             # List all workflows

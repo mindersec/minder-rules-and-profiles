@@ -59,6 +59,7 @@ def:
         package minder
 
         default allow := false
+        default message := "CodeQL is not enabled"
 
         allow {
             # List all workflows
