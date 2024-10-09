@@ -27,13 +27,6 @@ def:
   rule_schema:
     type: object
     properties:
-      languages:
-        type: array
-        items:
-          type: string
-        description: |
-          Only applicable for remediation.
-        default: []
       schedule_interval:
         type: string
         description: |
