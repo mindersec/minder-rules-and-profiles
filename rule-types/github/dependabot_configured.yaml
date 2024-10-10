@@ -35,11 +35,6 @@ def:
         description: |
           The package ecosystem that the rule applies to.
           For example pip, gomod, npm, docker, github-actions, etc.
-      schedule_interval:
-        type: string
-        description: |
-          This option is no longer used. It's, however marked as required, so we can't remove
-          it for backwards compatibility.
       apply_if_file:
         type: string
         description: |
@@ -47,7 +42,6 @@ def:
           This is useful for rules that are only applicable to certain types of repositories.
     required:
       - package_ecosystem
-      - schedule_interval
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: git
