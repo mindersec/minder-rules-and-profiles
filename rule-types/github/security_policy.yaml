@@ -24,8 +24,6 @@ def:
         description: |
           Path to the security policy file
         default: SECURITY.md
-    required:
-      - filename
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: git
