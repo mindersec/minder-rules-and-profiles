@@ -22,7 +22,7 @@ guidance: |
 
   ```yaml
   include:
-    - template: Dependency-Scanning.gitlab-ci.yml
+    - template: Jobs/Dependency-Scanning.gitlab-ci.yml
   ```
 
   For more information, see the [GitLab documentation](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/).
@@ -52,6 +52,6 @@ def:
           includes := pipeline.include[_]
 
           # Check that one of the included templates is Dependency-Scanning.gitlab-ci.yml
-          includes.template == "Security/Dependency-Scanning.gitlab-ci.yml"
+          includes.template == "Jobs/Dependency-Scanning.gitlab-ci.yml"
         }
 
