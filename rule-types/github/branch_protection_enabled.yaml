@@ -30,7 +30,9 @@ def:
     properties:
       branch:
         type: string
-        description: "The name of the branch to check. If not specified, the repository's default branch will be used."
+        description: "The name of the branch to check. If left empty, the default branch will be used."
+    required:
+      - branch
   rule_schema: {}
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
