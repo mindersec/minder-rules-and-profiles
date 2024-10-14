@@ -44,6 +44,8 @@ def:
         description: |
           The path to the Security Insights file
         default: SECURITY-INSIGHTS.yml
+    required:
+      - filename
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: git
