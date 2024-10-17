@@ -16,4 +16,4 @@ repository:
   - type: codeql_enabled
     def:
       languages: [go, javascript, typescript]
-      schedule_interval: '30 4-6 * * *'
+      schedule_interval: '30 4 * * 0'

@@ -16,7 +16,7 @@ repository:
   - type: codeql_enabled
     def:
       languages: [go, javascript, typescript, python]
-      schedule_interval: '30 4-6 * * *'
+      schedule_interval: '30 4 * * 0'
   - type: dependabot_configured
     def: 
       package_ecosystem: gomod
