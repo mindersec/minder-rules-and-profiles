@@ -8,7 +8,9 @@ tests:
     git:
       repo_base: license_should_be_mit
   - name: "License missing"
-    def: {}
+    def:
+      license_filename: LICENSE
+      license_type: MIT
     params: {}
     expect: "fail"
     git:

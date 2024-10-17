@@ -138,6 +138,10 @@ func TestRuleTypes(t *testing.T) {
 		rte, err := rtengine.NewRuleTypeEngine(ctx, rt, tk)
 		require.NoError(t, err)
 
+		val := rte.GetRuleInstanceValidator()
+		require.NoError(t, val.ValidateRuleDefAgainstSchema(tc.Def), "Failed to validate rule definition against schema")
+		require.NoError(t, val.ValidateParamsAgainstSchema(tc.Params), "Failed to validate params against schema")
+
 		if tk.ShouldOverrideIngest() {
 			rte.WithCustomIngester(tk)
 		}
