@@ -20,7 +20,7 @@ jobs:
           check-latest: true
 
       - name: Lint Rule Types
-        run: go run github.com/stacklok/minder/cmd/dev@latest ruletype lint -r rule-types/github --skip-rego
+        run: go run github.com/mindersec/minder/cmd/dev@latest ruletype lint -r rule-types/github --skip-rego
 
       - name: Ensure rule type release_phase is set
         run: |
