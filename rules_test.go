@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -56,7 +57,16 @@ func (e *EntityVersionWrapper) UnmarshalYAML(value *yaml.Node) error {
 		return err
 	}
 
-	e.Type = entity["type"].(string)
+	typ, ok := entity["type"]
+	if !ok {
+		return errors.New("missing type field from entity definition")
+	}
+
+	e.Type, ok = typ.(string)
+	if !ok {
+		return errors.New("entity type field must be a string")
+	}
+
 	switch e.Type {
 	case "repo", "repository":
 		e.Entity = &minderv1.Repository{}
