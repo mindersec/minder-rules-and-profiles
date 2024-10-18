@@ -1,0 +1,21 @@
+---
+version: '3'
+
+tasks:
+  test:
+    desc: Run rule type tests
+    summary: |
+      Rule type tests are tests that are run against the rule types.
+      
+      In order to implement a rule type test, you must create a test suite file
+      that lives alongside the rule type file. The test suite file must have the
+      same name as the rule type file, but with a `.test.yaml` extension. For example, if
+      the rule type is called `my_rule_type.yaml` then the test suite file must be called
+      `my_rule_type.test.yaml`.
+      
+      Note you must also provide a test data directory that contains the test data files.
+      The test data directory must be named as the rule type file, but with a `.testdata`
+      suffix. For example, if the rule type is called `my_rule_type.yaml` then the test data
+      directory must be called `my_rule_type.testdata`.
+    cmds:
+      - go test -json -v ./... | gotestfmt -hide "all"
