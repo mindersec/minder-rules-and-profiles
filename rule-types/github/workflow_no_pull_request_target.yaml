@@ -1,0 +1,63 @@
+---
+version: v1
+release_phase: beta
+type: rule-type
+name: workflow_no_pull_request_target
+display_name: Ensure GitHub Actions workflows do not use the pull_request_target event
+short_failure_message: GitHub Actions workflows use the pull_request_target event
+severity:
+  value: high
+context:
+  provider: github
+description: |
+  Alerts on GitHub Actions workflows that use the pull_request_target event.
+
+  The pull_request_target event allows GitHub Actions workflows to run
+  on pull requests from forks. This can be a security risk, as the event may,
+  if used improperly, allow untrusted code to run in the repository.
+
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request_target).
+guidance: |
+  Ensure that GitHub Actions workflows do not use the pull_request_target event.
+
+  Either remove the pull_request_target event from the workflow and use the
+  pull_request event instead, remove the workflow completely or split the workflow
+  into a privileged one that uses pull_request_target and a non-privileged one
+  triggered on workflow_run.
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: constraints
+      def: |
+        package minder
+
+        # List all workflows
+        workflows := file.ls("./.github/workflows")
+
+        # Read all workflows and check for pull_request_target trigger
+        violations[{"msg": msg}] {
+            some w
+
+            # Read the workflow file
+            workflowstr := file.read(workflows[w])
+            parsed := parse_yaml(workflowstr)
+
+            jq_query := ".on | (type == \"string\" and . == \"pull_request_target\") or (type == \"object\" and has(\"pull_request_target\")) or (type == \"array\" and any(.[]; . == \"pull_request_target\"))"
+
+            jq.is_true(parsed, jq_query)
+
+            # Construct violation message if "pull_request_target" is found
+            msg := sprintf("Workflow '%v' contains 'pull_request_target' trigger in its 'on' block", [workflows[w]])
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}
