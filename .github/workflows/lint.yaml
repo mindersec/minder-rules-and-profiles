@@ -33,6 +33,12 @@ jobs:
           # Iterate over all YAML files in the directory
           for file in "$DIRECTORY"/*.yaml; do
             echo "Checking file: $file"
+          
+            # Skip .test.yaml and .test.yml files
+            if [[ "$file" == *".test.yaml" ]] || [[ "$file" == *".test.yml" ]]; then
+              echo "Skipping test file: $file"
+              continue
+            fi
 
             # Extract the value of the "release_phase" field
             release_phase_value=$(yq e '.release_phase' "$file")
