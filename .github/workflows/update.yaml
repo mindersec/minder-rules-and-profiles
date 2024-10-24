@@ -1,0 +1,65 @@
+name: Update
+on:
+  pull_request:
+
+jobs:
+  ruletype-update:
+    - name: Checkout current
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
+
+    - name: Checkout comparison branch (main) in subdirectory
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
+      with:
+        # Checkout the comparison branch (main) into a subdirectory
+        ref: main
+        path: before_files
+
+    - name: Set up Go
+      uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5
+      with:
+        check-latest: true
+
+    - name: Determine Changed Files
+      run: |
+        # Fail the script if any command fails
+        set -e
+
+        # Determine the current branch and compare branch (default to 'main')
+        GITHUB_BRANCH=${GITHUB_REF##*/}
+        COMPARE_BRANCH="main"
+
+        # Show changed files between the current branch and the comparison branch
+        echo "Comparing $GITHUB_BRANCH with $COMPARE_BRANCH..."
+        CHANGED_FILES=$(git diff --name-only origin/$COMPARE_BRANCH...$GITHUB_BRANCH)
+
+        if [ -z "$CHANGED_FILES" ]; then
+          echo "No changes found."
+        else
+          echo "Files changed in branch $GITHUB_BRANCH (compared to $COMPARE_BRANCH):"
+          echo "$CHANGED_FILES"
+
+          # Set the output to be used in later GitHub Action steps
+          echo "changed_files=$CHANGED_FILES" >> $GITHUB_ENV
+        fi
+
+    - name: Run go command on each changed file
+      run: |
+        # Fail the script if any command fails
+        set -e
+        
+        # Loop through the changed files and run the go command for each
+        for FILE in ${{ env.changed_files }}; do
+          echo "Processing file: $FILE"
+
+          # Path to the "before" file in the subdirectory (from main branch)
+          BEFORE_FILE="before_files/$FILE"
+          AFTER_FILE="$FILE"
+
+          if [ -f "$BEFORE_FILE" ]; then
+            echo "Running ruletype validate-update command for $BEFORE_FILE and $AFTER_FILE..."
+            # Run the go command with the before and after files
+            go run github.com/mindersec/minder/cmd/dev@latest ruletype validate-update --before "$BEFORE_FILE" --after "$AFTER_FILE"
+          else
+            echo "Warning: $BEFORE_FILE does not exist, skipping."
+          fi
+        done
