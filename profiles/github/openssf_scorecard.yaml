@@ -1,0 +1,88 @@
+---
+# Profile to analyze several of the OpenSSF Scorecard settings
+version: v1
+type: profile
+name: openssf_scorecard
+display_name: OpenSSF Scorecard
+context:
+  provider: github
+alert: "off"
+remediate: "off"
+repository:
+  - type: no_binaries_in_repo          # Binary-Artifacts
+  - type: branch_protection_enabled    # Branch-Protection
+    def:
+      branch: ""
+  # CI-Tests
+  # CII-Best-Practices
+  - type: branch_protection_require_pull_request_approving_review_count # Code-Review
+    def:
+      branch: ""
+  # Contributors
+  - type: dependabot_configured        # Dependency-Update-Tool
+    name: go_dependabot
+    def:
+      package_ecosystem: gomod
+      schedule_interval: ""
+      apply_if_file: go.mod
+  - type: dependabot_configured
+    name: npm_dependabot
+    def:
+      package_ecosystem: npm
+      schedule_interval: ""
+      apply_if_file: package.json
+  - type: dependabot_configured
+    name: pypi_dependabot
+    def:
+      package_ecosystem: pypi
+      schedule_interval: ""
+      apply_if_file: requirements.txt
+  # Fuzzing
+  - type: license                      # License
+    def:
+      license_filename: LICENSE
+      license_type: ""
+  # Maintained
+  - type: actions_check_pinned_tags    # Pinned-Dependencies for Actions
+  # Packaging
+  - type: codeql_enabled               # SAST
+    def:
+      languages: [go, javascript, typescript]
+      schedule_interval: '30 4-6 * * *'
+  - type: security_policy              # Security-Policy
+    def:
+      filename: SECURITY.md
+  - type: default_workflow_permissions # Token-Permissions
+artifact:
+  # Signed-Releases
+  - type: artifact_signature
+    params:
+      tags: [main]
+      name: test
+    def:
+      is_signed: true
+      is_verified: true
+      is_bundle_verified: true
+pull_request:
+  # Vulnerabilities
+  - type: pr_vulnerability_check
+    def:
+      action: review
+      ecosystem_config:
+        - name: npm
+          vulnerability_database_type: osv
+          vulnerability_database_endpoint: https://api.osv.dev/v1/query
+          package_repository:
+            url: https://registry.npmjs.org
+        - name: go
+          vulnerability_database_type: osv
+          vulnerability_database_endpoint: https://api.osv.dev/v1/query
+          package_repository:
+            url: https://proxy.golang.org
+          sum_repository:
+            url: https://sum.golang.org
+        - name: pypi
+          vulnerability_database_type: osv
+          vulnerability_database_endpoint: https://api.osv.dev/v1/query
+          package_repository:
+            url: https://pypi.org/pypi
