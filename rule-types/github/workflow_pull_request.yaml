@@ -1,0 +1,55 @@
+---
+version: v1
+release_phase: beta
+type: rule-type
+name: workflow_pull_request
+display_name: Ensure there exists a GitHub Actions workflow that uses the pull_request event
+short_failure_message: GitHub Actions workflows do not use the pull_request event
+severity:
+  value: high
+context:
+  provider: github
+description: |
+  Alerts if there are no GitHub Actions workflows that use the pull_request event.
+
+  Workflows that use the pull_request event are often used to run e.g. CI/CD
+  pipelines and are indicators of a healthy repository.
+guidance: |
+  Ensure that there exists at least one GitHub Actions workflow that uses the
+  pull_request event.
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import future.keywords.if
+
+        # List all workflows
+        workflows := file.ls("./.github/workflows")
+
+        # Read all workflows and check for pull_request trigger
+        allow if {
+            some w
+
+            # Read the workflow file
+            workflowstr := file.read(workflows[w])
+            parsed := parse_yaml(workflowstr)
+            print(parsed)
+
+            jq_query := ".on | (type == \"string\" and . == \"pull_request\") or (type == \"object\" and has(\"pull_request\")) or (type == \"array\" and any(.[]; . == \"pull_request\"))"
+
+            jq.is_true(parsed, jq_query)
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}
