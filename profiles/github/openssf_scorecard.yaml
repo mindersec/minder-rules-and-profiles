@@ -16,6 +16,8 @@ repository:
     params:
       branch: ""
   # CI-Tests
+  - type: workflow_pull_request
+    def: {}
   # CII-Best-Practices
   - type: branch_protection_require_pull_request_approving_review_count # Code-Review
     def:
