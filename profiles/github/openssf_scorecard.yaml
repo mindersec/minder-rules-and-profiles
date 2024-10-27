@@ -10,13 +10,17 @@ alert: "off"
 remediate: "off"
 repository:
   - type: no_binaries_in_repo          # Binary-Artifacts
+    def: {}
   - type: branch_protection_enabled    # Branch-Protection
-    def:
+    def: {}
+    params:
       branch: ""
   # CI-Tests
   # CII-Best-Practices
   - type: branch_protection_require_pull_request_approving_review_count # Code-Review
     def:
+      required_approving_review_count: 1
+    params:
       branch: ""
   # Contributors
   - type: dependabot_configured        # Dependency-Update-Tool
@@ -44,6 +48,7 @@ repository:
       license_type: ""
   # Maintained
   - type: actions_check_pinned_tags    # Pinned-Dependencies for Actions
+    def: {}
   # Packaging
   - type: codeql_enabled               # SAST
     def:
@@ -53,12 +58,14 @@ repository:
     def:
       filename: SECURITY.md
   - type: default_workflow_permissions # Token-Permissions
+    def:
+      default_workflow_permissions: read
+      can_approve_pull_request_reviews: false
 artifact:
   # Signed-Releases
   - type: artifact_signature
     params:
       tags: [main]
-      name: test
     def:
       is_signed: true
       is_verified: true
