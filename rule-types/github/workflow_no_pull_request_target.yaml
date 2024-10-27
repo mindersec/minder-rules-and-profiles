@@ -57,6 +57,38 @@ def:
             # Construct violation message if "pull_request_target" is found
             msg := sprintf("Workflow '%v' contains 'pull_request_target' trigger in its 'on' block", [workflows[w]])
         }
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Replace pull_request_target with pull_request in GitHub Actions workflows"
+      body: |
+        This is a Minder automated pull request.
+
+        This pull request replaces the 'pull_request_target' event with the 'pull_request' event in GitHub Actions workflows.
+
+        The 'pull_request_target' event allows GitHub Actions workflows to run
+        on pull requests from forks. This can be a security risk, as the event
+        may, if used improperly, allow untrusted code to run in the
+        repository.
+
+        For more information, see
+        https://securitylab.github.com/resources/github-actions-preventing-pwn-requests
+      method: minder.yq.evaluate
+      params:
+        expression: |
+          .on |= (
+            select(type == "!!map") | with_entries(select(.key != "pull_request_target"))
+          ) |
+          .on |= (
+            select(type == "!!seq") | map(select(. != "pull_request_target"))
+          ) |
+          (.on | select(. == "pull_request_target")) = "workflow_dispatch" |
+          (.on |= (select(length > 0) // "workflow_dispatch"))
+        patterns:
+          - pattern: ".github/workflows/*.yml"
+            type: glob
+          - pattern: ".github/workflows/*.yaml"
+            type: glob
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
