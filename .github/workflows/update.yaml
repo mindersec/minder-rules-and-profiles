@@ -1,17 +1,25 @@
 name: Update
 on:
   pull_request:
+    branches: [main]
 
 jobs:
   ruletype-update:
+    runs-on: ubuntu-latest
+    name: Check ruletype validate-update
+    steps:
     - name: Checkout current
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      with:
+        # See https://stackoverflow.com/a/74268200 -- the PR branch has a single
+        # commit merging the two branches, so we need the last 2 commits.
+        fetch-depth: 2
 
     - name: Checkout comparison branch (main) in subdirectory
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       with:
-        # Checkout the comparison branch (main) into a subdirectory
-        ref: main
+        # Checkout the comparison branch into a subdirectory
+        ref: ${{ github.event.pull_request.head.sha }}
         path: before_files
 
     - name: Set up Go
@@ -20,36 +28,44 @@ jobs:
         check-latest: true
 
     - name: Determine Changed Files
+      id: changes
       run: |
         # Fail the script if any command fails
         set -e
 
-        # Determine the current branch and compare branch (default to 'main')
-        GITHUB_BRANCH=${GITHUB_REF##*/}
-        COMPARE_BRANCH="main"
-
         # Show changed files between the current branch and the comparison branch
-        echo "Comparing $GITHUB_BRANCH with $COMPARE_BRANCH..."
-        CHANGED_FILES=$(git diff --name-only origin/$COMPARE_BRANCH...$GITHUB_BRANCH)
+        # See https://stackoverflow.com/a/74268200 for why diffing with HEAD^1 is used
+        CHANGED_FILES="$(git diff --name-only -r HEAD^1 HEAD)"
 
         if [ -z "$CHANGED_FILES" ]; then
           echo "No changes found."
         else
-          echo "Files changed in branch $GITHUB_BRANCH (compared to $COMPARE_BRANCH):"
+          echo "Files changed in branch $GITHUB_REF (compared to base):"
           echo "$CHANGED_FILES"
 
           # Set the output to be used in later GitHub Action steps
-          echo "changed_files=$CHANGED_FILES" >> $GITHUB_ENV
+          echo "changed_files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$CHANGED_FILES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
         fi
 
     - name: Run go command on each changed file
+      env:
+        CHANGED_FILES: ${{ steps.changes.outputs.changed_files }}
       run: |
         # Fail the script if any command fails
         set -e
+
+        go install github.com/mindersec/minder/cmd/dev@latest
         
         # Loop through the changed files and run the go command for each
-        for FILE in ${{ env.changed_files }}; do
+        echo "$CHANGED_FILES" | while read FILE; do
           echo "Processing file: $FILE"
+
+          if [[ "$FILE" != *.yaml || "$FILE" == .github/* ]]; then
+            echo "Skipping $FILE..."
+            continue
+          fi
 
           # Path to the "before" file in the subdirectory (from main branch)
           BEFORE_FILE="before_files/$FILE"
@@ -58,7 +74,7 @@ jobs:
           if [ -f "$BEFORE_FILE" ]; then
             echo "Running ruletype validate-update command for $BEFORE_FILE and $AFTER_FILE..."
             # Run the go command with the before and after files
-            go run github.com/mindersec/minder/cmd/dev@latest ruletype validate-update --before "$BEFORE_FILE" --after "$AFTER_FILE"
+            dev ruletype validate-update --before "$BEFORE_FILE" --after "$AFTER_FILE"
           else
             echo "Warning: $BEFORE_FILE does not exist, skipping."
           fi
