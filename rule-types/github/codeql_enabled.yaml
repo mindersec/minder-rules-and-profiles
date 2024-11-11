@@ -43,9 +43,14 @@ def:
         type: string
         description: |
           Sets the schedule interval in cron format for the workflow. Only applicable for remediation.
+      foo:
+        type: string
+        description: |
+          Sets the schedule interval in cron format for the workflow. Only applicable for remediation.
     required:
       - languages
       - schedule_interval
+      - foo
   # Defines the configuration for ingesting data relevant for the rule
   ingest:
     type: git
