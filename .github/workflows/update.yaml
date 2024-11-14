@@ -70,6 +70,12 @@ jobs:
           # Path to the "before" file in the subdirectory (from main branch)
           BEFORE_FILE="before_files/$FILE"
           AFTER_FILE="$FILE"
+        
+          echo "** Checking before file $BEFORE_FILE:"
+          cat "$BEFORE_FILE"
+        
+          echo "** Checking after file $AFTER_FILE:"
+          cat "$AFTER_FILE"
 
           if [ -f "$BEFORE_FILE" ]; then
             echo "Running ruletype validate-update command for $BEFORE_FILE and $AFTER_FILE..."
