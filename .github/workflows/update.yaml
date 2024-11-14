@@ -18,8 +18,8 @@ jobs:
     - name: Checkout comparison branch (main) in subdirectory
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       with:
-        # Checkout the comparison branch into a subdirectory
-        ref: ${{ github.event.pull_request.head.sha }}
+        # Checkout the main branch into a subdirectory
+        ref: main
         path: before_files
 
     - name: Set up Go
