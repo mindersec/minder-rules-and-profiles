@@ -27,8 +27,7 @@ def:
       branch:
         type: string
         description: "The name of the branch to check. If left empty, the default branch will be used."
-    required:
-      - branch
+        default: ""
   # Defines the schema for writing a rule with this rule being checked
   rule_schema:
     properties:
