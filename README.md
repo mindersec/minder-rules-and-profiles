@@ -21,3 +21,14 @@ reference profile recommended for GitHub, use the following command:
 ```bash
 minder profile create -f profiles/github/profile.yaml
 ```
+
+# Data Sources
+
+Reference data sources are available in the `data-sources` directory. To take a data source
+into use, you'll need to instantiate it in a Minder instance. For example, to instantiate the
+reference data source for using OSV as a data source, use the following command:
+
+```bash
+minder datasource create -f data-sources osv.yaml
+```
+

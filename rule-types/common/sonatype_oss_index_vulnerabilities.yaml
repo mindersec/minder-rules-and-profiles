@@ -1,0 +1,63 @@
+---
+version: v1
+type: rule-type
+name: sonatype_oss_index_vulnerabilities
+display_name: Detect Vulnerable Dependencies in Sonatype OSS Index
+context: {}
+severity:
+  value: low
+release_phase: alpha
+short_failure_message: Vulnerable dependencies found in this repository matching the Sonatype OSS Index database.
+description: |
+  This rule identifies dependencies in the repository with known vulnerabilities as reported by the Sonatype OSS Index database. It helps ensure your project avoids using libraries or packages that could introduce security risks.
+
+  By regularly scanning and updating dependencies, you can mitigate the risk of exploits and maintain secure development practices.
+
+  Documentation: https://ossindex.sonatype.org/
+guidance: |
+  Check the dependencies in the repository for updates or patches. Resolve vulnerabilities by upgrading to a secure version. Refer to the following documentation for remediation steps:
+
+  - Sonatype OSS Index: https://ossindex.sonatype.org/
+  - Dependency management best practices: [link to relevant guide]
+def:
+  in_entity: repository
+  param_schema: {}
+  rule_schema: {}
+  ingest:
+    type: deps
+    deps: {}
+  eval:
+    type: rego
+    data_sources:
+      - name: sonatype-oss-index
+    rego:
+      type: constraints
+      def: |
+        package minder
+        
+        import rego.v1
+        
+        default skip = false
+        
+        violations[{"msg": msg}] if {
+          node := input.ingested.node_list.nodes[_]
+          
+          purl := node.identifiers["1"]
+          
+          reqparams := {
+              "request": {
+                "coordinates": [
+                    purl
+                ]
+              }
+            }
+          
+          out := minder.datasource.sonatype_oss_index.query(reqparams)
+          vulns := out.body[0].vulnerabilities
+          
+          count(vulns) > 0
+          
+          vulnid := vulns[_].id
+          
+          msg := sprintf("Package '%v' has a vulnerability %v", [purl, vulnid])
+        }

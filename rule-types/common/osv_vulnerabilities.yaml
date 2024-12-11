@@ -1,0 +1,95 @@
+---
+version: v1
+type: rule-type
+name: osv_vulnerabilities
+display_name: Detect Vulnerable Dependencies in OSV
+context: {}
+severity:
+  value: low  # TODO: We should derive the severity from the rule type output itself.
+release_phase: alpha
+short_failure_message: Vulnerable dependencies found in this repository matching the OSV database.
+description: |
+  This rule identifies dependencies in the repository with known vulnerabilities according to the OSV (Open Source Vulnerabilities) database. It helps ensure your project avoids using libraries or packages that could introduce security risks.
+  
+  By regularly scanning and updating dependencies, you can mitigate the risk of exploits and maintain secure development practices.
+  
+  Documentation: https://osv.dev/
+guidance: |
+  Check the dependencies in the repository for updates or patches. Resolve vulnerabilities by upgrading to a secure version. Refer to the following documentation for remediation steps:
+  
+  - OSV: https://osv.dev
+def:
+  in_entity: repository
+  param_schema: {}
+  rule_schema: {}
+  ingest:
+    type: deps
+    deps: {}
+  eval:
+    type: rego
+    data_sources:
+      - name: osv
+    rego:
+      type: constraints
+      def: |
+        package minder
+        
+        import rego.v1
+        
+        default skip = false
+        
+        violations[{"msg": msg}] if {
+          node := input.ingested.node_list.nodes[_]
+          
+          name := node.name
+          version := node.version
+          ecosystem := get_ecosystem(node.properties)
+          
+          reqparams := {
+              "query": {
+                "version": version,
+                "package": {
+                  "name": name,
+                  "ecosystem": ecosystem
+                }
+              }
+            }
+          
+          out := minder.datasource.osv.query(reqparams)
+          vulns := out.body.vulns
+          
+          count(vulns) > 0
+          
+          vulnid := vulns[_].id
+          
+          msg := sprintf("Package %v version %v has a vulnerability %v", [name, version, vulnid])
+        }
+        
+        get_ecosystem(properties) := eco if {
+          count(properties) >= 1
+          prop := properties[_]
+          
+          prop.name == "sourceFile"
+          eco := get_ecosystem_from_file(prop.data)
+        }
+        
+        get_ecosystem_from_file(file) = "PyPI" if {
+          file == "requirements.txt"
+        }
+        
+        get_ecosystem_from_file(file) = "npm" if {
+          file == "package.json"
+        }
+        
+        get_ecosystem_from_file(file) = "RubyGems" if {
+          file == "Gemfile"
+        }
+        
+        get_ecosystem_from_file(file) = "Go" if {
+          file == "go.mod"
+        }
+        
+        get_ecosystem_from_file(file) = "crates.io" if {
+          file == "Cargo.toml"
+        }
+

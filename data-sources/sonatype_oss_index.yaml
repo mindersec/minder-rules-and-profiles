@@ -1,0 +1,30 @@
+---
+version: v1
+type: data-source
+name: sonatype_oss_index
+context: {}
+rest:
+  def:
+    query:
+      endpoint: 'https://ossindex.sonatype.org/api/v3/component-report'
+      parse: json
+      method: POST
+      body_from_field: request
+      headers:
+        Content-Type: application/json
+      input_schema:
+        type: object
+        properties:
+          request:
+            type: object
+            properties:
+              coordinates:
+                type: array
+                items:
+                  type: string
+                uniqueItems: true
+            required:
+              - coordinates
+        required:
+          - request
+
