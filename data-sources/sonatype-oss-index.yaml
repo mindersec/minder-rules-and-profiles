@@ -1,7 +1,7 @@
 ---
 version: v1
 type: data-source
-name: sonatype_oss_index
+name: sonatype-oss-index
 context: {}
 rest:
   def:
