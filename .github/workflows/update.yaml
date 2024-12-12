@@ -71,7 +71,7 @@ jobs:
           BEFORE_FILE="before_files/$FILE"
           AFTER_FILE="$FILE"
 
-          if [ -f "$BEFORE_FILE" ]; then
+          if [ -f "$BEFORE_FILE" ] && [ grep "type: rule-type" "$BEFORE_FILE" ]; then
             echo "Running ruletype validate-update command for $BEFORE_FILE and $AFTER_FILE..."
             # Run the go command with the before and after files
             dev ruletype validate-update --before "$BEFORE_FILE" --after "$AFTER_FILE"
