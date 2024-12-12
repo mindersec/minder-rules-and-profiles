@@ -1,6 +1,6 @@
 version: v1
 type: data-source
-name: osi
+name: "spdx-license-list"
 context: {}
 rest:
   def:
