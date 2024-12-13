@@ -1,4 +1,4 @@
-# Contributing to Minder
+# Contributing to minder rules and profiles
 
 Thank you for considering contributing to the Minder rules library! We welcome contributions from the community and are excited to work with you.
 
