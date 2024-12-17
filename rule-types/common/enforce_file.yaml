@@ -1,6 +1,6 @@
 ---
 version: v1
-release_phase: beta
+release_phase: alpha
 type: rule-type
 name: enforce_file
 display_name: Enforce a file in the repository
