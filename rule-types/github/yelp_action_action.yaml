@@ -52,17 +52,17 @@ def:
         default allow := false
         default message := "Secret Scanner action is not enabled or not properly configured"
 
-        has_baseline_file {
+        has_baseline_file if {
             file.exists(".secrets.baseline")
         }
 
-        has_exclusion_patterns {
+        has_exclusion_patterns if {
             file.exists(".github/actions/secret-scanner/excluded_files.patterns")
             file.exists(".github/actions/secret-scanner/excluded_secrets.patterns")
             file.exists(".github/actions/secret-scanner/excluded_lines.patterns")
         }
 
-        has_secret_scanner(workflow) {
+        has_secret_scanner(workflow) if {
             some jobname
             job := workflow.jobs[jobname]
             
@@ -71,7 +71,7 @@ def:
             startswith(step.uses, "secret-scanner/action@")
         }
 
-        allow {
+        allow if {
             has_baseline_file
 
             has_exclusion_patterns
@@ -85,23 +85,23 @@ def:
             has_secret_scanner(workflow)
         }
 
-        message = msg {
+        message = msg if {
             not has_baseline_file
             msg := "Missing .secrets.baseline file. Run 'detect-secrets scan > .secrets.baseline' to create one"
         }
 
-        message = msg {
+        message = msg if {
             not has_exclusion_patterns
             msg := "Missing exclusion pattern files in .github/actions/secret-scanner/. These are recommended for proper configuration."
         }
 
-        message = msg {
+        message = msg if {
             workflows := file.ls("./.github/workflows")
             count(workflows) == 0
             msg := "No workflow files found"
         }
 
-        message = msg {
+        message = msg if {
             workflows := file.ls("./.github/workflows")
             count(workflows) > 0
             
