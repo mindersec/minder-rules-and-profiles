@@ -33,7 +33,7 @@ def:
           The content to enforce in the file.
           For example, the content of the LICENSE file.
           
-          Leave "" to only check for the presence of the license file.
+          Leave "" to only check for the presence of the file.
     required:
       - file
       - content
