@@ -35,8 +35,8 @@ def:
 
         default message := "Gitleaks GitHub action is not configured"
         default allow := false
-        allow if {"gitleaks/gitleaks-action" in actions
-        }
+        allow if contains(actions[_], "gitleaks/gitleaks-action")
+      
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
