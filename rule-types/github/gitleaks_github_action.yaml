@@ -3,15 +3,15 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: gitleaks_github_action
-display_name: Enable Gitleak to prevent leakage of passwords or keys
-short_failure_message: Gitleak is not configured via a GitHub action
+display_name: Enable Gitleaks to prevent leakage of passwords or keys
+short_failure_message: Gitleaks is not configured via a GitHub action
 severity:
   value: medium
 context: {}
 description: |
-  Verifies that Gitleak is configured via a GitHub action for the repository.
+  Verifies that Gitleaks is configured via a GitHub action for the repository.
 guidance: |
-  Ensure that Gitleak is configured and enabled for the repository.
+  Ensure that Gitleaks is configured and enabled for the repository.
   Gitleaks is an open-source secret scanner for git repositories, files, and directories.
   For more information, see the [GitHub Action Gitleaks](https://github.com/gitleaks/gitleaks-action) documentation.
 def:
