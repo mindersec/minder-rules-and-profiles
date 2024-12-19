@@ -1,0 +1,53 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: require_pre_commit_to_be_configured
+display_name: Require pre-commit to be installed
+short_failure_message: pre-commit configuration file missing
+severity:
+  value: medium
+context: {}
+description: |
+  Verifies that `pre-commit` is installed in the repository
+guidance: |
+  Ensure that (pre-commit)[https://pre-commit.com/] is configured in a repository.
+
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties: {}
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        import future.keywords.if
+        import future.keywords.every
+
+        default message := "pre-commit configuration file missing"
+        default allow := false
+
+        
+        # pre-commit hook
+        precommit := file.read(".pre-commit-config.yaml")
+        
+        parsed_data := parse_yaml(precommit)
+
+        allow if {
+          some repo_id, hook_id
+          repo_data := parsed_data.repos[repo_id]
+          hooks = repo_data["hooks"]
+
+          hooks[hook_id]
+        }
+
+        message := "" if allow
+  alert:
+    type: security_advisory
+    security_advisory: {}
