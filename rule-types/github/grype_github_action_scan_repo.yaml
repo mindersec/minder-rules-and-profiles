@@ -1,0 +1,109 @@
+---
+version: v1
+release_phase: beta
+type: rule-type
+name: grype_github_action_scan_repo
+display_name: Ensure Grype GitHub Action Scans Repository
+short_failure_message: Grype GitHub Action is not enabled for repository scanning.
+severity:
+  value: medium
+context:
+  provider: github
+description: |
+  This rule checks whether the Grype GitHub Action is enabled to scan the repository for vulnerabilities.
+  
+  Grype, a vulnerability scanner from Anchore, provides a robust mechanism to identify vulnerabilities.
+  Implementing this action helps maintain secure and compliant dependencies for applications.
+
+guidance: |
+  Enable the Grype GitHub Action in your GitHub Actions workflow to scan repositories for vulnerabilities. 
+  
+  You can add the Grype action to your workflow using the following configuration:
+
+  ```yaml
+  - name: Scan image
+    uses: anchore/scan-action@v6.0.0
+    with:
+      path: "."
+  ```
+
+  For more details, refer to the [Grype action documentation](https://github.com/anchore/scan-action).
+
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        default allow := false
+        default message := "Grype GitHub Action is not enabled for repository scanning."
+
+        allow {
+            # List all workflows
+            workflows := file.ls("./.github/workflows")
+
+            # Read all workflows
+            some w
+            workflowstr := file.read(workflows[w])
+
+            workflow := yaml.unmarshal(workflowstr)
+
+            # Iterate jobs
+            job := workflow.jobs[_]
+
+            # Iterate steps
+            step := job.steps[_]
+
+            # Check if the step is a Grype action
+            startswith(step.uses, "anchore/scan-action@")
+        
+            # Check that the "with.path" field is set
+            step["with"]["path"] != ""
+        }
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Add Grypo repository scanning configuration"
+      body: |
+        This is a Minder automated pull request.
+        
+        This pull request adds a Grype GitHub Action workflow to the repository.
+        
+        For more information, see https://github.com/anchore/scan-action
+      contents:
+        - path: .github/workflows/grype-repo-scan.yml
+          action: replace
+          content: |
+            name: "Grype Repository Scan"
+
+            on:
+              workflow_dispatch:
+              pull_request:
+              schedule:
+                - cron: '{{ .Profile.schedule_interval }}'
+
+            jobs:
+              repo-scan:
+                name: Scan
+                runs-on: 'ubuntu-latest'
+                permissions:
+                  actions: read
+                  contents: read
+
+                steps:
+                  - name: Checkout repository
+                    uses: actions/checkout@v4
+
+                  - name: Scan current project
+                    uses: anchore/scan-action@v6.0.0
+                    with:
+                      path: "."
+                      fail-build: true
+                      severity-cutoff: "high"
