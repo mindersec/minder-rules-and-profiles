@@ -1,0 +1,43 @@
+tests:
+  - name: "Specific file has a header"
+    def:
+      filter: LICENSE
+      header: |
+        # SPDX-FileCopyrightText: Copyright 2023 The Minder Authors
+        # SPDX-License-Identifier: Apache-2.0
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: test_1
+  - name: "Specific file doesn't have a header"
+    def:
+      filter: LICENSE
+      header: |
+        # SPDX-FileCopyrightText: Copyright 2023 The Minder Authors
+        # SPDX-License-Identifier: Apache-2.0
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: test_2
+  - name: "All go files have a header"
+    def:
+      filter: LICENSE
+      header: |
+        # SPDX-FileCopyrightText: Copyright 2023 The Minder Authors
+        # SPDX-License-Identifier: Apache-2.0
+    params: {}
+    expect: "pass"
+    filter: "^.*\\.go$"
+    git:
+      repo_base: test_1
+  - name: "Not all go files have a header"
+    def:
+      filter: LICENSE
+      header: |
+        # SPDX-FileCopyrightText: Copyright 2023 The Minder Authors
+        # SPDX-License-Identifier: Apache-2.0
+    params: {}
+    expect: "fail"
+    filter: "^.*\\.go$"
+    git:
+      repo_base: test_2

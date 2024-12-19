@@ -1,0 +1,73 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: file_header
+display_name: Checks for the presence of a header in a file
+short_failure_message: File does not contain the expected header
+severity:
+  value: low
+context: {}
+description: |
+  Checks for the presence of a header in a file.
+guidance: |
+  Check if the file contains the expected header. 
+  
+  This rule is useful for enforcing the presence of a header in a file, such as license headers, code of conduct,
+  or other important information that should be present in the beginning of the file.
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties:
+      filter:
+        type: string
+        description: |
+          The filter is a regular expression that is used to filter the files that should be checked for the header.
+        
+          For example, if you want to check all files with the extension `.yml`, you can use the following regex `^.*\.yml$`.
+          
+          If you want to check a specific file, you can use the file name as the filter. For example, `main.go`.
+      header:
+        type: string
+        description: |
+          The header to check for in the file.
+          
+          This is the expected content that should be present in the beginning of the file.
+    required:
+      - filter
+      - header
+  ingest:
+    type: git
+    git:
+  eval:
+    type: rego
+    rego:
+      type: constraints
+      def: |
+        package minder
+
+        import future.keywords.in
+        import future.keywords.if
+
+        violations[{"msg": msg}] if {
+          # Walk all files in the repo
+          files_in_repo := file.walk(".")
+        
+          some current_file in files_in_repo
+        
+          # Filter files based on the regex in filter
+          regex.match(input.profile.filter, current_file)
+        
+          # Read the file
+          file_content := file.read(current_file)
+          
+          # Check if the file contains the expected header
+          not startswith(file_content, input.profile.header)
+          
+          msg := sprintf("File does not contain the expected header: %s", [current_file])
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}
