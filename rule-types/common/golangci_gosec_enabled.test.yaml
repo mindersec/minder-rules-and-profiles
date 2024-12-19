@@ -1,0 +1,81 @@
+---
+tests:
+  - name: "Gosec is explicitly enabled in .golangci.yml"
+    def: {}
+    params: {}
+    expect: "pass"
+    entity: &test-repo
+      type: repository
+      entity:
+        owner: "coolhead"
+        name: "haze-wave"
+    git:
+      repo_base: enabled_in_golangci_yml
+
+  - name: "Missing in .golangci.yml"
+    def: {}
+    params: {}
+    expect: "fail"
+    entity: *test-repo
+    git:
+      repo_base: missing_in_golangci_yml
+
+  - name: "all linters are enabled"
+    def: {}
+    params: {}
+    expect: "pass"
+    entity: &test-repo
+      type: repository
+      entity:
+        owner: "coolhead"
+        name: "haze-wave"
+    git:
+      repo_base: all_linters_enabled
+
+  - name: "all linters enabled and gosec is disabled"
+    def: {}
+    params: {}
+    expect: "fail"
+    entity: &test-repo
+      type: repository
+      entity:
+        owner: "coolhead"
+        name: "haze-wave"
+    git:
+      repo_base: all_linters_enabled_and_gosec_disabled
+
+  - name: "all linters are disabled and gosec is missing"
+    def: {}
+    params: {}
+    expect: "fail"
+    entity: &test-repo
+      type: repository
+      entity:
+        owner: "coolhead"
+        name: "haze-wave"
+    git:
+      repo_base: all_linters_disabled_and_gosec_missing
+
+  - name: "all linters are disabled and gosec is enabled"
+    def: {}
+    params: {}
+    expect: "pass"
+    entity: &test-repo
+      type: repository
+      entity:
+        owner: "coolhead"
+        name: "haze-wave"
+    git:
+      repo_base: all_linters_disabled_and_gosec_enabled
+
+  - name: "rule is skipped"
+    def: {}
+    params: {}
+    expect: "skip"
+    entity: &test-repo
+      type: repository
+      entity:
+        owner: "coolhead"
+        name: "haze-wave"
+    git:
+      repo_base: no_golangci_yml
