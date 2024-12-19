@@ -1,0 +1,77 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: openssf_bestpractices
+display_name: Verifies the project has earned an OpenSSF Best Practices Badge
+short_failure_message: OpenSSF Best Practices Badge is missing
+severity:
+  value: low
+context:
+  provider: github
+description: |
+  Verifies that a repository contains an OpenSSF Best Practices badge at
+  the specified level.
+
+  This rule type checks for the existence of a image declared in Markdown,
+  referencing the project's badge on the Best Practices badge site.
+guidance: |
+  Add your project to [OpenSSF Best Practices](https://www.bestpractices.dev/en)
+  to get a Best Practices badge, then add the badge to your project's README to
+  show your certification.
+def:
+  in_entity: repository
+  # Defines the schema for writing a rule with this rule being checked
+  # In this case there are no settings that need to be configured
+  rule_schema:
+    type: object
+    properties:
+      filename:
+        type: string
+        description: |
+          The path to the README that links to the badge
+        default: README.md
+      level:
+        type: string
+        description: |
+          The required achievement level.
+        enum:
+          - in_progress
+          - passing
+          - silver
+          - gold
+        default: passing
+  # Defines the configuration for ingesting data relevant for the rule
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    data_sources:
+      - name: openssf_bestpractices
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        import rego.v1
+
+        default allow := false
+        default message := "OpenSSF Best Practices Badge is missing"
+
+        levels := { "in_progress": 1, "passing": 2, "silver": 3, "gold": 4 }
+
+        allow if {
+          file.exists(input.profile.filename)
+          readme := file.read(input.profile.filename)
+
+          badge := regex.find_all_string_submatch_n(`\[[^\]]+\]\(https:\/\/www\.bestpractices\.dev\/projects\/([\d]+)\/badge\)`, readme, 1)
+          project_id := badge[0][1]
+
+          badge_data := minder.datasource.openssf_bestpractices.lookup({"id": project_id })
+
+          levels[badge_data.body.badge_level] >= levels[input.profile.level]
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}
