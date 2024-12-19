@@ -1,0 +1,77 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: repo_visibility
+display_name: Ensure Repository Has Correct Visibility Setting
+short_failure_message: Repository visibility does not match required setting
+severity:
+  value: low
+context:
+  provider: github
+description: |
+  Checks if a GitHub repository's visibility (public/private) matches the 
+  required setting. Repository visibility controls are crucial for protecting 
+  sensitive code and intellectual property. Public repositories are accessible 
+  to anyone on the internet, while private repositories restrict access to 
+  specifically invited collaborators. 
+  For more information, see GitHub's documentation on repository visibility: 
+  https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility
+guidance: |
+  Your repository's visibility setting does not match the required 
+  configuration. To fix this:
+  1. Navigate to your repository's Settings page
+  2. Scroll down to the "Danger Zone" section
+  3. Click "Change visibility"
+  4. Select the appropriate visibility setting
+  5. Confirm the change by typing the repository name
+  
+  Note: Changing repository visibility can have significant implications for 
+  your codebase's accessibility. Ensure you understand the impact before 
+  making changes. For more details, refer to: 
+  https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility
+
+def:
+  # Defines the section of the pipeline the rule will appear in.
+  # This will affect the template used to render multiple parts
+  # of the rule.
+  in_entity: repository
+  # Defines the schema for writing a rule with this rule being checked
+  rule_schema:
+    properties:
+      visibility:
+        type: string
+        default: "public"
+        description: |
+          Specifies the required visibility setting for the repository. Valid values are "public" or "private"
+  # Defines the configuration for ingesting data relevant for the rule
+  ingest:
+    type: rest
+    rest:
+      # This is the path to the data source. Given that this will evaluate
+      # for each repository in the organization, we use a template that
+      # will be evaluated for each repository. The structure to use is the
+      # protobuf structure for the entity that is being evaluated.
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
+      # This is the method to use to retrieve the data. It should already default to JSON
+      parse: json
+  # Defines the configuration for evaluating data ingested against the given profile
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        default allow := false
+        default message := "Repository visibility does not match the required setting"
+
+        allow {
+          input.ingested.visibility == input.profile.visibility
+        }
+
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}
+
