@@ -1,0 +1,68 @@
+---
+version: v1
+release_phase: beta
+type: rule-type
+name: grype_github_action_scan_container_image
+display_name: Ensure Grype GitHub Action Scans Container Images
+short_failure_message: Grype GitHub Action is not enabled for container image scanning.
+severity:
+  value: medium
+context:
+  provider: github
+description: |
+  This rule checks whether the Grype GitHub Action is enabled to scan container images for vulnerabilities.
+  Grype, a vulnerability scanner from Anchore, provides a robust mechanism to identify issues in container images. 
+  Implementing this action helps maintain secure and compliant workflows for containerized applications.
+
+guidance: |
+  Enable the Grype GitHub Action in your GitHub Actions workflow to scan container images for vulnerabilities. 
+  
+  You can add the Grype action to your workflow using the following configuration:
+
+  ```yaml
+  - name: Scan image
+    uses: anchore/scan-action@v6.0.0
+    with:
+      image: "<image-reference>"
+  ```
+
+  For more details, refer to the [Grype action documentation](https://github.com/anchore/scan-action).
+
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        default allow := false
+        default message := "Grype GitHub Action is not enabled for container image scanning."
+
+        allow {
+            # List all workflows
+            workflows := file.ls("./.github/workflows")
+
+            # Read all workflows
+            some w
+            workflowstr := file.read(workflows[w])
+
+            workflow := yaml.unmarshal(workflowstr)
+
+            # Iterate jobs
+            job := workflow.jobs[_]
+
+            # Iterate steps
+            step := job.steps[_]
+
+            # Check if the step is a Grype action
+            startswith(step.uses, "anchore/scan-action@")
+        
+            # Check that the "with.image" field is set
+            step["with"]["image"] != ""
+        }
