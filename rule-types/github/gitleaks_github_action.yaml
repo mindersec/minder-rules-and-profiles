@@ -13,7 +13,7 @@ description: |
 guidance: |
   Ensure that Gitleak is configured and enabled for the repository.
   Gitleaks is an open-source secret scanner for git repositories, files, and directories.
-  For more information, see the [GitHub Action Gitleaks](https://github.com/gitleaks/gitleaks) documentation.
+  For more information, see the [GitHub Action Gitleaks](https://github.com/gitleaks/gitleaks-action) documentation.
 def:
   in_entity: repository
   rule_schema:
