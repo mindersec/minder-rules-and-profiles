@@ -1,0 +1,13 @@
+tests:
+  - name: "Should not have golangci-lint gh action configured"
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: repo_without_golangci-lint_gh_action
+  - name: "Should have golangci-lint gh action configured"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: repo_with_golangci-lint_gh_action
