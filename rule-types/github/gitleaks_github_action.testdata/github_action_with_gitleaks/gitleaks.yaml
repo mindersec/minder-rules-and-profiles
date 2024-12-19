@@ -1,4 +1,4 @@
-name: Renovate
+name: gitleaks
 on:
   workflow_dispatch:
   schedule:
