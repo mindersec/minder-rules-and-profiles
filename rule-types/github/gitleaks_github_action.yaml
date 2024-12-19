@@ -1,0 +1,43 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: gitleaks_github_action
+display_name: Enable Gitleak to prevent leakage of passwords or keys
+short_failure_message: Gitleak is not configured via a GitHub action
+severity:
+  value: medium
+context: {}
+description: |
+  Verifies that Gitleak is configured via a GitHub action for the repository.
+guidance: |
+  Ensure that Gitleak is configured and enabled for the repository.
+  Gitleaks is an open-source secret scanner for git repositories, files, and directories.
+  For more information, see the [GitHub Action Gitleaks](https://github.com/gitleaks/gitleaks) documentation.
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties: {}
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        
+        import rego.v1
+
+        actions := github_workflow.ls_actions("./.github/workflows")
+
+        default message := "Gitleaks GitHub action is not configured"
+        default allow := false
+        allow if {"gitleaks/gitleaks-action" in actions
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}
