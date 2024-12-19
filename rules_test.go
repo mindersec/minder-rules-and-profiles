@@ -129,6 +129,8 @@ type RuleTypeTestFunc func(t *testing.T, rt *minderv1.RuleType, suite *RuleTest,
 func TestRuleTypes(t *testing.T) {
 	t.Parallel()
 
+	require.NoError(t, os.Setenv("REGO_ENABLE_PRINT", "true"))
+
 	// iterate rule types directory
 	err := walkRuleTypesTests(t, func(t *testing.T, rt *minderv1.RuleType, tc *RuleTest, rtDataPath string) {
 		var opts []tkv1.Option
