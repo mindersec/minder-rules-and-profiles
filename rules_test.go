@@ -280,7 +280,8 @@ func openRuleType(path string) (*minderv1.RuleType, error) {
 	defer ruleTypeFile.Close()
 
 	// parse the rule type file
-	rt, err := minderv1.ParseRuleType(ruleTypeFile)
+	rt := &minderv1.RuleType{}
+	err = minderv1.ParseResource(ruleTypeFile, rt)
 	if err != nil {
 		return nil, err
 	}
