@@ -1,0 +1,66 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: repo_issues
+display_name: Control issue tracker status for repositories
+short_failure_message: Repository issue tracker status does not match the required setting
+severity:
+  value: medium
+context:
+  provider: github
+description: |
+  Verifies that a repository has the correct setting for its issue tracker (enabled or disabled).
+  This helps ensure consistent issue management across repositories and enforce organizational
+  policies about where issues should be tracked.
+guidance: |
+  Ensure that the repository's issue tracker matches the required setting.
+
+  The issue tracker is a powerful tool for tracking work, bugs, and feature requests:
+  - When enabled, users can create issues to track work in the repository
+  - When disabled, the Issues tab is hidden and no new issues can be created
+  - Existing issues remain accessible when issues are disabled
+  
+  Consider enabling issues if you want to:
+  - Track bugs, enhancements, and other requests
+  - Foster community discussions
+  - Create and track milestones
+  
+  Consider disabling issues if you:
+  - Track work in a different system
+  - Want to direct users to a centralized issue tracker
+  - Are using a read-only or archived repository
+
+  For more information, see [GitHub's documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/disabling-issues).
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties:
+      has_issues:
+        type: boolean
+        description: "Whether the repository should have issues enabled (true) or disabled (false)."
+    required:
+      - has_issues
+  ingest:
+    type: rest
+    rest:
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
+      parse: json
+  eval:
+    type: jq
+    jq:
+      - ingested:
+          def: ".has_issues"
+        profile:
+          def: ".has_issues"
+  remediate:
+    type: rest
+    rest:
+      method: PATCH
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
+      body: |
+        { "has_issues": {{.Profile.has_issues}} }
+  alert:
+    type: security_advisory
+    security_advisory: {}
