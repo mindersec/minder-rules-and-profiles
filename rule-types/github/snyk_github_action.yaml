@@ -1,0 +1,233 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: snyk_github_action
+display_name: Enable Snyk scanning via GitHub Actions
+short_failure_message: Snyk scanning is not properly configured via GitHub Actions
+severity:
+  value: medium
+context: {}
+description: |
+  Verifies that Snyk is properly configured via GitHub Actions for the repository
+  based on the project's ecosystem (Node.js, Go, Python, etc). This ensures
+  appropriate security scanning is in place for dependencies and code.
+guidance: |
+  Ensure that Snyk is configured and enabled for your repository with
+  appropriate settings for your project's ecosystem.
+
+  Snyk provides different types of security scanning:
+  - Dependency vulnerability scanning
+  - Code analysis for security issues
+  - Container scanning
+  - Infrastructure as Code scanning
+
+  For each ecosystem, you need appropriate configuration:
+  - Node.js: Ensure package.json and package-lock.json are scanned
+  - Go: Configure for go.mod and go.sum scanning
+  - Python: Set up for requirements.txt or Pipfile scanning
+  - Container: Enable for Dockerfile scanning
+  
+  For more information, see:
+  - [Snyk GitHub Actions](https://github.com/snyk/actions)
+  - [Snyk CLI documentation](https://docs.snyk.io/snyk-cli)
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties:
+      ecosystems:
+        type: array
+        description: |
+          List of ecosystems that should be scanned by Snyk.
+          Each ecosystem requires specific Snyk configuration.
+        items:
+          type: string
+          enum:
+            - nodejs
+            - go
+            - python
+            - docker
+            - iac
+      command_args:
+        type: object
+        description: |
+          Optional custom arguments for the Snyk CLI command for each ecosystem.
+          If not specified, default arguments will be used.
+        properties:
+          nodejs:
+            type: string
+            default: "--all-projects"
+          go:
+            type: string
+            default: "--all-projects"
+          python:
+            type: string
+            default: "--all-projects"
+          docker:
+            type: string
+            default: "--file=Dockerfile"
+          iac:
+            type: string
+            default: "--all-projects"
+    required:
+      - ecosystems
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        
+        import rego.v1
+        
+        # List all workflows
+        workflows := file.ls("./.github/workflows")
+        
+        # Get all actions used in workflows
+        actions := github_workflow.ls_actions("./.github/workflows")
+        
+        # Map ecosystem names to their indicator files
+        ecosystem_files := {
+            "nodejs": ["package.json"],
+            "go": ["go.mod"],
+            "python": ["requirements.txt", "Pipfile"],
+            "docker": ["Dockerfile"],
+            "iac": ["terraform", ".tf", ".yaml", ".yml"]
+        }
+        
+        default message := "Snyk GitHub action is not properly configured"
+        default allow := false
+        
+        # Read all workflow files and check for proper Snyk configuration
+        allow if {
+            # First verify Snyk action is present
+            some action in actions
+            startswith(action, "snyk/actions")
+        
+            # Then verify each required ecosystem is properly configured
+            ecosystem_check_results := {res |
+                ecosystem := input.profile.ecosystems[_]
+                res := check_ecosystem(ecosystem)
+            }
+        
+            # All ecosystem checks must pass
+            all(ecosystem_check_results)
+        }
+        
+        # Helper function to check ecosystem configuration
+        check_ecosystem(ecosystem) if {
+            # Check if ecosystem files exist
+            some file in ecosystem_files[ecosystem]
+            file_exists_check(file)
+        
+            # Check workflow configuration for this ecosystem
+            some workflow_file in workflows
+            workflowstr := file.read(workflow_file)
+            workflow := yaml.unmarshal(workflowstr)
+        
+            # Look for a job that uses Snyk with specific args
+            some job_name, job in workflow.jobs
+            some step in job.steps
+            startswith(step.uses, "snyk/actions")
+            args := object.get(step, "args", "")
+        
+            # When no specific command args are required
+            not input.profile.command_args[ecosystem]
+        }
+        
+        check_ecosystem(ecosystem) if {
+            # Check if ecosystem files exist
+            some file in ecosystem_files[ecosystem]
+            file_exists_check(file)
+        
+            # Check workflow configuration for this ecosystem
+            some workflow_file in workflows
+            workflowstr := file.read(workflow_file)
+            workflow := yaml.unmarshal(workflowstr)
+        
+            # Look for a job that uses Snyk with specific args
+            some job_name, job in workflow.jobs
+            some step in job.steps
+            startswith(step.uses, "snyk/actions")
+            args := object.get(step, "args", "")
+            args == input.profile.command_args[ecosystem]
+        }
+        
+        # Helper function to check file existence with glob support
+        file_exists_check(pattern) if {
+            # Direct file check
+            file.exists(pattern)
+        }
+        
+        file_exists_check(pattern) if {
+            # Glob pattern check
+            files := file.glob(sprintf("**/%s*", [pattern]))
+            count(files) > 0
+        }
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Add Snyk security scanning workflow"
+      body: |
+        This is a Minder automated pull request.
+        
+        This pull request adds a GitHub Actions workflow that runs Snyk security scanning
+        configured for your project's ecosystems: {{.Profile.ecosystems}}.
+        
+        This will help identify:
+        - Known vulnerabilities in dependencies
+        - Security issues in code
+        - Container security issues
+        - Infrastructure as Code misconfigurations
+      contents:
+        - path: .github/workflows/snyk.yml
+          action: replace
+          content: |
+            name: Snyk Security Scan
+            
+            on:
+              push:
+                branches: [ main ]
+              pull_request:
+                branches: [ main ]
+            
+            jobs:
+              security:
+                runs-on: ubuntu-latest
+                steps:
+                  - uses: actions/checkout@v4
+            
+                  {{- range .Profile.ecosystems }}
+                  {{- if eq . "nodejs" }}
+                  - name: Set up Node.js
+                    uses: actions/setup-node@v4
+                    with:
+                      node-version: 'lts/*'
+                  {{- else if eq . "go" }}
+                  - name: Set up Go
+                    uses: actions/setup-go@v5
+                    with:
+                      go-version: '>=1.21.0'
+                  {{- else if eq . "python" }}
+                  - name: Set up Python
+                    uses: actions/setup-python@v5
+                    with:
+                      python-version: '3.x'
+                  {{- end }}
+                  {{- end }}
+            
+                  {{- range .Profile.ecosystems }}
+                  - name: Run Snyk to check for vulnerabilities ({{ . }})
+                    uses: snyk/actions/{{ . }}@master
+                    env:
+                      SNYK_TOKEN: ${{ "{{" }} secrets.SNYK_TOKEN {{ "}}" }}
+                    with:
+                      args: {{ index $.Profile.command_args . | default "--all-projects" }}
+                  {{- end }}
+  alert:
+    type: security_advisory
+    security_advisory: {}
