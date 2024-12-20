@@ -10,8 +10,8 @@ severity:
 context:
   provider: github
 description: |
-  Verifies that the project documentation provides a user guide
-guidance: |
+  Verifies that the project documentation provides a user guide.
+
   This rule attempts to locate user guides from several project documentation sources.
 
   Currently, this rule checks the following:
@@ -22,6 +22,12 @@ guidance: |
    "usage" or "getting started"
 
   For more information, see [OpenSSF Security Baseline](https://baseline.openssf.org/#osps-do-03).
+guidance: |
+  Publish documentation in one of the following well-known locations:
+
+  * Set the repository homepage to a documentation URL.
+  * Create a `docs` directory in the default branch of the repository
+  * Add a "usage" or "getting started" section to `README.md`
 def:
   in_entity: repository
   rule_schema: {}
