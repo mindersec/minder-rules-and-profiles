@@ -32,6 +32,12 @@ def:
           The content to enforce in the file.
           For example, the content of the LICENSE file.
         default: ""
+      apply_if_file:
+        type: string
+        description: |
+          Optional. If specified, the rule will only be evaluated if the given file exists.
+          This is useful for rules that are only applicable to certain types of repositories.
+        default: ""
     required:
       - file
   ingest:
@@ -39,6 +45,7 @@ def:
     git:
   # The following code checks for the presence of a file and its content.
   # If the content is not specified (content = ""), then only the presence of the file is checked.
+  # If apply_if_file is specified, the rule is only evaluated if that file exists.
   eval:
     type: rego
     rego:
@@ -49,7 +56,14 @@ def:
         import future.keywords.if
 
         default allow := false
+        default skip := false
         fileStr := trim_space(file.read(input.profile.file))
+
+        # Skip if apply_if_file is specified and the file doesn't exist
+        skip if {
+            input.profile.apply_if_file != ""
+            not file.exists(input.profile.apply_if_file)
+        }
 
         allow if {
             # Read the file and check if it contains the content
@@ -60,7 +74,10 @@ def:
             input.profile.content == ""
         }
         
-        message := sprintf("File %v does not exist", [input.profile.file]) if {
+        message := sprintf("Skipping rule because file %v does not exist", [input.profile.apply_if_file]) if {
+            input.profile.apply_if_file != ""
+            not file.exists(input.profile.apply_if_file)
+        } else := sprintf("File %v does not exist", [input.profile.file]) if {
             not file.exists(input.profile.file)
         } else := sprintf("File %v does not match the expected content %v", [input.profile.file, input.profile.content]) if {
             fileStr != trim_space(input.profile.content)
