@@ -147,7 +147,7 @@ func TestRuleTypes(t *testing.T) {
 		ctx := zerolog.New(ztw).With().Timestamp().Logger().WithContext(context.Background())
 
 		tk := tkv1.NewTestKit(opts...)
-		rte, err := rtengine.NewRuleTypeEngine(ctx, rt, tk)
+		rte, err := rtengine.NewRuleTypeEngine(ctx, rt, tk, nil)
 		require.NoError(t, err)
 
 		val := rte.GetRuleInstanceValidator()
@@ -158,7 +158,7 @@ func TestRuleTypes(t *testing.T) {
 			rte.WithCustomIngester(tk)
 		}
 
-		err = rte.Eval(ctx, tc.Entity.Entity, tc.Def, tc.Params, tkv1.NewVoidResultSink())
+		_, err = rte.Eval(ctx, tc.Entity.Entity, tc.Def, tc.Params, tkv1.NewVoidResultSink())
 		if tc.Expect == ExpectPass {
 			require.NoError(t, err)
 		} else {
