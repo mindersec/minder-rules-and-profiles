@@ -1,0 +1,65 @@
+---
+# Stacklok profile
+version: v1
+type: profile
+name: stacklok-lightweight-dependabot
+display_name: Stacklok Lightweight Dependabot Profile
+context:
+  provider: github
+alert: "off"
+remediate: "on"
+repository:
+  - type: enforce_file
+    name: "Enforce lightweight Dependabot config for Go projects"
+    def:
+      apply_if_file: go.mod
+      file: ".github/dependabot.yml"
+      content: |
+        version: 2
+        updates:
+          - package-ecosystem: "github-actions"
+            directory: "/"
+            schedule:
+              interval: "weekly"
+            open-pull-requests-limit: 10
+          - package-ecosystem: "gomod"
+            directory: "/"
+            schedule:
+              interval: "weekly"
+            open-pull-requests-limit: 10
+  - type: enforce_file
+    name: "Enforce lightweight Dependabot config for JavaScript projects"
+    def:
+      apply_if_file: package.json
+      file: ".github/dependabot.yml"
+      content: |
+        version: 2
+        updates:
+          - package-ecosystem: "github-actions"
+            directory: "/"
+            schedule:
+              interval: "weekly"
+            open-pull-requests-limit: 10
+          - package-ecosystem: "npm"
+            directory: "/"
+            schedule:
+              interval: "weekly"
+            open-pull-requests-limit: 10
+  - type: enforce_file
+    name: "Enforce lightweight Dependabot config for Python projects"
+    def:
+      apply_if_file: requirements.txt
+      file: ".github/dependabot.yml"
+      content: |
+        version: 2
+        updates:
+          - package-ecosystem: "github-actions"
+            directory: "/"
+            schedule:
+              interval: "weekly"
+            open-pull-requests-limit: 10
+          - package-ecosystem: "pip"
+            directory: "/"
+            schedule:
+              interval: "weekly"
+            open-pull-requests-limit: 10
