@@ -3,7 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: golangci-lint_github_action
-display_name: Enable golangci-lint to run golangci-lint and reports issues from linters.
+display_name: Enable golangci-lint to run golangci-lint and reports issues from linters
 short_failure_message: golangci-lint is not configured via a GitHub action
 severity:
   value: medium
