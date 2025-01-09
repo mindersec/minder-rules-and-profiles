@@ -2,7 +2,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: source_code_is_public
-display_name: The project’s source code is publicly readable.
+display_name: The project’s source code is publicly readable
 short_failure_message: The project’s source code is not publicly readable.
 severity:
   value: info
