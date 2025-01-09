@@ -1,0 +1,101 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: enforce_file
+display_name: Enforce a file in the repository
+short_failure_message: File does not exist or does not match the expected content
+severity:
+  value: medium
+context: {}
+description: |
+  Enforce the presence of a file and its content in the repository.
+guidance: |
+  Ensures that the repository contains a specific file and its content.
+  
+  This rule is useful for enforcing the presence of various files in the repository, such as LICENSE, README, CONTRIBUTING,
+  CODE_OF_CONDUCT, Dependabot configuration files and many more. It can also be used to enforce the presence of specific
+  content in the file so you know that the file is not just a placeholder.
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties:
+      file:
+        type: string
+        description: |
+          The file to enforce in the repository.
+            For example, LICENSE, README, CONTRIBUTING, .github/dependabot.yml, etc.
+      content:
+        type: string
+        description: |
+          The content to enforce in the file.
+          For example, the content of the LICENSE file.
+        default: ""
+      apply_if_file:
+        type: string
+        description: |
+          Optional. If specified, the rule will only be evaluated if the given file exists.
+          This is useful for rules that are only applicable to certain types of repositories.
+        default: ""
+    required:
+      - file
+  ingest:
+    type: git
+    git:
+  # The following code checks for the presence of a file and its content.
+  # If the content is not specified (content = ""), then only the presence of the file is checked.
+  # If apply_if_file is specified, the rule is only evaluated if that file exists.
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import future.keywords.if
+
+        default allow := false
+        default skip := false
+        fileStr := trim_space(file.read(input.profile.file))
+
+        # Skip if apply_if_file is specified and the file doesn't exist
+        skip if {
+            input.profile.apply_if_file != ""
+            not file.exists(input.profile.apply_if_file)
+        }
+
+        allow if {
+            # Read the file and check if it contains the content
+            fileStr == trim_space(input.profile.content)
+        } else if {
+            # Check if the file exists and the content is left blank
+            file.exists(input.profile.file)
+            input.profile.content == ""
+        }
+        
+        message := sprintf("Skipping rule because file %v does not exist", [input.profile.apply_if_file]) if {
+            input.profile.apply_if_file != ""
+            not file.exists(input.profile.apply_if_file)
+        } else := sprintf("File %v does not exist", [input.profile.file]) if {
+            not file.exists(input.profile.file)
+        } else := sprintf("File %v does not match the expected content %v", [input.profile.file, input.profile.content]) if {
+            fileStr != trim_space(input.profile.content)
+        }
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Ensure {{.Profile.file }} exists with the expected content"
+      body: |
+        This is a Minder automated pull request.
+        
+        This pull request ensures that this repository contains the file {{.Profile.file}} with the expected content set by your organization.
+      contents:
+        - path: "{{.Profile.file}}"
+          action: replace
+          content: |
+            {{.Profile.content}}
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}
