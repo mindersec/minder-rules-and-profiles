@@ -3,6 +3,14 @@
 version: v1
 type: profile
 name: stacklok-lightweight-dependabot
+# The selector is used to select repositories that this profile will be applied to.
+# In this case, we are selecting repositories that are considered low-maintenance.
+selection:
+  - entity: repository
+    selector: >
+      repository.name.startsWith('stacklok/quiver') ||
+      repository.name.startsWith('stacklok/minder-bundle-updater') ||
+      repository.name.startsWith('stacklok/healthcheck-bundle')
 display_name: Stacklok Lightweight Dependabot Profile
 context:
   provider: github
