@@ -64,7 +64,7 @@ def:
             "owner": input.properties["github/repo_owner"],
             "repo": input.properties["github/repo_name"]
           })
-          out.homepage != ""
+          out.body.homepage != ""
         }
 
         allow if {
