@@ -1,0 +1,42 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: source_code_is_public
+display_name: The project's source code is publicly readable
+short_failure_message: The project's source code is not publicly readable.
+severity:
+  value: info
+context:
+  provider: github
+description: |
+  Enable users to access and review the project’s source code and
+  history, promoting transparency and collaboration within the project
+  community.
+guidance: |
+  Change repository visibility via the
+  [Settings](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility#changing-a-repositorys-visibility)
+  page on GitHub.
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+  eval:
+    type: rego
+    data_sources:
+      - name: ghapi
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import future.keywords.every
+        import future.keywords.if
+
+        default allow := false
+
+        allow if {
+          # This rule checks whether the repository is private using
+          # info tied to the entity itself.
+          not input.properties["is_private"]
+        }
