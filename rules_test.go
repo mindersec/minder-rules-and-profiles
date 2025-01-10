@@ -131,50 +131,52 @@ func TestRuleTypes(t *testing.T) {
 
 	require.NoError(t, os.Setenv("REGO_ENABLE_PRINT", "true"))
 
-	// iterate rule types directory
-	err := walkRuleTypesTests(t, func(t *testing.T, rt *minderv1.RuleType, tc *RuleTest, rtDataPath string) {
-		var opts []tkv1.Option
-		if rt.Def.Ingest.Type == "git" {
-			opts = append(opts, gitTestOpts(t, tc, rtDataPath))
-		} else if rt.Def.Ingest.Type == "rest" {
-			opts = append(opts, httpTestOpts(t, tc, rtDataPath))
-		} else {
-			t.Skipf("Unsupported ingest type %s", rt.Def.Ingest.Type)
-		}
+	for _, folder := range []string{"rule-types", "security-baseline/rule-types"} {
+		// iterate rule types directory
+		err := walkRuleTypesTests(t, folder, func(t *testing.T, rt *minderv1.RuleType, tc *RuleTest, rtDataPath string) {
+			var opts []tkv1.Option
+			if rt.Def.Ingest.Type == "git" {
+				opts = append(opts, gitTestOpts(t, tc, rtDataPath))
+			} else if rt.Def.Ingest.Type == "rest" {
+				opts = append(opts, httpTestOpts(t, tc, rtDataPath))
+			} else {
+				t.Skipf("Unsupported ingest type %s", rt.Def.Ingest.Type)
+			}
 
-		ztw := zerolog.NewTestWriter(t)
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-		ctx := zerolog.New(ztw).With().Timestamp().Logger().WithContext(context.Background())
+			ztw := zerolog.NewTestWriter(t)
+			zerolog.SetGlobalLevel(zerolog.DebugLevel)
+			ctx := zerolog.New(ztw).With().Timestamp().Logger().WithContext(context.Background())
 
-		tk := tkv1.NewTestKit(opts...)
-		rte, err := rtengine.NewRuleTypeEngine(ctx, rt, tk, nil)
-		require.NoError(t, err)
-
-		val := rte.GetRuleInstanceValidator()
-		require.NoError(t, val.ValidateRuleDefAgainstSchema(tc.Def), "Failed to validate rule definition against schema")
-		require.NoError(t, val.ValidateParamsAgainstSchema(tc.Params), "Failed to validate params against schema")
-
-		if tk.ShouldOverrideIngest() {
-			rte.WithCustomIngester(tk)
-		}
-
-		_, err = rte.Eval(ctx, tc.Entity.Entity, tc.Def, tc.Params, tkv1.NewVoidResultSink())
-		if tc.Expect == ExpectPass {
+			tk := tkv1.NewTestKit(opts...)
+			rte, err := rtengine.NewRuleTypeEngine(ctx, rt, tk, nil)
 			require.NoError(t, err)
-		} else {
-			require.Error(t, err)
-		}
-	})
 
-	if err != nil {
-		t.Error(err)
+			val := rte.GetRuleInstanceValidator()
+			require.NoError(t, val.ValidateRuleDefAgainstSchema(tc.Def), "Failed to validate rule definition against schema")
+			require.NoError(t, val.ValidateParamsAgainstSchema(tc.Params), "Failed to validate params against schema")
+
+			if tk.ShouldOverrideIngest() {
+				rte.WithCustomIngester(tk)
+			}
+
+			_, err = rte.Eval(ctx, tc.Entity.Entity, tc.Def, tc.Params, tkv1.NewVoidResultSink())
+			if tc.Expect == ExpectPass {
+				require.NoError(t, err)
+			} else {
+				require.Error(t, err)
+			}
+		})
+
+		if err != nil {
+			t.Error(err)
+		}
 	}
 }
 
-func walkRuleTypesTests(t *testing.T, testfunc RuleTypeTestFunc) error {
+func walkRuleTypesTests(t *testing.T, folder string, testfunc RuleTypeTestFunc) error {
 	t.Helper()
 
-	return filepath.Walk("rule-types", func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(folder, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

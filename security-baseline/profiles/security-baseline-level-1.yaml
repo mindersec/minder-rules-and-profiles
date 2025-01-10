@@ -1,0 +1,37 @@
+version: v1
+type: profile
+name: security-baseline-level-1
+display_name: OSPS Security Baseline - Level 1
+context:
+  provider: github
+alert: "off"
+remediate: "off"
+repository:
+  # OSPS-AC-03: Prevent overwriting git history
+  - name: osps-ac-03
+    type: osps-ac-03
+    def: {}
+  # OSPS-AC-04: Prevent permanent branch deletion
+  - name: osps-ac-04
+    type: osps-ac-04
+    def: {}
+  # OSPS-DO-01: Projects has public discussion mechanisms
+  - name: osps-do-01
+    type: osps-do-01
+    def: {}
+  # OSPS-DO-02: Enforce CONTRIBUTING file presence
+  - name: osps-do-02
+    type: osps-do-02
+    def: {}
+  # OSPS-LE-02: Ensure OSI/FSF approved license
+  - name: osps-le-02
+    type: osps-le-02
+    def: {}
+  # OSPS-LE-03: LICENSE or COPYING files are available available
+  - name: osps-le-03
+    type: osps-le-03
+    def: {}
+  # OSPS-QA-01: Repository visibility check
+  - name: osps-qa-01
+    type: osps-qa-01
+    def: {}

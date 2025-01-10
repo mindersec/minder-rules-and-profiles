@@ -1,0 +1,44 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-do-01
+display_name: The project has mechanisms for public discussion
+short_failure_message: The project does not publicize mechanisms for public discussion.
+severity:
+  value: info
+context:
+  provider: github
+description: |
+  Projects should encourage open communication and collaboration
+  within the their community, enabling users to provide feedback and
+  discuss proposed changes or usage challenges.
+guidance: |
+  Enable "Issues" or "Discussions" via the
+  [Settings](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository)
+  page on GitHub.
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+  eval:
+    type: rego
+    data_sources:
+      - name: ghapi
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import future.keywords.every
+        import future.keywords.if
+
+        default allow := false
+
+        repo := minder.datasource.ghapi.repo_config({
+          "owner": input.properties["github/repo_owner"],
+          "repo": input.properties["github/repo_name"]
+        })
+
+        allow if repo.body.has_issues
+        allow if repo.body.has_discussions

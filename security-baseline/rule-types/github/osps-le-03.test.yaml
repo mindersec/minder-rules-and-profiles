@@ -1,0 +1,31 @@
+tests:
+  - name: "Should find LICENSE"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: license_file_no_extension
+  - name: "Should find LICENSE.md"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: license_file
+  - name: "Should find COPYING"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: copying_file
+  - name: "Should find LICENSE folder"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: license_folder
+  - name: "Should fail if absent"
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: no_data
