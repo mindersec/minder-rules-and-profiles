@@ -1,0 +1,70 @@
+[tool.poetry]
+name = "codegate"
+version = "0.1.0"
+description = "Generative AI CodeGen security gateway"
+readme = "README.md"
+authors = []
+
+[tool.poetry.dependencies]
+python = ">=3.12,<4.0"
+click = ">=8.1.0"
+PyYAML = ">=6.0.1"
+fastapi = ">=0.115.5"
+uvicorn = ">=0.32.1"
+structlog = ">=24.4.0"
+litellm = "^1.57.10"
+llama_cpp_python = ">=0.3.2"
+cryptography = "^44.0.0"
+sqlalchemy = "^2.0.37"
+aiosqlite = "^0.20.0"
+ollama = ">=0.4.4"
+pydantic-settings = "^2.7.1"
+numpy = ">=1.24.0"
+tree-sitter = ">=0.23.2"
+tree-sitter-go = ">=0.23.4"
+tree-sitter-java = ">=0.23.5"
+tree-sitter-javascript = ">=0.23.1"
+tree-sitter-python = ">=0.23.6"
+tree-sitter-rust = ">=0.23.2"
+sqlite-vec-sl-tmp = "^0.0.4"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.4.0"
+pytest-cov = ">=4.1.0"
+black = ">=23.7.0"
+ruff = ">=0.7.4"
+bandit = ">=1.7.10"
+build = ">=1.0.0"
+wheel = ">=0.40.0"
+litellm = ">=1.52.11"
+pytest-asyncio = "0.25.2"
+llama_cpp_python = ">=0.3.2"
+scikit-learn = ">=1.6.0"
+python-dotenv = ">=1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+codegate = "codegate.cli:main"
+generate-openapi = "src.codegate.dashboard.dashboard:generate_openapi"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+fix = true
+exclude = [
+    "src/codegate/db/queries.py",   # Ignore auto-generated file from sqlc
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=codegate --cov-report=term-missing"
+testpaths = ["tests"]
