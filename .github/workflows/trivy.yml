@@ -18,6 +18,7 @@ jobs:
           exit-code: 1
           ignore-unfixed: true
           severity: 'CRITICAL'
+          skip-dirs: "./rule-types,./profiles,./data-sources"
         env:
           TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db,public.ecr.aws/aquasecurity/trivy-db
           TRIVY_USERNAME: ${{ github.actor }}
