@@ -1,0 +1,98 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: python_lock_file_exists
+display_name:  Use pinned dependencies in Python via a lock file
+short_failure_message:  Dependencies are not pinned to specific versions
+severity:
+  value: low
+context: {}
+description: |
+  Python lock files are used to ensure that the dependencies of a Python project are locked to a specific version.
+  This helps to ensure that the project can be built and run consistently across different environments. If a lock
+  file is missing, it can lead to inconsistent builds and runtime errors. This rule checks for the presence of a
+  Python lock file in a repository.
+  
+  Note that this rule aims to be a generic rule that can be used across different Python projects. If you have a
+  specific lock file name or location that you would like to check for, you can create a custom rule that checks
+  for that specific file.
+guidance: |
+  Ensure that you pin your dependencies to specific versions using a lock file. This will help to ensure that your
+  project can be built and run consistently across different environments.
+  
+  In case of using a requirements.txt file, all version must be pinned to specific versions and not ranges.
+  
+  The following tools can be used to generate lock files for Python projects:
+  
+    - Poetry: https://python-poetry.org/
+    - Pipenv: https://pipenv.pypa.io/
+    - Pip-tools: https://pypi.org/project/pip-tools/
+    - Conda: https://docs.conda.io/
+    - PDM: https://pdm-project.org/en/latest/
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+    git:
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import rego.v1
+
+        default allow := false
+        
+        allow if lockfilecheck
+        
+        allow if reqtxtcheck
+        
+        lock_files := ["Pipfile.lock", "poetry.lock", "pdm.lock"]
+        
+        lockfilecheck if {
+            # If we'll skip this repo let's not even try to evaluate the rest of the rule
+            not skip
+        
+            # Check if any of the lock files exist in the repository
+            some f in lock_files
+            file.exists(f)
+        }
+        
+        reqtxtcheck if {
+            # If we'll skip this repo let's not even try to evaluate the rest of the rule
+            not skip
+        
+            # If the project is using a requirements.txt, we need to ensure that
+            # dependencies are pinned to specific versions and not ranges.
+            file.exists("requirements.txt")
+        
+            # Check if the requirements.txt file contains any version ranges
+            rqtxt := file.read("requirements.txt")
+            ranges := regex.find_all_string_submatch_n(`.*[=><]+.*`, rqtxt, -1)
+        
+            print("Ranges: ", ranges)
+            # Check that versions are pinned in the requirements.txt file
+            # TODO: This is a simple check that looks for the presence of '=='
+            #             We should consider hashes in the future
+            matches := regex.find_all_string_submatch_n(`.*==.*`, rqtxt, -1)
+        
+            # Check that all dependencies are pinned to specific versions
+            count(matches) == count(ranges)
+        }
+        
+        # If there's none of these files, this most likely is not a Python project
+        skip if {
+            not file.exists("pyproject.toml")
+            not file.exists("requirements.txt")
+            not file.exists("Pipfile")
+        }
+        
+        message := "There is no lock file in the repository" if {
+            not lockfilecheck
+        } else := "requirements.txt file does not pin dependencies to specific versions" if {
+            not reqtxtcheck
+        }
