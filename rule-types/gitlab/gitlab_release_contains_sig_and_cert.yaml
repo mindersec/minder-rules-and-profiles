@@ -1,0 +1,42 @@
+---
+version: v1
+type: rule-type
+name: gitlab_release_contains_sig_and_cert
+display_name: Gitlab release contains signature and certificate
+short_failure_message: Release does not contain signature and certificate
+severity:
+  value: medium
+context:
+  provider: gitlab
+release_phase: alpha
+description: |
+  The release should contain a signature and a certificate to ensure the authenticity and integrity of the release
+  assets. This rule verifies that the release assets contain a signature and a certificate.
+guidance: |
+  To ensure the authenticity and integrity of the release assets, include a signature and a certificate in the release.
+  This will allow users to verify the authenticity and integrity of the release assets.
+def:
+  in_entity: release
+  rule_schema: {}
+  ingest:
+    type: rest
+    rest:
+      endpoint: '/projects/{{ mapGet .Entity.Properties "gitlab/project_id" }}/releases/{{ mapGet .Entity.Properties "gitlab/tag" }}'
+      parse: json
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        default allow := false
+        default message := "Release does not contain "
+
+        allow {
+          count(input.ingested.assets) > 0
+          count(input.ingested.assets.links) > 0
+        
+          count([a | a := input.ingested.assets.links[_]; contains(a.url, ".sig")]) > 0
+          count([a | a := input.ingested.assets.links[_]; contains(a.url, ".crt")]) > 0
+        }
