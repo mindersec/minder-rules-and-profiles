@@ -33,8 +33,7 @@ def:
       def: |
         package minder
 
-        import future.keywords.every
-        import future.keywords.if
+        import rego.v1
 
         default allow := false
 
