@@ -1,0 +1,26 @@
+tests:
+  - name: "Should have grype github action enabled"
+    def: {}
+    params: {}
+    expect: "pass"
+    entity: &test-repo
+      type: repository
+      entity:
+        owner: "coolhead"
+        name: "haze-wave"
+    git:
+      repo_base: action_enabled
+  - name: "Action is missing"
+    def: {}
+    params: {}
+    expect: "fail"
+    entity: *test-repo
+    git:
+      repo_base: action_missing
+  - name: "Action is enabled but not for repo scanning"
+    def: {}
+    params: {}
+    expect: "fail"
+    entity: *test-repo
+    git:
+      repo_base: action_enabled_not_for_repo_scanning
