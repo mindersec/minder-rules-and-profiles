@@ -20,7 +20,10 @@ def:
   in_entity: repository
   rule_schema: {}
   ingest:
-    type: git
+    type: rest
+    rest:
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
+      parse: json
   eval:
     type: rego
     data_sources:
