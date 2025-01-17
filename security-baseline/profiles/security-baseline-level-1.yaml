@@ -35,3 +35,7 @@ repository:
   - name: osps-qa-01
     type: osps-qa-01
     def: {}
+  # OSPS-QA-02: Maintain publicly readable change history
+  - name: osps-qa-02
+    type: osps-qa-02
+    def: {}    

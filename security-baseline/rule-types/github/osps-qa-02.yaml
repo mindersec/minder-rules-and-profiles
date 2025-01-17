@@ -1,0 +1,59 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-qa-02
+display_name: Maintain publicly readable change history
+short_failure_message: Repository must be public, prevent force pushes and commit squashing
+severity:
+  value: info
+context:
+  provider: github
+description: |
+  Ensure that the project's change history is publicly readable and 
+  cannot be overwritten or squashed, maintaining transparency and trust in the 
+  development process. This helps maintain a complete and accurate history of all
+  changes made to the codebase.
+guidance: |
+  1. Make sure the repository is public via the
+     [Repository Settings](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility) page.
+  2. Ensure force pushes are disabled in branch protection rules via the
+     [Branch protection settings](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
+  3. Ensure squashing commits is disabled in the repository settings via the
+     [Configure commit squashing](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/configuring-commit-squashing-for-pull-requests).
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+  eval:
+    type: rego
+    data_sources:
+      - name: ghapi
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import future.keywords.every
+        import future.keywords.if
+
+        default allow := false
+
+        repo := minder.datasource.ghapi.repo_config({
+          "owner": input.properties["github/repo_owner"],
+          "repo": input.properties["github/repo_name"]
+        })
+
+        branch_protection := minder.datasource.ghapi.branch_protection({
+          "owner": input.properties["github/repo_owner"],
+          "repo": input.properties["github/repo_name"],
+          "branch": input.properties["github/default_branch"]
+        })
+
+        allow if {
+          not input.properties["is_private"]
+
+          not branch_protection.body.allow_force_pushes.enabled
+          
+          not repo.body.allow_squash_merge
+        }

@@ -24,3 +24,15 @@ rest:
             type: string
           repo:
             type: string
+    branch_protection:
+      endpoint: https://api.github.com/repos/{owner}/{repo}/branches/{branch}/protection
+      parse: json
+      input_schema:
+        type: object
+        properties:
+          owner:
+            type: string
+          repo:
+            type: string
+          branch:
+            type: string
