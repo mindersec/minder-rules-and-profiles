@@ -37,10 +37,5 @@ def:
 
         default allow := false
 
-        repo := minder.datasource.ghapi.repo_config({
-          "owner": input.properties["github/repo_owner"],
-          "repo": input.properties["github/repo_name"]
-        })
-
-        allow if repo.body.has_issues
-        allow if repo.body.has_discussions
+        allow if input.ingested.has_issues
+        allow if input.ingested.has_discussions
