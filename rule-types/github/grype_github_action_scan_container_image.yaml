@@ -23,7 +23,7 @@ guidance: |
   - name: Scan image
     uses: anchore/scan-action@v6.0.0
     with:
-      image: "<image-reference>"
+      image: "your-image-reference"
   ```
 
   For more details, refer to the [Grype action documentation](https://github.com/anchore/scan-action).
