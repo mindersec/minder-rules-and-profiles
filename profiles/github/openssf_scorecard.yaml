@@ -18,7 +18,8 @@ repository:
   # CI-Tests
   - type: workflow_pull_request
     def: {}
-  # CII-Best-Practices
+  - type: openssf_bestpractices        # CII-Best-Practices
+    def: {}
   - type: branch_protection_require_pull_request_approving_review_count # Code-Review
     def:
       required_approving_review_count: 1

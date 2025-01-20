@@ -1,0 +1,49 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: repo_issues_enabled
+display_name: Ensure repository has issues enabled
+short_failure_message: Repository issues are not enabled
+severity:
+  value: low
+context:
+  provider: github
+description: |
+  Verifies that a repository has its issue tracker enabled.
+  This helps ensure repositories are configured for proper issue tracking
+  and community engagement.
+guidance: |
+  Ensure that the repository's issue tracker is enabled.
+
+  The issue tracker should be enabled when you want to:
+  - Track bugs, enhancements, and other requests
+  - Foster community discussions and feedback
+  - Create and track milestones
+  - Manage project work items directly in GitHub
+
+  For more information, see [GitHub's documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/disabling-issues).
+def:
+  in_entity: repository
+  rule_schema: {}  # No configuration needed
+  ingest:
+    type: rest
+    rest:
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
+      parse: json
+  eval:
+    type: jq
+    jq:
+      - ingested:
+          def: ".has_issues"
+        constant: true
+  remediate:
+    type: rest
+    rest:
+      method: PATCH
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
+      body: |
+        { "has_issues": true }
+  alert:
+    type: security_advisory
+    security_advisory: {}

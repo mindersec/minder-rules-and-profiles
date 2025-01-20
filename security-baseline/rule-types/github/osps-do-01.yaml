@@ -20,7 +20,10 @@ def:
   in_entity: repository
   rule_schema: {}
   ingest:
-    type: git
+    type: rest
+    rest:
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
+      parse: json
   eval:
     type: rego
     data_sources:
@@ -30,15 +33,9 @@ def:
       def: |
         package minder
 
-        import future.keywords.every
-        import future.keywords.if
+        import rego.v1
 
         default allow := false
 
-        repo := minder.datasource.ghapi.repo_config({
-          "owner": input.properties["github/repo_owner"],
-          "repo": input.properties["github/repo_name"]
-        })
-
-        allow if repo.body.has_issues
-        allow if repo.body.has_discussions
+        allow if input.ingested.has_issues
+        allow if input.ingested.has_discussions
