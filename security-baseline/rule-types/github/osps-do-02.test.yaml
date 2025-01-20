@@ -1,0 +1,25 @@
+tests:
+  - name: "Should find CONTRIBUTING"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: contributing_file_no_extension
+  - name: "Should find CONTRIBUTING.md"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: contributing_file
+  - name: "Should find CONTRIBUTING folder"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: contributing_folder
+  - name: "Should fail if absent"
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: no_data
