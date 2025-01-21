@@ -6,7 +6,7 @@ require (
 	github.com/mindersec/minder v0.0.81
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.10.0
-	google.golang.org/protobuf v1.36.2
+	google.golang.org/protobuf v1.36.3
 	gopkg.in/yaml.v3 v3.0.1
 )
 
