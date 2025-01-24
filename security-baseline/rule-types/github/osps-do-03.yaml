@@ -60,7 +60,7 @@ def:
 
         allow if {
           # Check the GitHub homepage link
-          out = minder.datasource.ghapi.repo({
+          out = minder.datasource.ghapi.repo_config({
             "owner": input.properties["github/repo_owner"],
             "repo": input.properties["github/repo_name"]
           })
