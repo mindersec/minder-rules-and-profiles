@@ -15,6 +15,10 @@ repository:
   - name: osps-ac-04
     type: osps-ac-04
     def: {}
+  # OSPS-BR-01: Prevent direct untrusted input in CI
+  - name: osps-br-01
+    type: osps-br-01
+    def: {}
   # OSPS-DO-01: Projects has public discussion mechanisms
   - name: osps-do-01
     type: osps-do-01
