@@ -1,1 +1,36 @@
-data-sources/ghapi.yaml
+version: v1
+type: data-source
+name: ghapi
+context: {}
+rest:
+  def:
+    license:
+      endpoint: https://api.github.com/repos/{owner}/{repo}/license
+      parse: json
+      input_schema:
+        type: object
+        properties:
+          owner:
+            type: string
+          repo:
+            type: string
+    repo_config:
+      endpoint: https://api.github.com/repos/{owner}/{repo}
+      parse: json
+      input_schema:
+        type: object
+        properties:
+          owner:
+            type: string
+          repo:
+            type: string
+    private_vuln_reporting:
+      endpoint: https://api.github.com/repos/{owner}/{repo}/private-vulnerability-reporting
+      parse: json
+      input_schema:
+        type: object
+        properties:
+          owner:
+            type: string
+          repo:
+            type: string            
