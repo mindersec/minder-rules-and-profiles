@@ -7,6 +7,9 @@ context:
 alert: "off"
 remediate: "off"
 repository:
+  # OSPS-AC-01: Require MFA for collaborators; depends on org entity
+  # OSPS-AC-02: Hosted GitHub has this by default
+
   # OSPS-AC-03: Prevent overwriting git history
   - name: osps-ac-03
     type: osps-ac-03
@@ -15,18 +18,26 @@ repository:
   - name: osps-ac-04
     type: osps-ac-04
     def: {}
+
   # OSPS-BR-01: Prevent direct untrusted input in CI
   - name: osps-br-01
     type: osps-br-01
     def: {}
-  # OSPS-DO-01: Projects has public discussion mechanisms
-  - name: osps-do-01
-    type: osps-do-01
+  # OSPS-BR-03: Hosted GitHub has this by default
+  # OSPS-BR-09: GitHub hosted releases have this, check for links in release text?
+  # OSPS-BR-10: Not sure how to check this
+
+  # OSPS-DO-13: Need standardized format?  Check for SUPPORT* in the meantime
+
+  # OSPS-GV-02: Projects has public discussion mechanisms
+  - name: osps-gv-02
+    type: osps-gv-02
     def: {}
-  # OSPS-DO-02: Enforce CONTRIBUTING file presence
-  - name: osps-do-02
-    type: osps-do-02
+  # OSPS-GV-03: Enforce CONTRIBUTING file presence
+  - name: osps-gv-03
+    type: osps-gv-03
     def: {}
+
   # OSPS-LE-02: Ensure OSI/FSF approved license
   - name: osps-le-02
     type: osps-le-02
@@ -35,6 +46,8 @@ repository:
   - name: osps-le-03
     type: osps-le-03
     def: {}
+  # OSPS-LE-04: Check release object for LICENSE file
+
   # OSPS-QA-01: Repository visibility check
   - name: osps-qa-01
     type: osps-qa-01
@@ -43,3 +56,7 @@ repository:
   - name: osps-qa-02
     type: osps-qa-02
     def: {}    
+
+  # OSPS-SA-02: Need standardized format?  Also strange that this is lv1, but user guides are lv2
+
+  # OSPS-VM-05: Check for SECURITY.md or GitHub private vulnerability reporting

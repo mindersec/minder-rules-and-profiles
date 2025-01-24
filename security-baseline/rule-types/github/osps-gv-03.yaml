@@ -1,7 +1,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-do-02
+name: osps-gv-03
 display_name: Contribution process is explained
 short_failure_message: No CONTRIBUTING file or folder was found
 severity:
