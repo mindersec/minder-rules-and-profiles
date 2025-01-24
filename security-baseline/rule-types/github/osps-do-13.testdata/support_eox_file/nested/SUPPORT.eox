@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openeox.org/schema-0.2.0.json",
+  "creationTimestamp": "2023-10-01T12:00:00Z",
+  "EOLDate": "2028-12-31T23:59:59Z",
+  "supplierId": "supplier-123",
+  "supplierName": "Example Supplier",
+  "productId": "product-456",
+  "productName": "Example Product",
+  "productVersion": "1.0.0",
+  "replacementProduct": {
+    "productId": "product-789",
+    "productName": "Replacement Product",
+    "productVersion": "2.0.0"
+  }
+}
