@@ -1,7 +1,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-do-01
+name: osps-gv-02
 display_name: The project has mechanisms for public discussion
 short_failure_message: The project does not publicize mechanisms for public discussion.
 severity:

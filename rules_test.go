@@ -4,17 +4,18 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/require"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/reflect/protoreflect"
-	"gopkg.in/yaml.v3"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"gopkg.in/yaml.v3"
 
 	minderv1 "github.com/mindersec/minder/pkg/api/protobuf/go/minder/v1"
 	rtengine "github.com/mindersec/minder/pkg/engine/v1/rtengine"
@@ -37,6 +38,8 @@ type RuleTest struct {
 	Entity EntityVersionWrapper `yaml:"entity"`
 	// Expect is the expected result of the test
 	Expect ExpectResult `yaml:"expect"`
+	// ErrorText is the expected error text of the test
+	ErrorText string `yaml:"error_text"`
 	// Git is the configuration for the git test
 	Git *GitTest `yaml:"git"`
 	// HTTP is the configuration for the HTTP test
@@ -164,6 +167,9 @@ func TestRuleTypes(t *testing.T) {
 				require.NoError(t, err)
 			} else {
 				require.Error(t, err)
+				if tc.ErrorText != "" {
+					require.Equal(t, strings.TrimSpace(tc.ErrorText), strings.TrimSpace(err.Error()))
+				}
 			}
 		})
 

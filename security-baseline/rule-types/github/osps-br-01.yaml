@@ -1,0 +1,142 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-br-01
+display_name: Prevent untrusted input in continuous integration
+short_failure_message: Untrusted input can subvert workflows
+severity:
+  value: critical
+context:
+  provider: github
+description: |
+  This check determines whether the project's GitHub Action workflows
+  have dangerous code patterns. Some examples of these patterns are
+  untrusted code checkouts, logging github context and secrets, or use
+  of potentially untrusted inputs in scripts. The following patterns
+  are checked:
+
+  * Untrusted Code Checkout: This is the misuse of potentially
+  dangerous triggers. This checks if a pull_request_target or
+  workflow_run workflow trigger was used in conjunction with an
+  explicit pull request checkout. Workflows triggered with
+  pull_request_target / workflow_run have write permission to the
+  target repository and access to target repository secrets.
+
+  * Script Injection with Untrusted Context Variables: This pattern
+  detects whether a workflow's inline script may execute untrusted
+  input from attackers. Attackers can add their own content to
+  certain github context variables that are considered untrusted,
+  for example, github.event.issue.title. These values should not flow
+  directly into executable code.
+
+guidance: |
+  Avoid using pull_request_target and workflow_run workflow triggers with
+  contributor-supplied code, following [GitHub's guidance](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/)
+
+  [Quote or escape untrusted context variables](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#understanding-the-risk-of-script-injections)
+  before using them in scripts.
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+  eval:
+    type: rego
+    rego:
+      type: constraints
+      def: |
+        package minder
+        import rego.v1
+
+        # Match both .yml and .yaml files
+        workflows := array.concat(file.ls_glob("./.github/workflows/*.yml"), file.ls_glob("./.github/workflows/*.yaml"))
+
+        dangerous_triggers = ["pull_request_target", "workflow_run"]
+
+        # Look for dangerous triggers combined with checkout of user-controlled code.
+        violations[{"msg": msg}] if {
+          some w
+          contents := file.read(workflows[w])
+          workflow := parse_yaml(contents)
+
+          events := events_set(workflow.on)
+          some event in events
+          event in dangerous_triggers
+
+          some job
+          some step
+          stepDef := workflow.jobs[job].steps[step]
+          startswith(stepDef.uses, "actions/checkout")
+
+          # This action is only dangerous if we check out the attacker-controlled branch
+          dangerous_ref(stepDef["with"].ref)
+
+          msg := sprintf("Workflow %s has a dangerous trigger and checks out a pull request in job '%s'", [workflows[w], job])
+        }
+
+        events_set(events) := object.keys(events) if {
+          is_object(events)
+        }
+
+        events_set(events) := events if {
+          is_array(events)
+        }
+
+        dangerous_ref(ref) if {
+          contains(ref, "github.event.pull_request")
+        }
+
+        dangerous_ref(ref) if {
+          contains(ref, "github.event.workflow_run")
+        }
+
+        # Look for possible script injections
+        violations[{"msg": msg}] if {
+          some w
+          contents := file.read(workflows[w])
+          workflow := parse_yaml(contents)
+
+          some job
+          some step
+          stepDef := workflow.jobs[job].steps[step]
+          stepDef.run
+
+          stepDef.run != "make test"
+
+          regexp := "\\${{(.*?)}}"
+          expansions := regex.find_all_string_submatch_n(regexp, stepDef.run, -1)
+
+          some expr in expansions
+          vulnerable_expansion(expr[1])
+
+          msg := sprintf("Workflow %s has possible event script injection in step %d of job '%s'", [workflows[w], step, job])
+        }
+
+        # Patterns from https://securitylab.github.com/resources/github-actions-untrusted-input/
+        vulnerable_patterns := {
+          "github.event.issue.title",
+          "github.event.issue.body",
+          "github.event.pull_request.title",
+          "github.event.pull_request.body",
+          "github.event.comment.body",
+          "github.event.review.body",
+          "github.event.pages.*.page_name",
+          "github.event.commits.*.message",
+          "github.event.head_commit.message",
+          "github.event.head_commit.author.email",
+          "github.event.head_commit.author.name",
+          "github.event.commits.*.author.email",
+          "github.event.commits.*.author.name",
+          "github.event.pull_request.head.ref",
+          "github.event.pull_request.head.label",
+          "github.event.pull_request.head.repo.default_branch",
+          "github.head_ref",
+        }
+
+        vulnerable_expansion(exp) if {
+          some match in vulnerable_patterns
+          matcher := concat("", ["*", match, "*"])
+          glob.match(matcher, null, exp)
+        }
+
+

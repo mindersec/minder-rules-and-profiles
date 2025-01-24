@@ -1,0 +1,15 @@
+on: [pull_request]
+
+jobs:
+  check-title:
+    name: Check PR title
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check PR title
+        run: |
+          title="${{ github.event.issue.title }}"
+          if [[ ! $title =~ ^.*:\ .*$ ]]; then
+            echo "Bad issue title"
+            exit 1
+          fi
