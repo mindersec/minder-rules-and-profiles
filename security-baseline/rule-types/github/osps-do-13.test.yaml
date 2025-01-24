@@ -1,0 +1,25 @@
+tests:
+  - name: "Should find README with support header"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: readme_with_support
+  - name: "Should find SUPPORT.eox"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: support_eox_file
+  - name: "Should find SUPPORT.md"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: support_md_file
+  - name: "Should fail if support absent"
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: no_support

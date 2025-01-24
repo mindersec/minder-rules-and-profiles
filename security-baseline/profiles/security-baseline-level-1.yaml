@@ -27,7 +27,10 @@ repository:
   # OSPS-BR-09: GitHub hosted releases have this, check for links in release text?
   # OSPS-BR-10: Not sure how to check this
 
-  # OSPS-DO-13: Need standardized format?  Check for SUPPORT* in the meantime
+  # OSPS-DO-13: Support scope and duration is documented
+  - name: osps-do-13
+    type: osps-do-13
+    def: {}
 
   # OSPS-GV-02: Projects has public discussion mechanisms
   - name: osps-gv-02
