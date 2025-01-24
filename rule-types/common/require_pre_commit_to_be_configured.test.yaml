@@ -1,0 +1,19 @@
+tests:
+  - name: "Should have at least one pre-commit hook configured"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: correct
+  - name: "Should fail pre-commit is not configured with at least one hook"
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: misconfigured
+  - name: "Should fail is pre-commit is not configured at all"
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: empty

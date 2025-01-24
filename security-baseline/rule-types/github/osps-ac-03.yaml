@@ -1,0 +1,38 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-ac-03
+display_name: Prevent overwriting git history
+short_failure_message: Force pushes are allowed
+severity:
+  value: info
+context:
+  provider: github
+description: Disallow force pushes to the branch
+guidance: |
+  Ensure that the appropriate setting is disabled for the branch
+  protection rule.
+
+  This setting prevents users with push access to force push to the
+  branch.
+
+  For more information, see [GitHub's
+  documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: rest
+    rest:
+      endpoint: '/repos/{{.Entity.Owner}}/{{.Entity.Name}}/branches/{{ .Entity.DefaultBranch }}/protection'
+      parse: json
+      fallback:
+        - http_code: 404
+          body: |
+            {"http_status": 404, "message": "Not Protected"}
+  eval:
+    type: jq
+    jq:
+      - ingested:
+          def: ".allow_force_pushes.enabled"
+        constant: false

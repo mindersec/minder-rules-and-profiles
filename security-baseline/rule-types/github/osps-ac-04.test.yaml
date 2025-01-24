@@ -1,0 +1,49 @@
+tests:
+  - name: "force push not allowed"
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: "mindersec"
+        name: "minder"    
+    expect: "pass"
+    http:
+      status: 200
+      body: '{"allow_deletions": {"enabled": false}}'
+  - name: "force push allowed"
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: "mindersec"
+        name: "minder"    
+    expect: "fail"
+    http:
+      status: 200
+      body: '{"allow_deletions": {"enabled": true}}'
+  - name: "not found"
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: "mindersec"
+        name: "minder"    
+    expect: "fail"
+    http:
+      status: 404
+      body: '{"woot": "woot"}'
+  - name: "internal error"
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: "mindersec"
+        name: "minder"    
+    expect: "fail"
+    http:
+      status: 502
+      body: '{"woot": "woot"}'

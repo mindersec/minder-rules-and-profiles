@@ -14,7 +14,7 @@ rest:
             type: string
           repo:
             type: string
-    repo:
+    repo_config:
       endpoint: https://api.github.com/repos/{owner}/{repo}
       parse: json
       input_schema:

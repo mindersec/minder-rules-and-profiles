@@ -1,0 +1,48 @@
+tests:
+  - name: "File should be present"
+    def:
+      file: README
+      content: ""
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: file_present
+  - name: "File is missing"
+    def:
+      file: README
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: file_missing
+  - name: "File present and matches content"
+    def:
+      file: README
+      content: "Test content"
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: file_present
+  - name: "File present, but has different content"
+    def:
+      file: README
+      content: "Different content"
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: file_present
+  - name: "File present, but has more content than expected"
+    def:
+      file: README
+      content: "Test"
+    params: { }
+    expect: "fail"
+    git:
+      repo_base: file_present
+  - name: "File present, but has less content than expected"
+    def:
+      file: README
+      content: "Test content with a subset"
+    params: { }
+    expect: "fail"
+    git:
+      repo_base: file_present

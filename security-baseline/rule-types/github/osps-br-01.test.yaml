@@ -1,0 +1,32 @@
+tests:
+- name: No workflows
+  def: {}
+  params: {}
+  expect: "pass"
+  git:
+    repo_base: no_workflows
+- name: Safe workflows
+  def: {}
+  params: {}
+  expect: pass
+  git:
+    repo_base: safe_workflows
+- name: Unsafe checkout
+  def: {}
+  params: {}
+  expect: fail
+  error_text: |
+    evaluation failure: Evaluation failures: 
+     - Workflow .github/workflows/pr_test.yaml has a dangerous trigger and checks out a pull request in job 'test'
+     - Workflow .github/workflows/pr_workflow.yaml has a dangerous trigger and checks out a pull request in job 'exec'
+  git:
+    repo_base: unsafe_checkout
+- name: Script injection
+  def: {}
+  params: {}
+  expect: fail
+  error_text: |
+    evaluation failure: Evaluation failures: 
+     - Workflow .github/workflows/pr_title.yaml has possible event script injection in step 0 of job 'check-title'
+  git:
+    repo_base: script_injection

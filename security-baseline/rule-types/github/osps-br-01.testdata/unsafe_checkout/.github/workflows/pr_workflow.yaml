@@ -1,0 +1,17 @@
+# Example test workflow for the GitHub Action feature
+name: Test PR
+
+on: [workflow_run]
+
+jobs:
+  exec:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Run tests
+      run: make test

@@ -4,17 +4,18 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/require"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/reflect/protoreflect"
-	"gopkg.in/yaml.v3"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"gopkg.in/yaml.v3"
 
 	minderv1 "github.com/mindersec/minder/pkg/api/protobuf/go/minder/v1"
 	rtengine "github.com/mindersec/minder/pkg/engine/v1/rtengine"
@@ -37,6 +38,8 @@ type RuleTest struct {
 	Entity EntityVersionWrapper `yaml:"entity"`
 	// Expect is the expected result of the test
 	Expect ExpectResult `yaml:"expect"`
+	// ErrorText is the expected error text of the test
+	ErrorText string `yaml:"error_text"`
 	// Git is the configuration for the git test
 	Git *GitTest `yaml:"git"`
 	// HTTP is the configuration for the HTTP test
@@ -129,50 +132,57 @@ type RuleTypeTestFunc func(t *testing.T, rt *minderv1.RuleType, suite *RuleTest,
 func TestRuleTypes(t *testing.T) {
 	t.Parallel()
 
-	// iterate rule types directory
-	err := walkRuleTypesTests(t, func(t *testing.T, rt *minderv1.RuleType, tc *RuleTest, rtDataPath string) {
-		var opts []tkv1.Option
-		if rt.Def.Ingest.Type == "git" {
-			opts = append(opts, gitTestOpts(t, tc, rtDataPath))
-		} else if rt.Def.Ingest.Type == "rest" {
-			opts = append(opts, httpTestOpts(t, tc, rtDataPath))
-		} else {
-			t.Skipf("Unsupported ingest type %s", rt.Def.Ingest.Type)
-		}
+	require.NoError(t, os.Setenv("REGO_ENABLE_PRINT", "true"))
 
-		ztw := zerolog.NewTestWriter(t)
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-		ctx := zerolog.New(ztw).With().Timestamp().Logger().WithContext(context.Background())
+	for _, folder := range []string{"rule-types", "security-baseline/rule-types"} {
+		// iterate rule types directory
+		err := walkRuleTypesTests(t, folder, func(t *testing.T, rt *minderv1.RuleType, tc *RuleTest, rtDataPath string) {
+			var opts []tkv1.Option
+			if rt.Def.Ingest.Type == "git" {
+				opts = append(opts, gitTestOpts(t, tc, rtDataPath))
+			} else if rt.Def.Ingest.Type == "rest" {
+				opts = append(opts, httpTestOpts(t, tc, rtDataPath))
+			} else {
+				t.Skipf("Unsupported ingest type %s", rt.Def.Ingest.Type)
+			}
 
-		tk := tkv1.NewTestKit(opts...)
-		rte, err := rtengine.NewRuleTypeEngine(ctx, rt, tk)
-		require.NoError(t, err)
+			ztw := zerolog.NewTestWriter(t)
+			zerolog.SetGlobalLevel(zerolog.DebugLevel)
+			ctx := zerolog.New(ztw).With().Timestamp().Logger().WithContext(context.Background())
 
-		val := rte.GetRuleInstanceValidator()
-		require.NoError(t, val.ValidateRuleDefAgainstSchema(tc.Def), "Failed to validate rule definition against schema")
-		require.NoError(t, val.ValidateParamsAgainstSchema(tc.Params), "Failed to validate params against schema")
-
-		if tk.ShouldOverrideIngest() {
-			rte.WithCustomIngester(tk)
-		}
-
-		err = rte.Eval(ctx, tc.Entity.Entity, tc.Def, tc.Params, tkv1.NewVoidResultSink())
-		if tc.Expect == ExpectPass {
+			tk := tkv1.NewTestKit(opts...)
+			rte, err := rtengine.NewRuleTypeEngine(ctx, rt, tk, nil)
 			require.NoError(t, err)
-		} else {
-			require.Error(t, err)
-		}
-	})
 
-	if err != nil {
-		t.Error(err)
+			val := rte.GetRuleInstanceValidator()
+			require.NoError(t, val.ValidateRuleDefAgainstSchema(tc.Def), "Failed to validate rule definition against schema")
+			require.NoError(t, val.ValidateParamsAgainstSchema(tc.Params), "Failed to validate params against schema")
+
+			if tk.ShouldOverrideIngest() {
+				rte.WithCustomIngester(tk)
+			}
+
+			_, err = rte.Eval(ctx, tc.Entity.Entity, tc.Def, tc.Params, tkv1.NewVoidResultSink())
+			if tc.Expect == ExpectPass {
+				require.NoError(t, err)
+			} else {
+				require.Error(t, err)
+				if tc.ErrorText != "" {
+					require.Equal(t, strings.TrimSpace(tc.ErrorText), strings.TrimSpace(err.Error()))
+				}
+			}
+		})
+
+		if err != nil {
+			t.Error(err)
+		}
 	}
 }
 
-func walkRuleTypesTests(t *testing.T, testfunc RuleTypeTestFunc) error {
+func walkRuleTypesTests(t *testing.T, folder string, testfunc RuleTypeTestFunc) error {
 	t.Helper()
 
-	return filepath.Walk("rule-types", func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(folder, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -280,7 +290,8 @@ func openRuleType(path string) (*minderv1.RuleType, error) {
 	defer ruleTypeFile.Close()
 
 	// parse the rule type file
-	rt, err := minderv1.ParseRuleType(ruleTypeFile)
+	rt := &minderv1.RuleType{}
+	err = minderv1.ParseResource(ruleTypeFile, rt)
 	if err != nil {
 		return nil, err
 	}

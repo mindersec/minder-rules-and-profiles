@@ -1,0 +1,48 @@
+---
+tests:
+  - name: "project contains Pipfile.lock"
+    def: {}
+    params: {}
+    expect: "pass"
+    entity: &test-repo
+      type: repository
+      entity:
+        owner: "coolhead"
+        name: "haze-wave"
+    git:
+      repo_base: pipfile_lock
+  - name: "project contains poetry.lock"
+    def: {}
+    params: {}
+    expect: "pass"
+    entity: *test-repo
+    git:
+      repo_base: poetry_lock
+  - name: "project contains pdm.lock"
+    def: {}
+    params: {}
+    expect: "pass"
+    entity: *test-repo
+    git:
+      repo_base: pdm_lock
+  - name: "project contains version-pinned requirements.txt"
+    def: {}
+    params: {}
+    expect: "pass"
+    entity: *test-repo
+    git:
+      repo_base: pinned_requirements_txt
+  - name: "project contains some unpinned requirements.txt"
+    def: {}
+    params: {}
+    expect: "fail"
+    entity: *test-repo
+    git:
+      repo_base: some_unpinned_requirements_txt
+  - name: "project contains no lock files"
+    def: {}
+    params: {}
+    expect: "fail"
+    entity: *test-repo
+    git:
+      repo_base: no_lock

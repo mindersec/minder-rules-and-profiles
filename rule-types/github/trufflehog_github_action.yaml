@@ -1,0 +1,52 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: trufflehog_github_action
+display_name: Prevent Secret Exposure using TruffleHog GitHub Action
+short_failure_message: TruffleHog is not configured via a GitHub action
+severity:
+  value: medium
+context: {}
+description: |
+  Verifies that automated secret detection is implemented using TruffleHog GitHub 
+  Action to scan repositories for exposed secrets and sensitive information. 
+  This is crucial for preventing data breaches and unauthorized access that 
+  could occur from accidentally committed credentials, API keys, or other 
+  sensitive data. Regular scanning helps maintain security compliance and protects your organization's assets.
+
+  For technical details, see the [TruffleHog documentation](https://github.com/trufflesecurity/trufflehog) 
+  and [GitHub Action implementation guide](https://github.com/marketplace/actions/trufflehog-oss).
+guidance: |
+  Ensure that TruffleHog is configured and enabled for the repository.
+
+  For more information, see the [TruffleHog GitHub Action](https://github.com/marketplace/actions/trufflehog-oss#octocat-trufflehog-github-action documentation.
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties: {}
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        
+        import rego.v1
+
+        actions := github_workflow.ls_actions("./.github/workflows")
+
+        default message := "No TruffleHog GitHub action found for automated secret detection"
+        default allow := false
+        allow if {
+          # check that there is a trufflehog action
+          "trufflesecurity/trufflehog" in actions
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}

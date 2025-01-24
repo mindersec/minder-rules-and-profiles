@@ -1,0 +1,13 @@
+tests:
+  - name: "Should have TruffleHog enabled"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: github_action_with_trufflehog
+  - name: "Should not have Renovate enabled"
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: github_action_without_trufflehog

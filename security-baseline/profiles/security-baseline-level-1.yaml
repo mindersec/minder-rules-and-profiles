@@ -1,0 +1,65 @@
+version: v1
+type: profile
+name: security-baseline-level-1
+display_name: OSPS Security Baseline - Level 1
+context:
+  provider: github
+alert: "off"
+remediate: "off"
+repository:
+  # OSPS-AC-01: Require MFA for collaborators; depends on org entity
+  # OSPS-AC-02: Hosted GitHub has this by default
+
+  # OSPS-AC-03: Prevent overwriting git history
+  - name: osps-ac-03
+    type: osps-ac-03
+    def: {}
+  # OSPS-AC-04: Prevent permanent branch deletion
+  - name: osps-ac-04
+    type: osps-ac-04
+    def: {}
+
+  # OSPS-BR-01: Prevent direct untrusted input in CI
+  - name: osps-br-01
+    type: osps-br-01
+    def: {}
+  # OSPS-BR-03: Hosted GitHub has this by default
+  # OSPS-BR-09: GitHub hosted releases have this, check for links in release text?
+  # OSPS-BR-10: Not sure how to check this
+
+  # OSPS-DO-13: Support scope and duration is documented
+  - name: osps-do-13
+    type: osps-do-13
+    def: {}
+
+  # OSPS-GV-02: Projects has public discussion mechanisms
+  - name: osps-gv-02
+    type: osps-gv-02
+    def: {}
+  # OSPS-GV-03: Enforce CONTRIBUTING file presence
+  - name: osps-gv-03
+    type: osps-gv-03
+    def: {}
+
+  # OSPS-LE-02: Ensure OSI/FSF approved license
+  - name: osps-le-02
+    type: osps-le-02
+    def: {}
+  # OSPS-LE-03: LICENSE or COPYING files are available available
+  - name: osps-le-03
+    type: osps-le-03
+    def: {}
+  # OSPS-LE-04: Check release object for LICENSE file
+
+  # OSPS-QA-01: Repository visibility check
+  - name: osps-qa-01
+    type: osps-qa-01
+    def: {}
+  # OSPS-QA-02: Maintain publicly readable change history
+  - name: osps-qa-02
+    type: osps-qa-02
+    def: {}    
+
+  # OSPS-SA-02: Need standardized format?  Also strange that this is lv1, but user guides are lv2
+
+  # OSPS-VM-05: Check for SECURITY.md or GitHub private vulnerability reporting
