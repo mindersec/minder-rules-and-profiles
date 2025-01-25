@@ -39,5 +39,6 @@ def:
         allow if {
           # This rule checks whether the repository is private using
           # info tied to the entity itself.
-          not input.properties["is_private"]
+          input.ingested.visibility == "public"
+          input.ingested.clone_url != ""
         }
