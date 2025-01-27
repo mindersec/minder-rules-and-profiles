@@ -1,0 +1,36 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-ac-02
+display_name: Default collaborators to lowest privileges
+short_failure_message: Collaborators default to privileged access
+severity:
+  value: info
+context:
+  provider: github
+description: Verifies that project collaborators default to the lowest access level.
+guidance: |
+  Reduce the risk of unauthorized access to the project’s repository
+  by limiting the permissions granted to collaborators.
+
+  Most public version control systems (such as GitHub) are configured
+  in this manner.
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: rest
+    rest:
+      endpoint: '/repos/{{.Entity.Owner}}/{{.Entity.Name}}'
+      parse: json
+      fallback:
+        - http_code: 404
+          body: |
+            {"http_status": 404, "message": "Repo not found"}
+  eval:
+    type: jq
+    jq:
+      # Public repositories on GitHub will already have minimum _default_ permissions.
+      - ingested:
+          def: ".visibility"
+        constant: "public"
