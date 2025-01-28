@@ -1,0 +1,43 @@
+tests:
+  - name: release assets are https
+    def: {}
+    params: {}
+    entity:
+      type: release
+      entity:
+        properties:
+          github/owner: mindersec
+          github/repo: minder
+          upstream_id: 1
+    expect: pass
+    http:
+      status: 200
+      body_file: all-https.json
+  - name: url is not https
+    def: {}
+    params: {}
+    entity:
+      type: release
+      entity:
+        properties:
+          github/owner: mindersec
+          github/repo: minder
+          upstream_id: 1
+    expect: fail
+    http:
+      status: 200
+      body_file: url-not-https.json
+  - name: download url is not https
+    def: {}
+    params: {}
+    entity:
+      type: release
+      entity:
+        properties:
+          github/owner: mindersec
+          github/repo: minder
+          upstream_id: 1
+    expect: fail
+    http:
+      status: 200
+      body_file: download-url-not-https.json
