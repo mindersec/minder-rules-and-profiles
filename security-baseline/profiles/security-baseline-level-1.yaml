@@ -29,13 +29,9 @@ repository:
   - name: osps-br-03
     type: osps-br-03
     def: {}
-  # OSPS-BR-09: GitHub hosted releases have this, check for links in release text?
-  # OSPS-BR-10: Not sure how to check this
 
-  # OSPS-DO-13: Support scope and duration is documented
-  - name: osps-do-13
-    type: osps-do-13
-    def: {}
+  # OSPS-DO-03: Ensure user guides for all basic functionality
+  # OSPS-DO-05: Project documentation has a mechanism for reporting defects
 
   # OSPS-GV-02: Projects has public discussion mechanisms
   - name: osps-gv-02
@@ -64,14 +60,16 @@ repository:
     type: osps-qa-02
     def: {}    
 
-  # OSPS-SA-02: Need standardized format?  Also strange that this is lv1, but user guides are lv2
-
   # OSPS-VM-05: Check for SECURITY.md or GitHub private vulnerability reporting
   - name: osps-vm-05
     type: osps-vm-05
     def: {}
-
 release:
+  # OSPS-BR-09: Released software assets are delivered using HTTPS
+  - name: osps-br-09
+    type: osps-br-09
+    def: {}
+
   # OSPS-LE-04: Check release assets for valid license
   - name: osps-le-04
     type: osps-le-04

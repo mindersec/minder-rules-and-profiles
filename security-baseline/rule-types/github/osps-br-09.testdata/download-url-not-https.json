@@ -1,0 +1,12 @@
+[
+  {
+    "name": "v1.tar.gz",
+    "url": "https://api.github.com/repos/mindersec/minder/releases/assets/1",
+    "browser_download_url": "https://github.com/mindersec/minder/releases/assets/1"
+  },
+  {
+    "name": "v1.zip",
+    "url": "https://api.github.com/repos/mindersec/minder/releases/assets/2",
+    "browser_download_url": "http://github.com/mindersec/minder/releases/assets/2"
+  }
+]
