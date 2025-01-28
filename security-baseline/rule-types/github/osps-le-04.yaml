@@ -32,6 +32,8 @@ def:
       parse: json
   eval:
     type: rego
+    data_sources:
+      - name: spdx
     rego:
       type: constraints
       def: |
