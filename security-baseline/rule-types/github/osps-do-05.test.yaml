@@ -1,0 +1,51 @@
+tests:
+  - name: "Issues are enabled, discussions are not"
+    def: {}
+    params: {}
+    expect: pass
+    entity:
+      type: repository
+      entity:
+        owner: mindersec
+        name: minder
+    http:
+      status: 200
+      body: |
+        { "has_issues": true, "has_discussions": false }
+  - name: "Discussions are enabled, issues are not"
+    def: {}
+    params: {}
+    expect: pass
+    entity:
+      type: repository
+      entity:
+        owner: mindersec
+        name: discussion
+    http:
+      status: 200
+      body: |
+        { "has_issues": false, "has_discussions": true }
+  - name: "No access enabled"
+    def: {}
+    params: {}
+    expect: fail
+    entity:
+      type: repository
+      entity:
+        owner: mindersec
+        name: retired
+    http:
+      status: 200
+      body: |
+       { "has_issues": false, "has_discussions": false }
+  - name: "No access (404)"
+    def: {}
+    params: {}
+    expect: fail
+    entity:
+      type: repository
+      entity:
+        owner: mindersec
+        name: not-found
+    http:
+      status: 404
