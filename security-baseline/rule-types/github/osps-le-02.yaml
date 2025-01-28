@@ -26,7 +26,7 @@ def:
       fallback:
         - http_code: 404
           body: |
-            {"http_status": 404, "message": "License details not found}
+            {"http_status": 404, "message": "License details not found"}
   eval:
     type: rego
     data_sources:
@@ -40,6 +40,12 @@ def:
         import future.keywords.if
 
         violations[{"msg": msg}] {
+          not input.ingested.license
+          msg := "License details not found"
+        }
+
+        violations[{"msg": msg}] {
+          input.ingested.license
           license := input.ingested.license.spdx_id
 
           resp2 := minder.datasource.spdx.licenses({})
