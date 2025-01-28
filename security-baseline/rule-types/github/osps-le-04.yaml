@@ -1,0 +1,89 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-le-04
+display_name: Released software assets have OSI/FSF approved license
+short_failure_message: Released software assets do not have an OSI/FSF approved license
+severity:
+  value: info
+context:
+  provider: github
+description: |
+  Verifies that released software assets include a license file that meets
+  the OSI Open Source Definition or the FSF Free Software Definition.
+guidance: |
+  Ensure that your releases include a LICENSE or COPYING file that contains
+  an OSI-approved or FSF-approved license. Common examples include:
+  - Apache License 2.0
+  - BSD License
+  - GNU General Public License
+  - MIT License
+  
+  For a complete list of approved licenses, see:
+  - OSI: https://opensource.org/licenses/
+  - FSF: https://www.gnu.org/licenses/license-list.html
+def:
+  in_entity: release
+  rule_schema: { }
+  ingest:
+    type: rest
+    rest:
+      endpoint: "/repos/{{ mapGet .Entity.Properties \"github/owner\" }}/{{ mapGet .Entity.Properties \"github/repo\" }}/releases/{{ mapGet .Entity.Properties \"upstream_id\" }}/assets"
+      parse: json
+  eval:
+    type: rego
+    rego:
+      type: constraints
+      def: |
+        package minder
+        
+        import rego.v1
+        
+        license_pattern := "^license(\\..*)?$"
+        is_license_file(name) if {
+          regex.match(license_pattern, lower(name))
+        }
+
+        violations[{"msg": msg}] {
+          # Find license files in release assets
+          some asset in input.ingested
+          is_license_file(asset.name)
+          
+          license_resp := http.send({
+            "method": "GET",
+            "url": asset.browser_download_url,
+            "headers": {
+              "Accept": "application/octet-stream"
+            }
+          })
+          
+          # TODO: Replace with actual license identification service URL
+          # Send license content for formatting
+          # This should be the servcice processing on the other side:
+          # https://github.com/CycloneDX/license-scanner
+          ident_resp := http.send({
+            "method": "POST",
+            "url": "https://license-identifier-service.example.com/identify",
+            "headers": {
+              "Accept": "application/json",
+              "Content-Type": "application/octet-stream"
+            },
+            "body": {
+              "content": license_resp
+            }
+          })
+          
+          license_id := ident_resp.license.id
+          
+          resp := minder.datasource.spdx.licenses({})
+          licenses := resp.body.licenses
+          osi := { l.licenseId | l := licenses[_]; l.isOsiApproved }
+          fsf := { l.licenseId | l := licenses[_]; l.isFsfLibre }
+          approved_licenses := osi | fsf
+          
+          count(approved_licenses) != 0
+          license_id != null
+          not license_id in approved_licenses
+          
+          msg := sprintf("License %s in release asset %s is not OSI/FSF approved", [license_id, asset.name])
+        }

@@ -54,7 +54,6 @@ repository:
   - name: osps-le-03
     type: osps-le-03
     def: {}
-  # OSPS-LE-04: Check release object for LICENSE file
 
   # OSPS-QA-01: Repository visibility check
   - name: osps-qa-01
@@ -70,4 +69,10 @@ repository:
   # OSPS-VM-05: Check for SECURITY.md or GitHub private vulnerability reporting
   - name: osps-vm-05
     type: osps-vm-05
+    def: {}
+
+release:
+  # OSPS-LE-04: Check release assets for valid license
+  - name: osps-le-04
+    type: osps-le-04
     def: {}
