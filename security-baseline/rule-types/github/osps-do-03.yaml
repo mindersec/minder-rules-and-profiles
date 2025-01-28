@@ -18,6 +18,7 @@ description: |
 
   * The GitHub repository's public link
   * A `docs` directory in the default branch of the repository with .md, .rst, .html or .txt files
+  * A `documentation` entry in SECURITY-INSIGHTS.yaml
   * A `README.md` file containing preformatted text (triple-backtick) or the headings
    "usage" or "getting started"
 
@@ -26,6 +27,7 @@ guidance: |
   Publish documentation in one of the following well-known locations:
 
   * Set the repository homepage to a documentation URL.
+  * Add a SECURITY-INSIGHTS.yaml file with a `documentation` entry
   * Create a `docs` directory in the default branch of the repository
   * Add a "usage" or "getting started" section to `README.md`
 def:
@@ -84,20 +86,24 @@ def:
         allow if {
           regex.match("\n#+ (?i:Usage|Getting Started)", readme)
         }
-  remediate:
-    type: pull_request
-    pull_request:
-      title: "Add documentation to security-insights.yaml"
-      body: |
-        This is a Minder automated pull request.
 
-        This pull request links the discovered documentation in the security-insights.yaml file.
-      method: minder.yq.evaluate
-      params:
-        # TODO: need to be able to feed output from eval into remediate
-        expression: |
-          .documentation = [ "./README.md" ]
-        patterns:
-        # TODO: need to be able to create files as well as match existing files
-        - pattern: "SECURITY-INSIGHTS.yaml"
-          type: glob
+# Remediation is a work in progress -- ideally, we could read which location(s)
+# contained the documentation, and automatically update SECURITY-INSIGHTS.yaml
+# with any missing documentation locations.
+  # remediate:
+  #   type: pull_request
+  #   pull_request:
+  #     title: "Add documentation to security-insights.yaml"
+  #     body: |
+  #       This is a Minder automated pull request.
+
+  #       This pull request links the discovered documentation in the security-insights.yaml file.
+  #     method: minder.yq.evaluate
+  #     params:
+  #       # TODO: need to be able to feed output from eval into remediate
+  #       expression: |
+  #         .documentation = [ "./README.md" ]
+  #       patterns:
+  #       # TODO: need to be able to create files as well as match existing files
+  #       - pattern: "SECURITY-INSIGHTS.yaml"
+  #         type: glob
