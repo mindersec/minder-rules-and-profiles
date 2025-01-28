@@ -1,0 +1,36 @@
+tests:
+  - name: repo exists and is public
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: mindersec
+        name: minder
+    expect: pass
+    http:
+      status: 200
+      body: '{"visibility": "public"}'
+  - name: repo does not exist
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: findersec
+        name: finder
+    expect: fail
+    http:
+      status: 404
+  - name: not public
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: mind-control-lazers-inc
+        name: watchtower
+    expect: "fail"
+    http:
+      status: 200
+      body: '{"visibility": "private"}'

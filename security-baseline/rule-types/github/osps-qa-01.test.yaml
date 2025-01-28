@@ -1,0 +1,49 @@
+tests:
+  - name: repo exists and is public
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: mindersec
+        name: minder
+        is_private: false
+    expect: pass
+    http:
+      status: 200
+      body: '{"visibility": "public","clone_url": "https://github.com/mindersec/minder.git"}'
+  - name: repo does not exist
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: findersec
+        name: finder
+    expect: fail
+    http:
+      status: 404
+  - name: not public
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: hidersec
+        name: hider
+    expect: fail
+    http:
+      status: 200
+      body: '{"visibility": "private","clone_url": "http://github.com/mindersec/minder.git"}'
+  - name: no clone url
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: mindersec
+        name: minder
+    expect: fail
+    http:
+      status: 200
+      body: '{"visibility": "public"}'
