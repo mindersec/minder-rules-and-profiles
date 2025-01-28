@@ -1,0 +1,46 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-br-09
+display_name: Released software assets are delivered using HTTPS
+short_failure_message: Released software assets are not delivered using HTTPS
+severity:
+  value: info
+context:
+  provider: github
+description: |
+  Verifies that released software assets URLs and download URLs are HTTPS.
+guidance: |
+  Ensure the assets that are part of you release have an HTTPS URL and and HTTPS download URL.
+def:
+  in_entity: release
+  rule_schema: { }
+  ingest:
+    type: rest
+    rest:
+      endpoint: "/repos/{{ mapGet .Entity.Properties \"github/owner\" }}/{{ mapGet .Entity.Properties \"github/repo\" }}/releases/{{ mapGet .Entity.Properties \"upstream_id\" }}/assets"
+      parse: json
+  eval:
+    type: rego
+    rego:
+      type: constraints
+      def: |
+        package minder
+
+        import rego.v1
+        
+        # First check the asset URL
+        violations[{"msg": msg}] if {
+          some asset in input.ingested
+
+          not startswith(asset.url, "https://")
+          msg := sprintf("Asset %s URL isn't HTTPS", [asset.name])
+        }
+        
+        # Then check the asset download URL
+        violations[{"msg": msg}] if {
+          some asset in input.ingested
+
+          not startswith(asset.browser_download_url, "https://")
+          msg := sprintf("Asset %s download URL isn't HTTPS", [asset.name])
+        }
