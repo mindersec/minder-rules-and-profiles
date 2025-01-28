@@ -31,6 +31,9 @@ repository:
     def: {}
 
   # OSPS-DO-03: Ensure user guides for all basic functionality
+  - name: osps-do-03
+    type: osps-do-03
+    def: {}
   # OSPS-DO-05: Project documentation has a mechanism for reporting defects
 
   # OSPS-GV-02: Projects has public discussion mechanisms
