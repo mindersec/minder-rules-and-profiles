@@ -44,14 +44,22 @@ def:
           regex.match(license_pattern, lower(name))
         }
 
-        violations[{"msg": msg}] {
-          # Find license files in release assets
+        license_file := asset {
           some asset in input.ingested
           is_license_file(asset.name)
+        }
+
+        violations[{"msg": msg}] {
+          not license_file
+          msg := "No license file found in release assets"
+        }
+
+        violations[{"msg": msg}] {
+          license_file
           
           license_resp := http.send({
             "method": "GET",
-            "url": asset.browser_download_url,
+            "url": license_file.browser_download_url,
             "headers": {
               "Accept": "application/octet-stream"
             }
@@ -68,9 +76,7 @@ def:
               "Accept": "application/json",
               "Content-Type": "application/octet-stream"
             },
-            "body": {
-              "content": license_resp
-            }
+            "raw_body": license_resp
           })
           
           license_id := ident_resp.license.id
@@ -85,5 +91,5 @@ def:
           license_id != null
           not license_id in approved_licenses
           
-          msg := sprintf("License %s in release asset %s is not OSI/FSF approved", [license_id, asset.name])
+          msg := sprintf("License %s in release asset %s is not OSI/FSF approved", [license_id, license_file.name])
         }
