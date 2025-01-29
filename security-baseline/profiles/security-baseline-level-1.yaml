@@ -35,6 +35,9 @@ repository:
     type: osps-do-03
     def: {}
   # OSPS-DO-05: Project documentation has a mechanism for reporting defects
+  - name: osps-do-05
+    type: osps-do-05
+    def: {}
 
   # OSPS-GV-02: Projects has public discussion mechanisms
   - name: osps-gv-02
