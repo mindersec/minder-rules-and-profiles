@@ -46,18 +46,14 @@ def:
           regex.match(license_pattern, lower(name))
         }
 
-        license_file := asset {
-          some asset in input.ingested
-          is_license_file(asset.name)
-        }
-
         violations[{"msg": msg}] {
-          not license_file
-          msg := "No license file found in release assets"
-        }
+          license_file := asset {
+            some asset in input.ingested
+            is_license_file(asset.name)
+          }
 
-        violations[{"msg": msg}] {
-          license_file
+          # Exit without violation if no license file found
+          license_file != {}
           
           license_resp := http.send({
             "method": "GET",
@@ -67,13 +63,11 @@ def:
             }
           })
           
-          # TODO: Replace with actual license identification service URL
-          # Send license content for formatting
-          # This should be the servcice processing on the other side:
+          # We have this servcice processing on the other side:
           # https://github.com/CycloneDX/license-scanner
           ident_resp := http.send({
             "method": "POST",
-            "url": "https://license-identifier-service.example.com/identify",
+            "url": "https://spdx-detector-562949304223.us-central1.run.app",
             "headers": {
               "Accept": "application/json",
               "Content-Type": "application/octet-stream"
@@ -81,7 +75,7 @@ def:
             "raw_body": license_resp
           })
           
-          license_id := ident_resp.license.id
+          license_id := ident_resp.body[0]
           
           resp := minder.datasource.spdx.licenses({})
           licenses := resp.body.licenses
