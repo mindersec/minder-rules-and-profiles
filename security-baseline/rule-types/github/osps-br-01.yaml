@@ -26,8 +26,7 @@ description: |
   detects whether a workflow's inline script may execute untrusted
   input from attackers. Attackers can add their own content to
   certain github context variables that are considered untrusted,
-  for example, github.event.issue.title. These values should not flow
-  directly into executable code.
+  for example, github.event.issue.title.
 
 guidance: |
   Avoid using pull_request_target and workflow_run workflow triggers with
@@ -138,5 +137,3 @@ def:
           matcher := concat("", ["*", match, "*"])
           glob.match(matcher, null, exp)
         }
-
-
