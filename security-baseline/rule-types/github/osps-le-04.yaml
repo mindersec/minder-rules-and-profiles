@@ -72,7 +72,7 @@ def:
               "Accept": "application/json",
               "Content-Type": "application/octet-stream"
             },
-            "raw_body": license_resp
+            "raw_body": license_resp.raw_body
           })
           
           license_id := ident_resp.body[0]
@@ -83,7 +83,6 @@ def:
           fsf := { l.licenseId | l := licenses[_]; l.isFsfLibre }
           approved_licenses := osi | fsf
           
-          count(approved_licenses) != 0
           license_id != null
           not license_id in approved_licenses
           
