@@ -1,0 +1,4 @@
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
+  integrity sha512-KnxlP5n7gOxlXj1SxxWnWy0xQQjjfgtA5r+DRfdGp1P0FBrw6zEhmL+u90hQH2JszQXOxj6MSL

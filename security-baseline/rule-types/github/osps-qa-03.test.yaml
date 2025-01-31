@@ -1,0 +1,43 @@
+tests:
+  - name: go.mod with no go.sum
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: go_mod_no_go_sum
+  - name: go.mod with go.sum
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: go_mod_with_go_sum
+  - name: Gemfile with no Gemfile.lock
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: gemfile_no_lock
+  - name: Gemfile with Gemfile.lock
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: gemfile_with_lock
+  - name: package.json with package-lock.json
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: package_json_with_package_lock
+  - name: package.json with yarn.lock
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: package_json_with_yarn_lock
+  - name: package.json with no lockfile
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: package_json_no_lock
