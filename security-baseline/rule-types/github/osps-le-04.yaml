@@ -41,20 +41,12 @@ def:
         
         import rego.v1
         
-        license_pattern := "^license(\\..*)?$"
-        is_license_file(name) if {
-          regex.match(license_pattern, lower(name))
-        }
-
         violations[{"msg": msg}] {
           license_file := asset {
             some asset in input.ingested
-            is_license_file(asset.name)
+            startswith(lower(name), "license")
           }
 
-          # Exit without violation if no license file found
-          license_file != {}
-          
           license_resp := http.send({
             "method": "GET",
             "url": license_file.browser_download_url,
@@ -63,8 +55,8 @@ def:
             }
           })
           
-          # We have this servcice processing on the other side:
-          # https://github.com/CycloneDX/license-scanner
+          # We have a service for this detection:
+          # https://github.com/evankanderson/spdx-detector
           ident_resp := http.send({
             "method": "POST",
             "url": "https://spdx-detector-562949304223.us-central1.run.app",
