@@ -41,11 +41,10 @@ def:
         
         import rego.v1
         
-        violations[{"msg": msg}] {
-          license_file := asset {
-            some asset in input.ingested
-            startswith(lower(name), "license")
-          }
+        violations contains {"msg": msg} if {
+          some asset in input.ingested
+          startswith(lower(asset.name), "license")
+          license_file := asset
 
           license_resp := http.send({
             "method": "GET",
