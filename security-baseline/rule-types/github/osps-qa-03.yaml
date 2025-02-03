@@ -1,0 +1,73 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-qa-03
+display_name: Package management file listing dependencies is present
+short_failure_message: No package management file listing dependencies was found
+severity:
+  value: info
+context:
+  provider: github
+description: |
+  This rule ensures that the repository provides a dependency list that accounts 
+  for the direct language dependencies when the package management system supports it.
+  It checks for the presence of a Gemfile.lock, go.sum, package-lock.json or 
+  Cargo.toml according to the package management system used.
+guidance: |
+  Ensure that the repository provides a dependency list that accounts for the direct
+  language dependencies in the form of a lockfile, for example Gemfile.lock, go.sum,
+  package-lock.json etc.
+  Ensure the lockfile is in the same directory as the package file.
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import rego.v1
+
+        default allow := false
+        default skip := false
+        default message := "Cannot find lockfile in the same directory as the package file"
+        
+        package_manager_files := [
+          {"name": "Gemfile", "lockfiles": ["Gemfile.lock"]},
+          {"name": "go.mod", "lockfiles": ["go.sum"]},
+          {"name": "package.json", "lockfiles": ["package-lock.json", "yarn.lock"]},
+          {"name": "Cargo.toml", "lockfiles": ["Cargo.lock"]},
+        ]
+        
+        skip if {
+          # Skip if no package manager file exists
+          every package_manager in package_manager_files {
+            required_files := file.ls_glob(sprintf("./%s", [package_manager.name]))
+            count(required_files) == 0
+          }
+        }
+        
+        allow if {
+          # Ensure that we find the required file
+          some package_manager in package_manager_files
+          package_files := file.ls_glob(sprintf("./%s", [package_manager.name]))
+          count(package_files) > 0
+        
+          # Get the directory for the package file
+          some package_path in package_files
+          dir := trim_suffix(package_path, sprintf("/%s", [package_manager.name]))
+        
+          # Ensure a lockfile exists for the required file in the same directory
+          lockfile_exists(dir, package_manager.lockfiles) 
+        }
+        
+        lockfile_exists(dir, lockfiles) if {
+          some lockfile in lockfiles
+          count(file.ls_glob(sprintf("%s/%s", [dir, lockfile]))) > 0
+        }
+
