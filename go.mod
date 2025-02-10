@@ -3,7 +3,7 @@ module github.com/mindersec/minder-rules-and-profiles
 go 1.23.4
 
 require (
-	github.com/mindersec/minder v0.0.83
+	github.com/mindersec/minder v0.0.84
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.10.0
 	google.golang.org/protobuf v1.36.4
@@ -107,7 +107,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/groob/plist v0.1.1 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.25.1 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
 	github.com/hashicorp/go-version v1.7.0 // indirect
@@ -187,7 +187,7 @@ require (
 	github.com/signalfx/splunk-otel-go/instrumentation/database/sql/splunksql v1.24.0 // indirect
 	github.com/signalfx/splunk-otel-go/instrumentation/github.com/lib/pq/splunkpq v1.24.0 // indirect
 	github.com/signalfx/splunk-otel-go/instrumentation/internal v1.24.0 // indirect
-	github.com/sigstore/protobuf-specs v0.3.3 // indirect
+	github.com/sigstore/protobuf-specs v0.4.0 // indirect
 	github.com/sigstore/rekor v1.3.8 // indirect
 	github.com/sigstore/sigstore v1.8.12 // indirect
 	github.com/sigstore/sigstore-go v0.7.0 // indirect
@@ -243,7 +243,7 @@ require (
 	golang.org/x/time v0.9.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	google.golang.org/genproto v0.0.0-20241118233622-e639e219e697 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250102185135-69823020774d // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20250115164207-1a7da9e5054f // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250115164207-1a7da9e5054f // indirect
 	google.golang.org/grpc v1.70.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
