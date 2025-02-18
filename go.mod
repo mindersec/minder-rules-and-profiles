@@ -3,7 +3,7 @@ module github.com/mindersec/minder-rules-and-profiles
 go 1.23.4
 
 require (
-	github.com/mindersec/minder v0.0.84
+	github.com/mindersec/minder v0.0.85
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.10.0
 	google.golang.org/protobuf v1.36.5
@@ -200,7 +200,7 @@ require (
 	github.com/spf13/afero v1.12.0 // indirect
 	github.com/spf13/cast v1.7.0 // indirect
 	github.com/spf13/cobra v1.8.1 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/spf13/viper v1.19.0 // indirect
 	github.com/sqlc-dev/pqtype v0.3.0 // indirect
 	github.com/stacklok/frizbee v0.1.6 // indirect
