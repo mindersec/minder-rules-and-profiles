@@ -1,0 +1,93 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: golangci_gosec_enabled
+display_name:  Ensure gosec is enabled in the golangci-lint configuration
+short_failure_message:  Gosec is disabled in the golangci-lint configuration
+severity:
+  value: medium
+context: {}
+description: | 
+  Gosec is a security linter for Go. It is important to have it enabled in the
+  golangci-lint configuration to ensure that security issues are caught early
+  in the development process.
+guidance: |
+  If you are explicitly enabling linters in your golangci-lint configuration (`disable-all: true`),
+  make sure that gosec is one of them. To do so, add the following to your .golangci.yml
+  
+  ```yaml
+  linters:
+    enable:
+      - gosec
+  ```
+  
+  If you are enabling all linters but disabling gosec explicitly, make sure that you have a good reason
+  for doing so. Else, remove gosec from the `disable` list in your .golangci.yml
+def:
+  in_entity: repository  # The entity type the rule applies to
+  rule_schema: {}
+  ingest:
+    type: git
+    git:
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import rego.v1
+
+        default allow := false
+        
+        default gosec_config_file := ""
+        
+        gosec_config_file := ".golangci.yml" if {
+            file.exists(".golangci.yml")
+        }
+        
+        gosec_config_file := ".golangci.yaml" if {
+            file.exists(".golangci.yaml")
+        }
+        
+        gosec_config_file := ".golangci.json" if {
+            file.exists(".golangci.json")
+        }
+        
+        skip if {
+            gosec_config_file == ""
+        }
+
+        allow if {
+            glcilint_str := file.read(gosec_config_file)
+            gcilintcfg := parse_yaml(glcilint_str)
+        
+            print(gcilintcfg)
+            gosec_enabled(gcilintcfg["linters"])
+        }
+        
+        # If all linters are enabled and we're not disabling anything, gosec should be enabled
+        gosec_enabled(linters_cfg) if {
+            linters_cfg["enable-all"] == true
+        
+            not linters_cfg["disable"]
+        }
+        
+        # If all linters are enabled, Let's make sure gosec is not disabled
+        gosec_enabled(linters_cfg) if {
+            linters_cfg["enable-all"] == true
+        
+            linter := linters_cfg["disable"][_]
+        
+            linter != "gosec"
+        }
+        
+        # Let's make sure gosec is explicitly enabled otherwise
+        gosec_enabled(linters_cfg) if {
+            linters := linters_cfg["enable"]
+        
+            "gosec" in linters
+        }
+        
+        message := "Gosec is disabled in the golangci-lint configuration"
