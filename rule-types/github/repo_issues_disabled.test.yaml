@@ -1,0 +1,36 @@
+tests:
+  - name: "Issues are disabled"
+    def: {}
+    params: {}
+    expect: "pass"
+    entity: &test-repo
+      type: repository
+      entity:
+        owner: "coolhead"
+        name: "haze-wave"
+    http:
+      body_file: disabled.json
+  - name: "Issues should be disabled"
+    def: {}
+    params: { }
+    expect: "fail"
+    entity: *test-repo
+    http:
+      body_file: enabled.json
+  - name: "Not found should fail"
+    def: {}
+    params: {}
+    expect: "fail"
+    entity: *test-repo    
+    http:
+      status: 404
+      body_file: notfound.json
+  - name: "Internal server error should fail"
+    def: {}
+    params: {}
+    expect: "fail"
+    entity: *test-repo    
+    http:
+      status: 500
+      body: |
+        { "message": "Internal server error" }
