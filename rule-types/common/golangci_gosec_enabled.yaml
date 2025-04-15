@@ -63,7 +63,6 @@ def:
             glcilint_str := file.read(gosec_config_file)
             gcilintcfg := parse_yaml(glcilint_str)
         
-            print(gcilintcfg)
             gosec_enabled(gcilintcfg["linters"])
         }
         

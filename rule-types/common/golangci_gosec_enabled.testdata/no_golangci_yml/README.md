@@ -1,1 +1,1 @@
-Foo
+This sample repository explicitly does not contain a `.golangci.yml` at all.
