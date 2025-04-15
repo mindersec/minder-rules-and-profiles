@@ -3,7 +3,7 @@
 version: v1
 type: profile
 name: stacklok-remediate-profile
-display_name: Stacklok example remedation profile
+display_name: Stacklok example remediation profile
 context:
   provider: github
 alert: "off"
@@ -83,19 +83,6 @@ repository:
     params:
       branch: main
     def: {}
-artifact:
-  - type: artifact_signature
-    params:
-      tags: [latest]
-      name: minder/server
-    def:
-      is_signed: true
-      is_verified: true
-      repository: https://github.com/stacklok/minder
-      branch: main
-      runner_environment: github-hosted
-      signer_identity: /.github/workflows/chart-publish.yml
-      cert_issuer: https://token.actions.githubusercontent.com
 pull_request:
   - type: pr_vulnerability_check
     def:

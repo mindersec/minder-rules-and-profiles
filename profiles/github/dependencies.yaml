@@ -30,38 +30,3 @@ pull_request:
           vulnerability_database_endpoint: https://api.osv.dev/v1/query
           package_repository:
             url: https://pypi.org/pypi
-  - type: pr_trusty_check
-    def:
-      action: review
-      ecosystem_config:
-        - name: npm
-          score: 5
-          allow_malicious: false
-        - name: pypi
-          score: 5
-          allow_malicious: false
-        - name: go
-          score: 5
-          allow_malicious: false
-repository:
-  - type: dependabot_configured
-    name: dependabot_configured_go
-    displayName: "Dependabot is configured (for Go modules)"
-    def:
-      package_ecosystem: gomod
-      schedule_interval: daily
-      apply_if_file: go.mod
-  - type: dependabot_configured
-    name: dependabot_configured_npm
-    displayName: "Dependabot is configured (for JavaScript packages)"
-    def:
-      package_ecosystem: npm
-      schedule_interval: daily
-      apply_if_file: package.json
-  - type: dependabot_configured
-    name: dependabot_configured_pip
-    displayName: "Dependabot is configured (for Python packages)"
-    def:
-      package_ecosystem: pip
-      schedule_interval: daily
-      apply_if_file: requirements.txt
