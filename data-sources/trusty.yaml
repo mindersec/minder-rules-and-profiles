@@ -1,0 +1,16 @@
+version: v1
+type: data-source
+name: insights
+context: {}
+rest:
+  def:
+    dependencies:
+      endpoint: https://api.insight.stacklok.com/v2/dependencies?package_name={package}&package_type={ecosystem}
+      parse: json
+      input_schema:
+        type: object
+        properties:
+          package:
+            type: string
+          ecosystem:
+            type: string
