@@ -1,6 +1,7 @@
 module github.com/mindersec/minder-rules-and-profiles
 
-go 1.23.4
+go 1.24.1
+
 require (
 	github.com/mindersec/minder v0.0.88
 	github.com/rs/zerolog v1.34.0
@@ -33,7 +34,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/cloudflare/circl v1.6.0 // indirect
+	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/containerd/cgroups/v3 v3.0.3 // indirect
 	github.com/containerd/containerd v1.7.27 // indirect
 	github.com/containerd/containerd/api v1.8.0 // indirect
