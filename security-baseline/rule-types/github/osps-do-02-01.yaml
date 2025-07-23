@@ -2,7 +2,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-do-05
+name: osps-do-02-01
 display_name: Public feedback mechanism supported
 short_failure_message: No public feedback mechanism found
 severity:

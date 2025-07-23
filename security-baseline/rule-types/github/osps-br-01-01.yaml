@@ -1,7 +1,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-br-01
+name: osps-br-01-01
 display_name: Prevent untrusted input in continuous integration
 short_failure_message: Untrusted input can subvert workflows
 severity:

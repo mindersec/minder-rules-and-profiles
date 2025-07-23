@@ -1,8 +1,8 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-le-03
-display_name: LICENSE or COPYING files are available available
+name: osps-le-03-01
+display_name: LICENSE or COPYING files are available
 short_failure_message: No LICENSE or COPYING file found.
 severity:
   value: info
