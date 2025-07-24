@@ -2,8 +2,8 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-do-03
-display_name: OSPS-DO-03 The project documentation MUST provide user guides for all basic functionality
+name: osps-do-01-01
+display_name: OSPS-DO-01 The project documentation MUST provide user guides for all basic functionality
 short_failure_message: No user guides or project documentation found
 severity:
   value: low
@@ -22,7 +22,7 @@ description: |
   * A `README.md` file containing preformatted text (triple-backtick) or the headings
    "usage" or "getting started"
 
-  For more information, see [OpenSSF Security Baseline](https://baseline.openssf.org/#osps-do-03).
+  For more information, see [OpenSSF Security Baseline](https://baseline.openssf.org/#osps-do-0101).
 guidance: |
   Publish documentation in one of the following well-known locations:
 

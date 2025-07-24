@@ -7,76 +7,86 @@ context:
 alert: "off"
 remediate: "off"
 repository:
-  # OSPS-AC-01: Require MFA for collaborators; depends on org entity
-  # OSPS-AC-02: Hosted GitHub has this by default
-  - name: osps-ac-02
-    type: osps-ac-02
+  # OSPS-AC-01.01: Require MFA for collaborators; depends on org entity
+  # OSPS-AC-02.01: Hosted GitHub has this by default
+  - name: osps-ac-02-01
+    type: osps-ac-02-01
     def: {}
-  # OSPS-AC-03: Prevent overwriting git history
-  - name: osps-ac-03
-    type: osps-ac-03
+  # OSPS-AC-03.01: Prevent overwriting git history
+  - name: osps-ac-03-01
+    type: osps-ac-03-01
     def: {}
-  # OSPS-AC-04: Prevent permanent branch deletion
-  - name: osps-ac-04
-    type: osps-ac-04
-    def: {}
-
-  # OSPS-BR-01: Prevent direct untrusted input in CI
-  - name: osps-br-01
-    type: osps-br-01
-    def: {}
-  # OSPS-BR-03: Ensure secure channels for VCS
-  - name: osps-br-03
-    type: osps-br-03
+  # OSPS-AC-03.02: Prevent permanent branch deletion
+  - name: osps-ac-03-02
+    type: osps-ac-03-02
     def: {}
 
-  # OSPS-DO-03: Ensure user guides for all basic functionality
-  - name: osps-do-03
-    type: osps-do-03
+  # OSPS-BR-01.01: Prevent direct untrusted input in CI
+  - name: osps-br-01-01
+    type: osps-br-01-01
     def: {}
-  # OSPS-DO-05: Project documentation has a mechanism for reporting defects
-  - name: osps-do-05
-    type: osps-do-05
-    def: {}
-
-  # OSPS-GV-02: Projects has public discussion mechanisms
-  - name: osps-gv-02
-    type: osps-gv-02
-    def: {}
-  # OSPS-GV-03: Enforce CONTRIBUTING file presence
-  - name: osps-gv-03
-    type: osps-gv-03
+  # OSPS-BR-03.01: Ensure secure channels for VCS
+  - name: osps-br-03-01
+    type: osps-br-03-01
     def: {}
 
-  # OSPS-LE-02: Ensure OSI/FSF approved license
-  - name: osps-le-02
-    type: osps-le-02
+  # OSPS-DO-01.01: Ensure user guides for all basic functionality
+  - name: osps-do-01-01
+    type: osps-do-01-01
     def: {}
-  # OSPS-LE-03: LICENSE or COPYING files are available available
-  - name: osps-le-03
-    type: osps-le-03
+  # OSPS-DO-02.01: Project documentation has a mechanism for reporting defects
+  - name: osps-do-02-01
+    type: osps-do-02-01
     def: {}
 
-  # OSPS-QA-01: Repository visibility check
-  - name: osps-qa-01
-    type: osps-qa-01
+  # OSPS-GV-02.01: Projects has public discussion mechanisms
+  - name: osps-gv-02-01
+    type: osps-gv-02-01
     def: {}
-  # OSPS-QA-02: Maintain publicly readable change history
-  - name: osps-qa-02
-    type: osps-qa-02
-    def: {}    
+  # OSPS-GV-03.01: Enforce CONTRIBUTING file presence
+  - name: osps-gv-03-01
+    type: osps-gv-03-01
+    def: {}
 
-  # OSPS-VM-05: Check for SECURITY.md or GitHub private vulnerability reporting
-  - name: osps-vm-05
-    type: osps-vm-05
+  # OSPS-LE-02.01: Ensure OSI/FSF approved license
+  - name: osps-le-02-01
+    type: osps-le-02-01
+    def: {}
+  # OSPS-LE-03.01: LICENSE or COPYING files are available in repo
+  - name: osps-le-03-01
+    type: osps-le-03-01
+    def: {}
+
+  # OSPS-QA-01.01: Repository visibility check
+  - name: osps-qa-01-01
+    type: osps-qa-01-01
+    def: {}
+  # OSPS-QA-01.02: Maintain publicly readable change history
+  - name: osps-qa-01-02
+    type: osps-qa-01-02
+    def: {}
+  # OSPS-QA-02.01: Source code contains direct dependency list
+  - name: osps-qa-02-01
+    type: osps-qa-02-01
+    def: {}
+
+  ## TODO: QA-04.01: While active, the project documentation MUST contain a list of any codebases that are considered subprojects or additional repositories.
+
+  # OSPS-QA-05.01: While active, the version control system MUST NOT contain generated executable artifacts.
+  - name: osps-qa-05-01
+    type: osps-qa-05-01
+    def: {}
+
+  # OSPS-VM-02.01: Documentation must contain security contacts
+  - name: osps-vm-02-01
+    type: osps-vm-02-01
     def: {}
 release:
-  # OSPS-BR-09: Released software assets are delivered using HTTPS
-  - name: osps-br-09
-    type: osps-br-09
+  # OSPS-LE-02.02: Ensure OSI/FSF approved license on assets
+  - name: osps-le-02-02
+    type: osps-le-02-02
     def: {}
-
-  # OSPS-LE-04: Check release assets for valid license
-  - name: osps-le-04
-    type: osps-le-04
+  # OSPS-LE-03.02: LICENSE or COPYING files are available in assets
+  - name: osps-le-03-02
+    type: osps-le-03-02
     def: {}

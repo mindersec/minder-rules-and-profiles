@@ -1,7 +1,8 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-le-04
+name: osps-le-02-02
+
 display_name: Released software assets have OSI/FSF approved license
 short_failure_message: Released software assets do not have an OSI/FSF approved license
 severity:

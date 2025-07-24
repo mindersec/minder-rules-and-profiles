@@ -1,7 +1,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-qa-01
+name: osps-qa-01-01
 display_name: The project's source code is publicly readable
 short_failure_message: The project's source code is not publicly readable.
 severity:
