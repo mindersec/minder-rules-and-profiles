@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -116,42 +115,30 @@ const (
 	ExpectSkip ExpectResult = "skip"
 )
 
-func ParseRuleTypeTests(f io.Reader) (*RuleTestSuite, error) {
-	suite := &RuleTestSuite{}
-
-	err := yaml.NewDecoder(f).Decode(suite)
-	if err != nil {
-		return nil, err
-	}
-
-	return suite, nil
-}
-
 type RuleTypeTestFunc func(t *testing.T, rt *minderv1.RuleType, suite *RuleTest, rtDataPath string)
 
 func TestRuleTypes(t *testing.T) {
-	t.Parallel()
+	t.Setenv("REGO_ENABLE_PRINT", "true")
 
-	require.NoError(t, os.Setenv("REGO_ENABLE_PRINT", "true"))
+	ztw := zerolog.NewTestWriter(t)
+	zerolog.SetGlobalLevel(zerolog.ErrorLevel)
+	ctx := zerolog.New(ztw).With().Timestamp().Logger().WithContext(context.Background())
 
 	for _, folder := range []string{"rule-types", "security-baseline/rule-types"} {
 		// iterate rule types directory
 		err := walkRuleTypesTests(t, folder, func(t *testing.T, rt *minderv1.RuleType, tc *RuleTest, rtDataPath string) {
 			var opts []tkv1.Option
-			if rt.Def.Ingest.Type == "git" {
+			switch rt.Def.Ingest.Type {
+			case "git":
 				opts = append(opts, gitTestOpts(t, tc, rtDataPath))
-			} else if rt.Def.Ingest.Type == "rest" {
+			case "rest":
 				opts = append(opts, httpTestOpts(t, tc, rtDataPath))
-			} else {
+			default:
 				t.Skipf("Unsupported ingest type %s", rt.Def.Ingest.Type)
 			}
 
-			ztw := zerolog.NewTestWriter(t)
-			zerolog.SetGlobalLevel(zerolog.DebugLevel)
-			ctx := zerolog.New(ztw).With().Timestamp().Logger().WithContext(context.Background())
-
 			tk := tkv1.NewTestKit(opts...)
-			rte, err := rtengine.NewRuleTypeEngine(ctx, rt, tk, nil)
+			rte, err := rtengine.NewRuleTypeEngine(ctx, rt, tk)
 			require.NoError(t, err)
 
 			val := rte.GetRuleInstanceValidator()
@@ -206,17 +193,11 @@ func walkRuleTypesTests(t *testing.T, folder string, testfunc RuleTypeTestFunc) 
 			rtDataPath := removeExtension(path) + ".testdata"
 			// parse the test file
 			suite, err := openTestSuite(testPath)
-			if err != nil {
-				t.Error(err)
-				return
-			}
+			require.NoError(t, err, "Failed to open test suite %s", testPath)
 
 			// open the rule type file
 			rt, err := openRuleType(path)
-			if err != nil {
-				t.Error(err)
-				return
-			}
+			require.NoError(t, err, "Failed to open rule type %s", path)
 
 			// override project so that the rule type engine can be created
 			if rt.Context == nil {
@@ -226,14 +207,9 @@ func walkRuleTypesTests(t *testing.T, folder string, testfunc RuleTypeTestFunc) 
 			prjName := "rule-type-test"
 			rt.Context.Project = &prjName
 
-			if err := rt.Validate(); err != nil {
-				t.Error(err)
-				return
-			}
+			require.NoError(t, rt.Validate(), "Failed to validate rule type %s", path)
 
 			for _, test := range suite.Tests {
-				test := test
-
 				t.Run(test.Name, func(t *testing.T) {
 					t.Parallel()
 
@@ -247,11 +223,11 @@ func walkRuleTypesTests(t *testing.T, folder string, testfunc RuleTypeTestFunc) 
 }
 
 func normalizeTestNameFromPath(p string) string {
-	return removeExtension(p[len("rule-types")+1:])
+	return removeExtension(strings.TrimPrefix(p, "rule-types/"))
 }
 
 func removeExtension(p string) string {
-	return p[:len(p)-len(filepath.Ext(p))]
+	return strings.TrimSuffix(p, filepath.Ext(p))
 }
 
 func isRelevantRuleTypeFile(path string) bool {
@@ -271,9 +247,8 @@ func openTestSuite(testPath string) (*RuleTestSuite, error) {
 
 	defer testFile.Close()
 
-	// parse the test file
-	suite, err := ParseRuleTypeTests(testFile)
-	if err != nil {
+	suite := &RuleTestSuite{}
+	if err := yaml.NewDecoder(testFile).Decode(suite); err != nil {
 		return nil, err
 	}
 
