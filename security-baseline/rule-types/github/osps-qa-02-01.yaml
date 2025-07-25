@@ -2,7 +2,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-qa-03
+name: osps-qa-02-01
 display_name: Package management file listing dependencies is present
 short_failure_message: No package management file listing dependencies was found
 severity:

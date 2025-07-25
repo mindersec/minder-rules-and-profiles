@@ -1,7 +1,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-ac-02
+name: osps-ac-02-01
 display_name: Default collaborators to lowest privileges
 short_failure_message: Collaborators default to privileged access
 severity:

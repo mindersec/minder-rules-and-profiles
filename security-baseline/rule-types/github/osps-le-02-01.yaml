@@ -1,7 +1,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-le-02
+name: osps-le-02-01
 display_name: License meets the OSI or the FSF definition
 short_failure_message: License does not meet OSI or FSF definition
 severity:

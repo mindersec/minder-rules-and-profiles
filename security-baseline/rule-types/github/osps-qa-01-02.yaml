@@ -1,7 +1,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-qa-02
+name: osps-qa-01-02
 display_name: Maintain publicly readable change history
 short_failure_message: Repository must be public and prevent force pushes
 severity:

@@ -1,7 +1,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-do-13
+name: osps-do-04-01
 display_name: Support scope and duration is documented
 short_failure_message: No documentation for support was found
 severity:

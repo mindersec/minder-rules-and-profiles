@@ -2,7 +2,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-vm-05
+name: osps-vm-02-01
 display_name: Contacts and process for reporting vulnerabilities is published
 short_failure_message: No contacts or process for reporting vulnerabilities was found
 severity:
