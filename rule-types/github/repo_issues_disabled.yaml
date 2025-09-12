@@ -1,0 +1,49 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: repo_issues_disabled
+display_name: Ensure repository has issues disabled
+short_failure_message: Repository issues are not disabled
+severity:
+  value: low
+context:
+  provider: github
+description: |
+  Verifies that a repository has its issue tracker disabled.
+  This helps enforce policies where issues should be tracked in external
+  systems or centralized repositories.
+guidance: |
+  Ensure that the repository's issue tracker is disabled.
+
+  The issue tracker should be disabled when:
+  - Using an external issue tracking system
+  - Directing users to a centralized issue tracker for multiple repositories
+  - Managing a read-only or archived repository
+  - Consolidating all project tracking in a single location
+
+  For more information, see [GitHub's documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/disabling-issues).
+def:
+  in_entity: repository
+  rule_schema: {}  # No configuration needed
+  ingest:
+    type: rest
+    rest:
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
+      parse: json
+  eval:
+    type: jq
+    jq:
+      - ingested:
+          def: ".has_issues"
+        constant: false
+  remediate:
+    type: rest
+    rest:
+      method: PATCH
+      endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
+      body: |
+        { "has_issues": false }
+  alert:
+    type: security_advisory
+    security_advisory: {}
