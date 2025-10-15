@@ -25,13 +25,22 @@ The entity itself, however, always originates from a provider.
 
 ## How to get started with writing rules and profiles?
 
-To get started with writing rules and profiles, you can check the following resources:
+### Quick Start Guides
+
+For comprehensive, repository-specific guides on writing rule types:
+- **[Writing Rule Types: Comprehensive Guide](./docs/writing-rule-types.md)** - In-depth guide with examples and best practices
+- **[Rule Type Quick Reference](./docs/rule-type-quick-reference.md)** - Concise syntax reference for quick lookup
+
+### Official Minder Documentation
+
 - [How to write a rule type](https://mindersec.github.io/how-to/custom-rules)
 - [How to write a rule type using Rego](https://mindersec.github.io/how-to/writing-rules-in-rego)
 - [How to use mindev to develop and debug rule types](https://mindersec.github.io/how-to/mindev)
 - [How to write rules and profiles - YouTube](https://www.youtube.com/watch?v=eXp0nyd72d4)
 - [Minder documentation](https://mindersec.github.io)
 - [Rego language tutorial](https://www.openpolicyagent.org/docs/latest/policy-language/)
+
+### Reference Examples
 
 Apart from that, you can also check the reference rules and profiles in this repository to get an idea of how to write, structure, and organize them.
 
