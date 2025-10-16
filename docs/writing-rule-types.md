@@ -256,7 +256,7 @@ The `eval` section contains the logic to determine if the rule passes or fails. 
 
 ### Rego Evaluation
 
-Rego is a powerful policy language from Open Policy Agent. Use it for complex logic.
+Rego is a powerful policy language from [Open Policy Agent](https://www.openpolicyagent.org/docs/latest/policy-language/). Use it for complex logic.
 
 #### Deny-by-Default Pattern
 
@@ -768,6 +768,8 @@ rule_schema:
       description: "Skip archived repositories"
       default: true
 ```
+
+**Important**: Add parameters for items which may vary, but which do not change the meaning of the rule. Avoid making rules so configurable that they can contradict their purpose. For example, a rule designed to enable branch protection should not have a parameter that allows disabling it entirely - this would undermine the rule's security intent. Instead, parameters should control aspects like thresholds, branch names, or scope, while maintaining the rule's core security objective.
 
 ### 5. Message Quality
 
