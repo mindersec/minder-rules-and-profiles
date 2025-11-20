@@ -23,12 +23,12 @@ require (
 	cloud.google.com/go/spanner v1.84.1 // indirect
 	cloud.google.com/go/storage v1.56.2 // indirect
 	dario.cat/mergo v1.0.2 // indirect
-	deps.dev/api/v3 v3.0.0-20250616031631-419a06b41f9b // indirect
-	deps.dev/api/v3alpha v0.0.0-20250616031631-419a06b41f9b // indirect
-	deps.dev/util/maven v0.0.0-20250616031631-419a06b41f9b // indirect
-	deps.dev/util/pypi v0.0.0-20250616031631-419a06b41f9b // indirect
-	deps.dev/util/resolve v0.0.0-20250616031631-419a06b41f9b // indirect
-	deps.dev/util/semver v0.0.0-20250610062038-1c74ed268106 // indirect
+	deps.dev/api/v3 v3.0.0-20250903005441-604c45d5b44b // indirect
+	deps.dev/api/v3alpha v0.0.0-20250903005441-604c45d5b44b // indirect
+	deps.dev/util/maven v0.0.0-20250903005441-604c45d5b44b // indirect
+	deps.dev/util/pypi v0.0.0-20250903005441-604c45d5b44b // indirect
+	deps.dev/util/resolve v0.0.0-20250903005441-604c45d5b44b // indirect
+	deps.dev/util/semver v0.0.0-20250903005441-604c45d5b44b // indirect
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20240806141605-e8a1dd7889d6 // indirect
 	github.com/AdamKorcz/go-118-fuzz-build v0.0.0-20231105174938-2b5cbb29f3e2 // indirect
 	github.com/BurntSushi/toml v1.5.0 // indirect
@@ -149,7 +149,7 @@ require (
 	github.com/google/go-github/v63 v63.0.0 // indirect
 	github.com/google/go-github/v66 v66.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/google/osv-scalibr v0.3.2 // indirect
+	github.com/google/osv-scalibr v0.3.4 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect
@@ -216,7 +216,7 @@ require (
 	github.com/opencontainers/runtime-spec v1.2.1 // indirect
 	github.com/opencontainers/selinux v1.12.0 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
-	github.com/ossf/osv-schema/bindings/go v0.0.0-20250527054414-66246866dc20 // indirect
+	github.com/ossf/osv-schema/bindings/go v0.0.0-20250805051309-c463400aa925 // indirect
 	github.com/package-url/packageurl-go v0.1.3 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/pjbgf/sha1cd v0.3.2 // indirect
@@ -276,6 +276,7 @@ require (
 	github.com/tidwall/jsonc v0.3.2 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
+	github.com/tink-crypto/tink-go/v2 v2.4.0 // indirect
 	github.com/titanous/rocacheck v0.0.0-20171023193734-afe73141d399 // indirect
 	github.com/tklauser/go-sysconf v0.3.15 // indirect
 	github.com/tklauser/numcpus v0.10.0 // indirect
@@ -340,6 +341,7 @@ require (
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 	modernc.org/sqlite v1.39.0 // indirect
+	osv.dev/bindings/go v0.0.0-20250808040635-c189436f8791 // indirect
 	sigs.k8s.io/release-utils v0.12.1 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
 	www.velocidex.com/golang/regparser v0.0.0-20250203141505-31e704a67ef7 // indirect
