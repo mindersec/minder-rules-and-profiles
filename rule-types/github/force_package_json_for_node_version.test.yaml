@@ -1,0 +1,18 @@
+tests:
+  - name: "Should have node version file configured"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: correct
+  - name: "Should fail when the user manually specified node version in GH Actions"
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: misconfigured
+  - name: "Should pass when there are no GH Actions at all"
+    def: {}
+    params: {}
+    expect: "pass"
+    git: {}
