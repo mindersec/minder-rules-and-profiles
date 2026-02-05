@@ -1,0 +1,11 @@
+version: v1
+type: profile
+name: autofill-insights
+display_name: Autofill Security Insights
+context:
+  provider: github
+alert: "off"
+remediate: "on"
+repository:
+- type: insights-exists
+- type: insights-up-to-date

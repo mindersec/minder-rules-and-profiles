@@ -1,0 +1,37 @@
+version: v1
+type: data-source
+name: insightsghapi
+context: {}
+rest:
+  providerAuth: true
+  def:
+    repo_config:
+      endpoint: https://api.github.com/repos/{owner}/{repo}
+      parse: json
+      input_schema:
+        type: object
+        properties:
+          owner:
+            type: string
+          repo:
+            type: string
+    private_vuln_reporting:
+      endpoint: https://api.github.com/repos/{owner}/{repo}/private-vulnerability-reporting
+      parse: json
+      input_schema:
+        type: object
+        properties:
+          owner:
+            type: string
+          repo:
+            type: string
+    members:
+      endpoint: https://api.github.com/repos/{owner}/{repo}/collaborators
+      parse: json
+      input_schema:
+        type: object
+        properties:
+          owner:
+            type: string
+          repo:
+            type: string

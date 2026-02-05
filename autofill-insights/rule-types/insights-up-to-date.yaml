@@ -1,0 +1,184 @@
+version: v1
+type: rule-type
+name: insights-up-to-date
+display_name: Ensure insights are up to date
+short_failure_message: Security Insights needs updates
+severity:
+  value: info
+context:
+  provider: github
+description: Verifies automated and required fields in Security Insights
+guidance: |
+  Ensure that the Security Insights file for the repository is up to date.
+  Security Insights provides a mechanism for projects to report information
+  about their security in a machine-processable way. It is formatted as a
+  YAML file to make it easy to read and edit by humans.
+
+  For more information, see [OpenSSF Security Insights](https://security-insights.openssf.org/).
+def:
+  in_entity: repository
+  # TODO: add a max allowed age for last-reviewed
+  rule_schema: {}
+  ingest:
+    type: git
+  eval:
+    type: rego
+    data_sources:
+      - name: insightsghapi
+    rego:
+      type: constraints
+      def: |
+        package minder
+        import rego.v1
+
+        default output := {"patches": "{}"}
+
+        insights_files := [
+          "SECURITY-INSIGHTS.yaml",
+          "SECURITY-INSIGHTS.yml",
+          "security-insights.yaml",
+          "security-insights.yml",
+          ".github/security-insights.yaml",
+          ".github/security-insights.yml",
+          ".gitlab/security-insights.yaml",
+          ".gitlab/security-insights.yml",
+          ".project/security-insights.yaml",
+          ".project/security-insights.yml"
+        ]
+
+        si_files := [ e | some e in insights_files; file.exists(e) ]
+
+        si_contents := file.read(si_files[0]) if count(si_files) > 0
+        si_contents := "" if count(si_files) == 0
+
+        current := object.union_n([yaml.unmarshal(si_contents)])
+
+        repo_config := minder.datasource.insightsghapi.repo_config({
+          "owner": input.properties["github/repo_owner"],
+          "repo": input.properties["github/repo_name"]
+        })
+        repo_url := repo_config.clone_url
+
+        vuln_reporting := minder.datasource.insightsghapi.private_vuln_reporting({
+          "owner": input.properties["github/repo_owner"],
+          "repo": input.properties["github/repo_name"]
+        })
+        reports_enabled if { object.get(current, ["project", "vulnerability-reporting", "reports-accepted"], false) == true }
+        reports_enabled if { vuln_reporting.accepting_vulnerability_reports}
+
+        # Detected contains the detected values for the Security Insights file.
+        detected.header["schema-version"] := "2.2.0"
+        detected.header["last-updated"] := object.get(current, ["header", "last-updated"], sprintf("%d-%d-%d", time.date(time.now_ns())))
+        detected.header["url"] := sprintf("https://raw.githubusercontent.com/%s/%s/%s/%s",
+          [input.properties["github/repo_owner"], input.properties["github/repo_name"], input.properties["github/default_branch"], si_files[0]])
+
+        detected.project["name"] := object.get(current, ["project", "name"], repo_config.name)
+        detected.project["administrators"] := object.get(current, ["project", "administrators"], [])
+        detected.project["vulnerability-reporting"] := object.get(current, ["project", "vulnerability-reporting"], {
+              "reports-accepted": reports_enabled,
+              "bug-bounty-available": object.get(current, ["project", "vulnerability-reporting", "bug-bounty-available"], false)
+            })
+        # detected.project["documentation"] := {}
+
+        detected.repository.url := repo_url
+        detected.repository.status := "active"
+        detected.repository["accepts-change-request"] if {
+          repo_config.has_pull_requests
+          repo_config.pull_request_creation_policy == "all"
+        }
+        detected.repository["accepts-automated-change-request"] := detected.repository["accepts-change-request"]
+        detected.repository["core-team"] := object.get(current, ["repository", "core-team"], []) # TODO
+        detected.repository["license"] := {
+              "url": repo_config.license.url,
+              "expression": repo_config.license.spdx_id
+            }
+        detected.repository["security"] := {
+              "assessments": {}
+            }
+
+        violations contains {"msg": "Security Insights file is missing or malformed"} if {
+          current == null
+        }
+
+        reviewed_str := object.get(current, ["header", "last-reviewed"], "1970-01-01")
+        review_age := time.now_ns() - time.parse_ns("2006-01-02", reviewed_str)
+        needs_review := review_age > time.parse_duration_ns("8640h")  # 1 year
+        violations contains {"msg": "Security Insights file has not been reviewed"} if {
+          needs_review
+        }
+
+        detected.header["last-reviewed"] := sprintf("%04d-%02d-%02d", time.date(time.now_ns())) if {
+          needs_review
+        }
+        detected.header["last-reviewed"] := current.header["last-reviewed"] if {
+          not needs_review
+        }
+
+        
+        detected.project.homepage := repo_config.homepage if repo_config.homepage != null
+        # TODO: project.documentation, particularly code-of-conduct
+
+        # include existing projects
+        detected.project.repositories contains e if {
+          e := object.get(current, ["project", "repositories"], [])[_]
+        }
+
+        detected.project.repositories contains e if {
+          every repo in current.project.repositories {
+            repo.url != repo_url
+          }
+          e := {
+            "url" : repo_url,
+            "comment" : "uh",  # TODO
+            "name" : input.properties["github/repo_name"],
+          }
+        }
+
+        detected.repository.documentation["contributing-guide"] := sprintf("%s/blob/%s/CONTRIBUTING.md", [repo_url, repo_config.default_branch]) if file.exists("CONTRIBUTING.md")
+        detected.repository.documentation["security-policy"] := sprintf("%s/blob/%s/SECURITY.md", [repo_url, repo_config.default_branch]) if file.exists("SECURITY.md")
+        # TODO: governance, review-policy, dependency-management-policy, etc.
+
+        merged := object.union(current, detected)
+        output := {"patches": json.marshal(detected)}
+        needs_update := json.marshal(current) != json.marshal(merged)
+
+        violations contains {"msg": "Security Insights file is not up to date with repository information"} if {
+          needs_update
+        }
+
+  remediate:
+    type: pull_request
+    pull_request:
+      title: Update Security Insights file
+      body: |
+        This is a Minder automated pull request.
+
+        This pull request updates the Security Insights file for the repository to ensure it is up to date and accurate.
+
+        For more information, see https://security-insights.openssf.org/.
+      method: minder.yq.evaluate
+      params:
+        # *= is the merge operator: https://mikefarah.gitbook.io/yq/operators/multiply-merge#objects-and-arrays-merging
+        expression: |
+          . *= {{ .EvalResultOutput.patches}}
+        patterns:
+          - pattern: "SECURITY-INSIGHTS.yaml"
+            type: glob
+          - pattern: "SECURITY-INSIGHTS.yml"
+            type: glob
+          - pattern: "security-insights.yaml"
+            type: glob
+          - pattern: "security-insights.yml"
+            type: glob
+          - pattern: ".github/security-insights.yaml"
+            type: glob
+          - pattern: ".github/security-insights.yml"
+            type: glob
+          - pattern: ".gitlab/security-insights.yaml"
+            type: glob
+          - pattern: ".gitlab/security-insights.yml"
+            type: glob
+          - pattern: ".project/security-insights.yaml"
+            type: glob
+          - pattern: ".project/security-insights.yml"
+            type: glob
