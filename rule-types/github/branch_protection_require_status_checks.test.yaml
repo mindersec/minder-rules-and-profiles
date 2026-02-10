@@ -1,0 +1,61 @@
+tests:
+  - name: "status checks required"
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: "mindersec"
+        name: "minder"
+    expect: "pass"
+    http:
+      status: 200
+      body: '{"required_status_checks": {"url": "https://api.github.com/repos/test/test/branches/main/protection/required_status_checks", "strict": false, "contexts": [], "checks": []}}'
+  - name: "status checks required with strict mode"
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: "mindersec"
+        name: "minder"
+    expect: "pass"
+    http:
+      status: 200
+      body: '{"required_status_checks": {"url": "https://api.github.com/repos/test/test/branches/main/protection/required_status_checks", "strict": true, "contexts": ["ci/test"], "checks": [{"context": "ci/test", "app_id": 15368}]}}'
+  - name: "status checks not required"
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: "mindersec"
+        name: "minder"
+    expect: "fail"
+    http:
+      status: 200
+      body: '{"required_status_checks": null}'
+  - name: "not found"
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: "mindersec"
+        name: "minder"
+    expect: "fail"
+    http:
+      status: 404
+      body: '{"woot": "woot"}'
+  - name: "internal error"
+    def: {}
+    params: {}
+    entity:
+      type: repository
+      entity:
+        owner: "mindersec"
+        name: "minder"
+    expect: "fail"
+    http:
+      status: 502
+      body: '{"woot": "woot"}'
