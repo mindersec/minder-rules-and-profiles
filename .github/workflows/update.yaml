@@ -9,14 +9,14 @@ jobs:
     name: Check ruletype validate-update
     steps:
     - name: Checkout current
-      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
       with:
         # See https://stackoverflow.com/a/74268200 -- the PR branch has a single
         # commit merging the two branches, so we need the last 2 commits.
         fetch-depth: 2
 
     - name: Checkout comparison branch (main) in subdirectory
-      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
       with:
         # Checkout the main branch into a subdirectory
         ref: main
