@@ -1,0 +1,47 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-br-03-02 
+display_name: Deliver releases via encrypted channels
+short_failure_message: Releases available via unsecured channels
+severity:
+  value: high
+context:
+  provider: github
+description: |
+  This check determines whether the release artifacts of the project
+  are delived via unsecured (unencrypted) channels.
+
+  Downloading release artifacts via unsecured channels is a supply
+  chain risk for consumers, as attackers could compromise the release
+  assets in-transit via a Machine-in-the-Middle (MitM) attack.
+
+guidance: |
+  Deliver artifacts using HTTPS URLs or package repositories.
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+  eval:
+    # We only need to worry about links in e.g. the README, as artifacts
+    # distributed via GitHub releases or package repositories will already
+    # be encrypted.
+    type: rego
+    rego:
+      type: constraints
+      def: |
+        package minder
+        import rego.v1
+
+        # Currently, we assume that direct downloads are linked from a README
+        # file, and not elsewhere in the documentation.
+        readme_contents := file.read("./README.md")
+        http_urls := regex.find_all_string_submatch_n(`(http://\S*)`, readme_contents, -1)[0]
+
+        violations contains {"msg": msg} if {
+          some url in http_urls
+          not startswith(url, "http://localhost")
+
+          msg := sprintf("README.md contains non-HTTPS URL '%s'", [url])
+        }

@@ -26,8 +26,6 @@ def:
       parse: json
   eval:
     type: rego
-    data_sources:
-      - name: ghapi
     rego:
       type: deny-by-default
       def: |

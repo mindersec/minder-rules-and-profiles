@@ -31,8 +31,53 @@ def:
           body: |
             {"http_status": 404, "message": "Not Protected"}
   eval:
-    type: jq
-    jq:
-      - ingested:
-          def: ".allow_force_pushes.enabled"
-        constant: false
+    type: rego
+    data_sources:
+      - name: baselineghapi
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        import rego.v1
+
+        default allow := false
+        msg := "Force pushes are allowed on the default branch"
+
+        # The ingest endpoint checks the "classic" branch protection rule.
+        allow if {
+          not input.allow_force_pushes.enabled
+        }
+
+        # We also want to check the new "branch rulesets", if they exist.
+        applied_rulesets := minder.datasource.baselineghapi.branch_protection_status({
+          "owner": input.properties["github/repo_owner"],
+          "repo": input.properties["github/repo_name"],
+          "branch": input.properties["github/default_branch"]
+        })
+        allow if {  # also type: deletion
+          some rule
+          applied_rulesets[rule].type = "non_fast_forward"
+        }
+
+remediate:
+  type: rest
+  rest:
+    method: PUT
+    endpoint: '/repos/{{.Entity.Owner}}/{{.Entity.Name}}/rulesets'
+    body: |
+      {
+        "name": "OSPS-AC-03.01: Prevent force push to default branch",
+        "target": "branch",
+        "enforcement": "active",
+        "conditions": {
+          "ref_name": {
+            "include": ["~DEFAULT_BRANCH"],
+            "exclude": []
+          }
+        },
+        "rules": [
+          {
+            "type": "non_fast_forward",
+          }
+        ]
+      }

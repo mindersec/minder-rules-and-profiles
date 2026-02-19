@@ -1,0 +1,74 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-br-01-02
+display_name: Validate branch names continuous integration
+short_failure_message: Unvalidated branch names can subvert workflows
+severity:
+  value: critical
+context:
+  provider: github
+description: |
+  This check determines whether the project's GitHub Action workflows
+  have dangerous code patterns with respect to branch names. The
+  following patterns are checked:
+
+  * Unquoted or unvalidated branch names: Git branch names can contain
+  special characters such as space or semicolon which may be used to
+  execute malicious code with permissions of the continuous integration
+  workflow.
+
+guidance: |
+  [Quote or escape branch names and other attacker-controlled content](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#understanding-the-risk-of-script-injections)
+  before using them in scripts.
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+  eval:
+    type: rego
+    rego:
+      type: constraints
+      def: |
+        package minder
+        import rego.v1
+
+        # Match both .yml and .yaml files
+        workflows := array.concat(file.ls_glob("./.github/workflows/*.yml"), file.ls_glob("./.github/workflows/*.yaml"))
+
+        dangerous_triggers = ["pull_request_target", "workflow_run"]
+
+        # Look for possible unquoted references
+        violations contains {"msg": msg} if {
+          some w
+          contents := file.read(workflows[w])
+          workflow := parse_yaml(contents)
+
+          some job
+          some step
+          stepDef := workflow.jobs[job].steps[step]
+          stepDef.run
+
+          regexp := "\\${{(.*?)}}"
+          expansions := regex.find_all_string_submatch_n(regexp, stepDef.run, -1)
+
+          some expr in expansions
+          vulnerable_expansion(expr[1])
+
+          msg := sprintf("Workflow %s has possible event script injection in step %d of job '%s'", [workflows[w], step, job])
+        }
+
+        # Patterns from https://securitylab.github.com/resources/github-actions-untrusted-input/
+        vulnerable_patterns := {
+          "github.event.pull_request.head.ref",
+          "github.event.pull_request.head.label",
+          "github.event.pull_request.head.repo.default_branch",
+          "github.head_ref",
+        }
+
+        vulnerable_expansion(exp) if {
+          some match in vulnerable_patterns
+          matcher := concat("", ["*", match, "*"])
+          glob.match(matcher, null, exp)
+        }

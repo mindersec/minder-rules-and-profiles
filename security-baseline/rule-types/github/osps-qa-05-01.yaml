@@ -3,7 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: osps-qa-05-01
-display_name: Version control does not contain binary artifacts
+display_name: Version control does not contain generated executable artifacts
 short_failure_message: Binary artifacts found in the repository
 severity:
   value: high
@@ -35,7 +35,7 @@ def:
 
         # N.B. creating this test case in a test would cause this repo to fail the check,
         # so we do not have this test case yet.
-        violations[{"msg": msg}] if {
+        violations contains{"msg": msg} if {
           # Walk all files in the repo
           files_in_repo := file.walk(".")
 

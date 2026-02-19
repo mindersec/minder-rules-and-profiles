@@ -38,7 +38,7 @@ def:
   eval:
     type: rego
     data_sources:
-      - name: ghapi
+      - name: baselineghapi
     rego:
       type: deny-by-default
       def: |
@@ -62,7 +62,7 @@ def:
 
         allow if {
           # Check the GitHub homepage link
-          out = minder.datasource.ghapi.repo_config({
+          out = minder.datasource.baselineghapi.repo_config({
             "owner": input.properties["github/repo_owner"],
             "repo": input.properties["github/repo_name"]
           })

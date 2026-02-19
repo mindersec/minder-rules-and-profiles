@@ -1,8 +1,9 @@
 version: v1
 type: data-source
-name: ghapi
+name: baselineghapi
 context: {}
 rest:
+  providerAuth: true
   def:
     license:
       endpoint: https://api.github.com/repos/{owner}/{repo}/license
@@ -33,4 +34,17 @@ rest:
           owner:
             type: string
           repo:
-            type: string            
+            type: string
+    # Get all rules which apply to a given branch
+    branch_protection_status:
+      endpoint: https://api.github.com/repos/{owner}/{repo}/rules/branches/{branch}
+      parse: json
+      input_schema:
+        type: object
+        properties:
+          owner:
+            type: string
+          repo:
+            type: string
+          branch:
+            type: string
