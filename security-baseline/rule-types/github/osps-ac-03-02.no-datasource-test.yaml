@@ -6,11 +6,11 @@ tests:
       type: repository
       entity:
         owner: "mindersec"
-        name: "minder"    
+        name: "minder"
     expect: "pass"
     http:
       status: 200
-      body: '{"allow_force_pushes": {"enabled": false}}'
+      body: '{"allow_deletions": {"enabled": false}}'
   - name: "force push allowed"
     def: {}
     params: {}
@@ -18,11 +18,11 @@ tests:
       type: repository
       entity:
         owner: "mindersec"
-        name: "minder"    
+        name: "minder"
     expect: "fail"
     http:
       status: 200
-      body: '{"allow_force_pushes": {"enabled": true}}'
+      body: '{"allow_deletions": {"enabled": true}}'
   - name: "not found"
     def: {}
     params: {}
@@ -30,7 +30,7 @@ tests:
       type: repository
       entity:
         owner: "mindersec"
-        name: "minder"    
+        name: "minder"
     expect: "fail"
     http:
       status: 404
@@ -42,7 +42,7 @@ tests:
       type: repository
       entity:
         owner: "mindersec"
-        name: "minder"    
+        name: "minder"
     expect: "fail"
     http:
       status: 502

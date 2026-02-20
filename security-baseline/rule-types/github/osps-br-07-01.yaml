@@ -1,0 +1,82 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-br-07-01
+display_name: Prevent unintentional storage of sensitive data
+short_failure_message: Sensitive data not protected
+severity:
+  value: high
+context:
+  provider: github
+description: |
+  This check determines whether the project prevents the unintentional
+  inclusion of sensitive data such as secrets or credentials in the
+  version control system.
+
+  Repositories should configure .gitignore or forge-specific secret
+  detection APIs to prevent the accidental inclusion of files which
+  contain secrets.
+
+guidance: |
+  Configure [.gitignore](https://git-scm.com/docs/gitignore) or
+  [secret push protection](https://docs.github.com/en/code-security/secret-scanning/introduction/about-push-protection) on the repository.
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+  eval:
+    # We only need to worry about links in e.g. the README, as artifacts
+    # distributed via GitHub releases or package repositories will already
+    # be encrypted.
+    type: rego
+    data_sources:
+      - name: baselineghapi
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        import rego.v1
+
+        default allow := false
+
+        # msg is only used if allow is false
+        message := "No .gitignore or secret push protection configured"
+
+        allow if {
+          content := file.read(".gitignore")
+          # TODO: check for specific secret patterns
+          "" != content
+        }
+
+        repo_settings := minder.datasource.baselineghapi.repo_config({
+            "owner": input.properties["github/repo_owner"],
+            "repo": input.properties["github/repo_name"]
+          }).body
+        allow if {
+          repo_settings.security_and_analysis.secret_scanning_push_protection.status == "enabled"
+        }
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Configure .gitignore to avoid committing secrets"
+      body: |
+        This PR configures a .gitignore file which prevents common sensitive
+        files from being committed to version control and uploaded.
+
+        For more information, see 
+        https://docs.github.com/en/get-started/git-basics/ignoring-files
+        and https://git-scm.com/docs/gitignore
+      contents:
+        - path: ".gitignore"
+          action: replace
+          content: |
+            # Ignore common configuration files that contain secrets alongside other data.
+            # Comment these if you use them without storing secrets in them.
+            .env
+            .secrets
+
+            # Ignore files that are often used to store secrets
+            *.pem
+            *.key
+            .ssh/

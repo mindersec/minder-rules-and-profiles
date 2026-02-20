@@ -30,7 +30,7 @@ def:
   eval:
     type: rego
     data_sources:
-      - name: ghapi    
+      - name: baselineghapi
     rego:
       type: deny-by-default
       def: |
@@ -39,7 +39,6 @@ def:
         import rego.v1
 
         default allow := false
-       
 
         # Allow if SECURITY.md exists and contains "report"
         allow if {
@@ -57,7 +56,7 @@ def:
         # Allow if GitHub vulnerability reporting is enabled
         allow if {
           # Query the GitHub API to check vulnerability reporting status
-          out = minder.datasource.ghapi.private_vuln_reporting({
+          out = minder.datasource.baselineghapi.private_vuln_reporting({
             "owner": input.properties["github/repo_owner"],
             "repo": input.properties["github/repo_name"]
           })

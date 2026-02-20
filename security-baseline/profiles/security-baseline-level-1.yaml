@@ -8,6 +8,7 @@ alert: "off"
 remediate: "off"
 repository:
   # OSPS-AC-01.01: Require MFA for collaborators; depends on org entity
+
   # OSPS-AC-02.01: Hosted GitHub has this by default
   - name: osps-ac-02-01
     type: osps-ac-02-01
@@ -25,9 +26,21 @@ repository:
   - name: osps-br-01-01
     type: osps-br-01-01
     def: {}
+  # OSPS-BR-01.02: Validate branch names in continuous integration
+  - name: osps-br-01-02
+    type: osps-br-01-02
+    def: {}
   # OSPS-BR-03.01: Ensure secure channels for VCS
   - name: osps-br-03-01
     type: osps-br-03-01
+    def: {}
+  # OSPS-BR-03.02: Deliver releases via encrypted channels
+  - name: osps-br-03-02
+    type: osps-br-03-02
+    def: {}
+  # OSPS-BR-07.01: Prevent unintentional storage of sensitive data
+  - name: osps-br-07-01
+    type: osps-br-07-01
     def: {}
 
   # OSPS-DO-01.01: Ensure user guides for all basic functionality
@@ -75,6 +88,10 @@ repository:
   # OSPS-QA-05.01: While active, the version control system MUST NOT contain generated executable artifacts.
   - name: osps-qa-05-01
     type: osps-qa-05-01
+    def: {}
+  # OSPS-QA-05.02: While active, the version control system MUST NOT contain unreviewable binary artifacts.
+  - name: osps-qa-05-02
+    type: osps-qa-05-02
     def: {}
 
   # OSPS-VM-02.01: Documentation must contain security contacts
