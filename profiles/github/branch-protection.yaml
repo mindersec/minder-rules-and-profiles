@@ -61,6 +61,10 @@ repository:
       branch: ""
     def:
       required_pull_request_reviews: true
+  - type: branch_protection_require_status_checks
+    params:
+      branch: ""
+    def: {}
   - type: branch_protection_require_signatures
     params:
       branch: ""
