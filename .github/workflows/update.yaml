@@ -1,7 +1,10 @@
-name: Update
+name: Validate Update Permitted
 on:
   pull_request:
     branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
   ruletype-update:
