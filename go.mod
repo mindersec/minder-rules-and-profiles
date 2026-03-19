@@ -1,6 +1,6 @@
 module github.com/mindersec/minder-rules-and-profiles
 
-go 1.24.6
+go 1.26.1
 
 require (
 	github.com/mindersec/minder v0.1.1
