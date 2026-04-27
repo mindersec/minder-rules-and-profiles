@@ -4,7 +4,7 @@ go 1.26.1
 
 require (
 	github.com/mindersec/minder v0.1.2
-	github.com/rs/zerolog v1.35.0
+	github.com/rs/zerolog v1.35.1
 	github.com/stretchr/testify v1.11.1
 	google.golang.org/protobuf v1.36.11
 	gopkg.in/yaml.v3 v3.0.1
