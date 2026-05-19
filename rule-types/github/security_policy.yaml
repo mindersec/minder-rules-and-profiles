@@ -37,15 +37,16 @@ def:
       type: deny-by-default
       def: |
         package minder
+
         import rego.v1
 
         default allow := false
+
         default message := "Security policy file is missing"
-        
+
         allow if {
           file.exists(input.profile.filename)
         }
-  
   # We don't have a remediation method in place yet.
   
   # Defines the configuration for alerting on the rule

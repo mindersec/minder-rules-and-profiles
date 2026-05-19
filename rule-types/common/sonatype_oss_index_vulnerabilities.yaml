@@ -34,30 +34,24 @@ def:
       type: constraints
       def: |
         package minder
-        
+
         import rego.v1
-        
-        default skip = false
-        
+
+        default skip := false
+
         violations[{"msg": msg}] if {
           node := input.ingested.node_list.nodes[_]
-          
+
           purl := node.identifiers["1"]
-          
-          reqparams := {
-              "request": {
-                "coordinates": [
-                    purl
-                ]
-              }
-            }
-          
+
+          reqparams := {"request": {"coordinates": [purl]}}
+
           out := minder.datasource.sonatype_oss_index.query(reqparams)
           vulns := out.body[0].vulnerabilities
-          
+
           count(vulns) > 0
-          
+
           vulnid := vulns[_].id
-          
+
           msg := sprintf("Package '%v' has a vulnerability %v", [purl, vulnid])
         }

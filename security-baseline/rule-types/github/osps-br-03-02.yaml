@@ -32,6 +32,7 @@ def:
       type: constraints
       def: |
         package minder
+
         import rego.v1
 
         # Currently, we assume that direct downloads are linked from a README

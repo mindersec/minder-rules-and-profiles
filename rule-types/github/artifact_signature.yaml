@@ -94,10 +94,9 @@ def:
       def: |
         package minder
 
-        import future.keywords.every
-        import future.keywords.if
+        import rego.v1
 
-        violations[{"msg": msg}] {
+        violations contains {"msg": msg} if {
           # iterate over the artifacts. We want all artifacts to be checked individually
           artifactVersion := input.ingested[_]
 

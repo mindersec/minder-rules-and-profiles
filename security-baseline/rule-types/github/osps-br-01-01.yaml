@@ -45,12 +45,13 @@ def:
       type: constraints
       def: |
         package minder
+
         import rego.v1
 
         # Match both .yml and .yaml files
         workflows := array.concat(file.ls_glob("./.github/workflows/*.yml"), file.ls_glob("./.github/workflows/*.yaml"))
 
-        dangerous_triggers = ["pull_request_target", "workflow_run"]
+        dangerous_triggers := ["pull_request_target", "workflow_run"]
 
         # Look for dangerous triggers combined with checkout of user-controlled code.
         violations contains {"msg": msg} if {

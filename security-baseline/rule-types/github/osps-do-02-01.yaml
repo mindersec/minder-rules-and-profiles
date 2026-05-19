@@ -33,8 +33,10 @@ def:
       type: deny-by-default
       def: |
         package minder
+
         import rego.v1
 
         default allow := false
+
         allow if input.ingested.has_issues
         allow if input.ingested.has_discussions

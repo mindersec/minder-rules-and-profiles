@@ -36,10 +36,13 @@ def:
       def: |
         package minder
 
+        import rego.v1
+
         default allow := false
+
         default message := "Branch is not set as protected"
 
-        allow {
+        allow if {
           # Check that there is at least one protected branch
           count(input.ingested) > 0
 
@@ -49,4 +52,3 @@ def:
           # Check that the branch is protected
           input.ingested[i].allow_force_push == false
         }
-

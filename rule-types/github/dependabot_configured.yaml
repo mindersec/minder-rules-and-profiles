@@ -64,26 +64,29 @@ def:
       def: |
         package minder
 
+        import rego.v1
+
         default allow := false
+
         default message := "Dependabot is not configured"
 
         # Set allow if we don't need to skip and the rule evaluation passes
-        allow {
-            # Read the dependabot configuration
-            fileStr := file.read("./.github/dependabot.yml")
+        allow if {
+          # Read the dependabot configuration
+          fileStr := file.read("./.github/dependabot.yml")
 
-            # Parse the YAML content
-            config := yaml.unmarshal(fileStr)
+          # Parse the YAML content
+          config := yaml.unmarshal(fileStr)
 
-            # Ensure a configuration contains the package ecosystem daily update schedule
-            update := config.updates[_]
-            update["package-ecosystem"] == input.profile.package_ecosystem
+          # Ensure a configuration contains the package ecosystem daily update schedule
+          update := config.updates[_]
+          update["package-ecosystem"] == input.profile.package_ecosystem
         }
 
         # We skip if the apply_if_file is specified and the file does not exist
-        skip {
-            input.profile.apply_if_file != ""
-            not file.exists(input.profile.apply_if_file)
+        skip if {
+          input.profile.apply_if_file != ""
+          not file.exists(input.profile.apply_if_file)
         }
   remediate:
     type: pull_request

@@ -43,49 +43,47 @@ def:
         import rego.v1
 
         get_license_info(asset) := {"license_resp": license_resp, "ident_resp": ident_resp} if {
-            license_resp := http.send({
-                "method": "GET",
-                "url": asset.browser_download_url,
-                "headers": {
-                    "Accept": "application/octet-stream"
-                },
-                "enable_redirect": true,
-                "raise_error": true
-            })
+          license_resp := http.send({
+            "method": "GET",
+            "url": asset.browser_download_url,
+            "headers": {"Accept": "application/octet-stream"},
+            "enable_redirect": true,
+            "raise_error": true,
+          })
 
-            ident_resp := http.send({
-                "method": "POST",
-                "url": "https://spdx-detector-562949304223.us-central1.run.app",
-                "headers": {
-                    "Accept": "application/json",
-                    "Content-Type": "text/plain"
-                },
-                "raw_body": license_resp.raw_body,
-                "raise_error": true
-            })
+          ident_resp := http.send({
+            "method": "POST",
+            "url": "https://spdx-detector-562949304223.us-central1.run.app",
+            "headers": {
+              "Accept": "application/json",
+              "Content-Type": "text/plain",
+            },
+            "raw_body": license_resp.raw_body,
+            "raise_error": true,
+          })
         }
 
         get_approved_licenses(licenses) := approved_licenses if {
-            osi := {l.licenseId | l := licenses[_]; l.isOsiApproved}
-            fsf := {l.licenseId | l := licenses[_]; l.isFsfLibre}
-            approved_licenses := osi | fsf
+          osi := {l.licenseId | l := licenses[_]; l.isOsiApproved}
+          fsf := {l.licenseId | l := licenses[_]; l.isFsfLibre}
+          approved_licenses := osi | fsf
         }
 
         violations contains {"msg": msg} if {
-            some asset in input.ingested
-            startswith(lower(asset.name), "license")
-            
-            resp := get_license_info(asset)
-            
-            msg := get_violation_message(resp)
+          some asset in input.ingested
+          startswith(lower(asset.name), "license")
+
+          resp := get_license_info(asset)
+
+          msg := get_violation_message(resp)
         }
 
         get_violation_message(resp) := "No valid license identified in the license file" if {
-            resp.ident_resp.body[0] == ""
+          resp.ident_resp.body[0] == ""
         } else := sprintf("License '%v' is not OSI/FSF approved", [license_id]) if {
-            count(resp.ident_resp.body) > 0
-            license_id := resp.ident_resp.body[0]
-            spdx_resp := minder.datasource.spdx.licenses({})
-            approved_licenses := get_approved_licenses(spdx_resp.body.licenses)
-            not license_id in approved_licenses
+          count(resp.ident_resp.body) > 0
+          license_id := resp.ident_resp.body[0]
+          spdx_resp := minder.datasource.spdx.licenses({})
+          approved_licenses := get_approved_licenses(spdx_resp.body.licenses)
+          not license_id in approved_licenses
         }

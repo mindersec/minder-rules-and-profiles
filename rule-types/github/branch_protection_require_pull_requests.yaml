@@ -64,13 +64,13 @@ def:
       type: deny-by-default
       def: |
         package minder
-        
-        import future.keywords.every
-        import future.keywords.if
-        
+
+        import rego.v1
+
         default allow := false
+
         default message := "Pull requests are not required"
-        
+
         allow if {
           input.ingested.required_pull_request_reviews.url != ""
         }

@@ -35,13 +35,15 @@ def:
       type: deny-by-default
       def: |
         package minder
-        
+
         import rego.v1
 
         actions := github_workflow.ls_actions("./.github/workflows")
 
         default message := "No TruffleHog GitHub action found for automated secret detection"
+
         default allow := false
+
         allow if {
           # check that there is a trufflehog action
           "trufflesecurity/trufflehog" in actions
