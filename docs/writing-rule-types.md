@@ -271,7 +271,7 @@ def:
       def: |
         package minder
 
-        import future.keywords.if
+        import rego.v1
 
         default allow := false
         default skip := false
@@ -309,7 +309,7 @@ def:
       def: |
         package minder
 
-        violations[{"msg": msg}] {
+        violations contains {"msg": msg} if {
           # Check condition
           workflows := file.ls("./.github/workflows")
           some w
@@ -517,7 +517,7 @@ def:
       def: |
         package minder
 
-        import future.keywords.if
+        import rego.v1
 
         default allow := false
         default message := "Repository issues are not enabled"
@@ -579,7 +579,7 @@ def:
       def: |
         package minder
 
-        import future.keywords.if
+        import rego.v1
 
         default allow := false
         fileStr := file.read(input.profile.license_filename)
@@ -704,7 +704,7 @@ def:
       def: |
         package minder
 
-        import future.keywords.if
+        import rego.v1
 
         default allow := false
         default message := "Branch protection is not enabled"
@@ -911,7 +911,7 @@ skip if {
 Report multiple issues in one evaluation:
 
 ```rego
-violations[{"msg": msg}] {
+violations contains {"msg": msg} if {
   # Iterate over items
   some i
   item := input.ingested[i]
@@ -929,9 +929,7 @@ violations[{"msg": msg}] {
 Use Rego's full power for complex checks:
 
 ```rego
-import future.keywords.every
-import future.keywords.if
-import future.keywords.in
+import rego.v1
 
 allow if {
   # All items must pass
@@ -1003,7 +1001,7 @@ allow if {
 ### Pattern 4: Workflow File Analysis
 
 ```rego
-violations[{"msg": msg}] {
+violations contains {"msg": msg} if {
   workflows := file.ls("./.github/workflows")
   some w
   workflowstr := file.read(workflows[w])

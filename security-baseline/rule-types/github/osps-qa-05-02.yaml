@@ -30,6 +30,7 @@ def:
       type: constraints
       def: |
         package minder
+
         import rego.v1
 
         permitted_prefixes := [
@@ -47,7 +48,7 @@ def:
 
         # N.B. creating this test case in a test would cause this repo to fail the check,
         # so we do not have this test case yet.
-        violations contains{"msg": msg} if {
+        violations contains {"msg": msg} if {
           # Walk all files in the repo
           files_in_repo := file.walk(".")
 
@@ -58,4 +59,3 @@ def:
 
           msg := sprintf("Unreviewable artifact found: %s of type %s", [current_file, http_type])
         }
-

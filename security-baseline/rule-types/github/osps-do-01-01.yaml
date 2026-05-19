@@ -64,7 +64,7 @@ def:
           # Check the GitHub homepage link
           out = minder.datasource.baselineghapi.repo_config({
             "owner": input.properties["github/repo_owner"],
-            "repo": input.properties["github/repo_name"]
+            "repo": input.properties["github/repo_name"],
           })
           out.body.homepage != ""
         }
@@ -75,7 +75,7 @@ def:
           rstDocs := file.ls_glob("docs/*.rst")
           htmlDocs := file.ls_glob("docs/*.html")
           txtDocs := file.ls_glob("docs/*.txt")
-          count(mdDocs) + count(rstDocs) + count(htmlDocs) + count(txtDocs) > 0
+          ((count(mdDocs) + count(rstDocs)) + count(htmlDocs)) + count(txtDocs) > 0
         }
 
         readme := file.read("README.md")
@@ -83,10 +83,10 @@ def:
           # Check the README.md file for preformatted text after the first line
           regex.match("\n *```", readme)
         }
+
         allow if {
           regex.match("\n#+ (?i:Usage|Getting Started)", readme)
         }
-
 # Remediation is a work in progress -- ideally, we could read which location(s)
 # contained the documentation, and automatically update SECURITY-INSIGHTS.yaml
 # with any missing documentation locations.

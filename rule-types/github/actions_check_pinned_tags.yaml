@@ -59,12 +59,14 @@ def:
       def: |
         package minder
 
-        is_excluded(action, excludes) {
+        import rego.v1
+
+        is_excluded(action, excludes) if {
           some i
           action == excludes[i]
         }
 
-        violations[{"msg": msg}] {
+        violations contains {"msg": msg} if {
           # List all workflows
           workflows := file.ls("./.github/workflows")
 

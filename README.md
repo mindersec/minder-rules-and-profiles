@@ -54,6 +54,22 @@ Apart from that, you can also check the reference rules and profiles in this rep
   into use, you'll need to instantiate it in a Minder instance. For example, to instantiate the
   reference data source for using OSV as a data source, use the following command - `minder datasource create -f data-sources osv.yaml`.
 
+### Migrating Rego rule definitions to v1
+
+Rule type YAML files can embed Rego policies under `def.eval.rego.def`. To migrate those policies from Rego v0 syntax
+to Rego v1 syntax across this repository, install OPA v1 or newer and run:
+
+```sh
+task migrate-rego-v1
+```
+
+The task runs `opa fmt --v0-v1` against each embedded Rego `def: |` block and writes the formatted source back into the
+YAML file. You can also run the script directly against a specific path:
+
+```sh
+python3 scripts/migrate-rego-v1.py rule-types/github/secret_scanning.yaml
+```
+
 ## How to contribute?
 
 We welcome contributions!

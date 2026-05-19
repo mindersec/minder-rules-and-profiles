@@ -86,7 +86,7 @@ eval:
     def: |
       package minder
 
-      import future.keywords.if
+      import rego.v1
 
       default allow := false
       default skip := false
@@ -111,7 +111,7 @@ eval:
     def: |
       package minder
 
-      violations[{"msg": msg}] {
+      violations contains {"msg": msg} if {
         # Logic to find violations
         msg := "Violation description"
       }
@@ -294,7 +294,7 @@ allow if {
 ### Check All Workflow Files
 
 ```rego
-violations[{"msg": msg}] {
+violations contains {"msg": msg} if {
   workflows := file.ls("./.github/workflows")
   some w
   workflowstr := file.read(workflows[w])
@@ -555,7 +555,7 @@ def:
       def: |
         package minder
 
-        import future.keywords.if
+        import rego.v1
 
         default allow := false
 

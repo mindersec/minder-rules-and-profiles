@@ -58,23 +58,26 @@ def:
       def: |
         package minder
 
+        import rego.v1
+
         default allow := false
+
         default message := "CodeQL is not enabled"
 
-        allow {
-            # List all workflows
-            workflows := file.ls("./.github/workflows")
+        allow if {
+          # List all workflows
+          workflows := file.ls("./.github/workflows")
 
-            # Read all workflows
-            some w
-            workflowstr := file.read(workflows[w])
+          # Read all workflows
+          some w
+          workflowstr := file.read(workflows[w])
 
-            workflow := yaml.unmarshal(workflowstr)
+          workflow := yaml.unmarshal(workflowstr)
 
-            # Ensure a workflow contains the codel-ql action
-            some i
-            steps := workflow.jobs.analyze.steps[i]
-            startswith(steps.uses, "github/codeql-action/analyze@")
+          # Ensure a workflow contains the codel-ql action
+          some i
+          steps := workflow.jobs.analyze.steps[i]
+          startswith(steps.uses, "github/codeql-action/analyze@")
         }
   remediate:
     type: pull_request

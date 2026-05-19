@@ -39,10 +39,13 @@ def:
       def: |
         package minder
 
+        import rego.v1
+
         default allow := false
+
         default message := "GitLab Dependency Scanning is not enabled"
 
-        allow {
+        allow if {
           # Read the .gitlab-ci.yml file
           pipelinestr := file.read("./.gitlab-ci.yml")
 
@@ -54,4 +57,3 @@ def:
           # Check that one of the included templates is Dependency-Scanning.gitlab-ci.yml
           includes.template == "Jobs/Dependency-Scanning.gitlab-ci.yml"
         }
-

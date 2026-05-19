@@ -29,9 +29,10 @@ def:
       type: deny-by-default
       def: |
         package minder
+
         import rego.v1
 
-        insights_files = [
+        insights_files := [
           "SECURITY-INSIGHTS.yaml",
           "SECURITY-INSIGHTS.yml",
           "security-insights.yaml",
@@ -41,20 +42,31 @@ def:
           ".gitlab/security-insights.yaml",
           ".gitlab/security-insights.yml",
           ".project/security-insights.yaml",
-          ".project/security-insights.yml"
+          ".project/security-insights.yml",
         ]
 
         default allow := false
-        allow := true if count([ e | some e in insights_files; file.exists(e) ]) > 0
+
+        allow if count([e | some e in insights_files; file.exists(e)]) > 0
+
         # message := sprintf("Could not find Security Insights in %v", [insights_files]) if not allow
 
         today := sprintf("%04d-%02d-%02d", time.date(time.now_ns()))
-        base_url := sprintf("https://github.com/%s/%s",
-          [input.properties["github/repo_owner"], input.properties["github/repo_name"]])
-        blob_stub := sprintf("%s/blob/%s",
-          [base_url, input.properties["github/default_branch"]])
-        raw_stub := sprintf("https://raw.githubusercontent.com/%s/%s/%s",
-          [input.properties["github/repo_owner"], input.properties["github/repo_name"], input.properties["github/default_branch"]])
+        base_url := sprintf(
+          "https://github.com/%s/%s",
+          [input.properties["github/repo_owner"], input.properties["github/repo_name"]],
+        )
+
+        blob_stub := sprintf(
+          "%s/blob/%s",
+          [base_url, input.properties["github/default_branch"]],
+        )
+
+        raw_stub := sprintf(
+          "https://raw.githubusercontent.com/%s/%s/%s",
+          [input.properties["github/repo_owner"], input.properties["github/repo_name"], input.properties["github/default_branch"]],
+        )
+
         content.header["schema-version"] := "2.2.0"
         content.header["last-updated"] := today
         content.header["last-reviewed"] := today
@@ -64,51 +76,58 @@ def:
 
         content.repository.url := base_url
         content.repository.status := "active"
+
         # Required field for validation
         content.repository.security.assessments := {}
-        
+
         # File-based content discovery
-        content.repository.documentation["contributing-guide"] := sprintf(
-          "%s/CONTRIBUTING.md", [blob_stub]) if file.exists("CONTRIBUTING.md")
-        content.repository.documentation["security-policy"] := sprintf(
-          "%s/SECURITY.md", [blob_stub]) if file.exists("SECURITY.md")
-        content.project["vulnerability-reporting"].policy := sprintf(
-          "%s/SECURITY.md", [blob_stub]) if file.exists("SECURITY.md")
+        content.repository.documentation["contributing-guide"] := sprintf("%s/CONTRIBUTING.md", [blob_stub]) if {
+          file.exists("CONTRIBUTING.md")
+        }
+
+        content.repository.documentation["security-policy"] := sprintf("%s/SECURITY.md", [blob_stub]) if {
+          file.exists("SECURITY.md")
+        }
+
+        content.project["vulnerability-reporting"].policy := sprintf("%s/SECURITY.md", [blob_stub]) if {
+          file.exists("SECURITY.md")
+        }
 
         # API-based content discovery
         repo_config := minder.datasource.insightsghapi.repo_config({
           "owner": input.properties["github/repo_owner"],
-          "repo": input.properties["github/repo_name"]
+          "repo": input.properties["github/repo_name"],
         }).body
 
-        content.project.repositories := [
-          {
-            "name": input.properties["github/repo_name"],
-            "url": base_url,
-            "comment": repo_config.description,
-          }
-        ]
+        content.project.repositories := [{
+          "name": input.properties["github/repo_name"],
+          "url": base_url,
+          "comment": repo_config.description,
+        }]
+
         content.project.homepage := repo_config.homepage if repo_config.homepage != null
 
         content.repository["accepts-change-request"] if {
           repo_config.has_pull_requests
           repo_config.pull_request_creation_policy == "all"
         }
+
         content.repository["accepts-automated-change-request"] := content.repository["accepts-change-request"]
-        
+
         content.repository.license.url := repo_config.license.url
         content.repository.license.expression := repo_config.license.spdx_id
 
         vuln_reporting := minder.datasource.insightsghapi.private_vuln_reporting({
           "owner": input.properties["github/repo_owner"],
-          "repo": input.properties["github/repo_name"]
+          "repo": input.properties["github/repo_name"],
         }).body
+
         content.project["vulnerability-reporting"]["reports-accepted"] := vuln_reporting.enabled
         content.project["vulnerability-reporting"]["bug-bounty-available"] := false
 
         members := minder.datasource.insightsghapi.members({
           "owner": input.properties["github/repo_owner"],
-          "repo": input.properties["github/repo_name"]
+          "repo": input.properties["github/repo_name"],
         }).body
 
         administrators contains {"name": user.login, "primary": false} if {
@@ -120,8 +139,7 @@ def:
         content.repository["core-team"] := administrators
 
         # Encode for remediation output
-        output.content = yaml.marshal(content)
-
+        output.content := yaml.marshal(content)
   remediate:
     type: pull_request
     pull_request:

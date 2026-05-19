@@ -30,13 +30,12 @@ def:
       def: |
         package minder
 
-        import future.keywords.every
-        import future.keywords.if
+        import rego.v1
 
         default allow := false
 
         allow if {
           # This rule checks whether the repository is private using
           # info tied to the entity itself.
-          not input.properties["is_private"]
+          not input.properties.is_private
         }
