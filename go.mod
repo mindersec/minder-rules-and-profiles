@@ -309,3 +309,7 @@ require (
 	sigs.k8s.io/yaml v1.6.0 // indirect
 	www.velocidex.com/golang/regparser v0.0.0-20250203141505-31e704a67ef7 // indirect
 )
+
+// Pin this to 1.2.1 until using containerd/v2; 1.3.0 has a backwards incompatible change
+// https://github.com/opencontainers/runtime-spec/pull/1279
+replace github.com/opencontainers/runtime-spec => github.com/opencontainers/runtime-spec v1.2.1
