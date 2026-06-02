@@ -66,48 +66,46 @@ def:
       violation_format: json
       def: |
         package minder
-        
-        import future.keywords.contains
-        import future.keywords.if
-        import future.keywords.in
-        
+
+        import rego.v1
+
         severity_to_number := {
-        	null: -1,
-        	"unknown": -1,
-        	"low": 0,
-        	"medium": 1,
-        	"high": 2,
-        	"critical": 3,
+          null: -1,
+          "unknown": -1,
+          "low": 0,
+          "medium": 1,
+          "high": 2,
+          "critical": 3,
         }
-        
+
         default threshold := 1
-        
+
         threshold := severity_to_number[input.profile.severity] if input.profile.severity != null
-        
+
         above_threshold(severity, threshold) if {
-        	severity_to_number[severity] >= threshold
+          severity_to_number[severity] >= threshold
         }
-        
+
         had_fallback if {
-        	input.ingested.fallback
+          input.ingested.fallback
         }
-        
+
         violations contains {"msg": "Security advisories not enabled."} if {
-        	had_fallback
+          had_fallback
         }
-        
+
         violations contains {"msg": "Found open security advisories in or above threshold"} if {
-        	not had_fallback
-        
-        	some adv in input.ingested
-        
-        	# Is not withdrawn
-        	adv.withdrawn_at == null
-        
-        	not adv.state in {"closed", "published", "draft"}
-        
-        	# We only care about advisories that are at or above the threshold
-        	above_threshold(adv.severity, threshold)
+          not had_fallback
+
+          some adv in input.ingested
+
+          # Is not withdrawn
+          adv.withdrawn_at == null
+
+          not adv.state in {"closed", "published", "draft"}
+
+          # We only care about advisories that are at or above the threshold
+          above_threshold(adv.severity, threshold)
         }
   alert:
     type: security_advisory

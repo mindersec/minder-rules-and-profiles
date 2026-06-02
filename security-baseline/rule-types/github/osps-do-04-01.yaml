@@ -29,12 +29,11 @@ def:
       def: |
         package minder
 
-        import future.keywords.every
-        import future.keywords.if
-        
+        import rego.v1
+
         readme_pattern := "./[Rr][Ee][Aa][Dd][Mm][Ee]*"
-        
-        # Check if the file contains "support" 
+
+        # Check if the file contains "support"
         has_support_header(file_path) if {
           file_path != null
           content := file.read(file_path)
@@ -51,7 +50,7 @@ def:
           content := file.read(files[name])
           "" != content
         }
-        
+
         # Check if the repository has a README file with a support header
         allow if {
           files := file.ls_glob(readme_pattern)
@@ -59,7 +58,7 @@ def:
           some name
           has_support_header(files[name])
         }
-        
+
         # Check if the repository has a SUPPORT.eox file
         allow if {
           files := file.ls_glob("/**/SUPPORT.eox")

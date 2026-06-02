@@ -52,11 +52,13 @@ def:
       type: deny-by-default
       def: |
         package minder
+
         import rego.v1
 
         default allow := false
+
         default message := "Security Insights file is missing"
-        
+
         allow if {
           file.exists(input.profile.filename)
         }

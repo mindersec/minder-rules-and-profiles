@@ -55,9 +55,10 @@ def:
       def: |
         package minder
 
-        import future.keywords.if
+        import rego.v1
 
         default allow := false
+
         default message := "Status checks are not required before merging"
 
         allow if {

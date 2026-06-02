@@ -39,23 +39,25 @@ def:
       def: |
         package minder
 
+        import rego.v1
+
         # List all workflows
         workflows := file.ls("./.github/workflows")
 
         # Read all workflows and check for pull_request_target trigger
-        violations[{"msg": msg}] {
-            some w
+        violations contains {"msg": msg} if {
+          some w
 
-            # Read the workflow file
-            workflowstr := file.read(workflows[w])
-            parsed := parse_yaml(workflowstr)
+          # Read the workflow file
+          workflowstr := file.read(workflows[w])
+          parsed := parse_yaml(workflowstr)
 
-            jq_query := ".on | (type == \"string\" and . == \"pull_request_target\") or (type == \"object\" and has(\"pull_request_target\")) or (type == \"array\" and any(.[]; . == \"pull_request_target\"))"
+          jq_query := ".on | (type == \"string\" and . == \"pull_request_target\") or (type == \"object\" and has(\"pull_request_target\")) or (type == \"array\" and any(.[]; . == \"pull_request_target\"))"
 
-            jq.is_true(parsed, jq_query)
+          jq.is_true(parsed, jq_query)
 
-            # Construct violation message if "pull_request_target" is found
-            msg := sprintf("Workflow '%v' contains 'pull_request_target' trigger in its 'on' block", [workflows[w]])
+          # Construct violation message if "pull_request_target" is found
+          msg := sprintf("Workflow '%v' contains 'pull_request_target' trigger in its 'on' block", [workflows[w]])
         }
   remediate:
     type: pull_request

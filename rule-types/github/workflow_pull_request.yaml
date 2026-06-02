@@ -31,23 +31,23 @@ def:
       def: |
         package minder
 
-        import future.keywords.if
+        import rego.v1
 
         # List all workflows
         workflows := file.ls("./.github/workflows")
 
         # Read all workflows and check for pull_request trigger
         allow if {
-            some w
+          some w
 
-            # Read the workflow file
-            workflowstr := file.read(workflows[w])
-            parsed := parse_yaml(workflowstr)
-            print(parsed)
+          # Read the workflow file
+          workflowstr := file.read(workflows[w])
+          parsed := parse_yaml(workflowstr)
+          print(parsed)
 
-            jq_query := ".on | (type == \"string\" and . == \"pull_request\") or (type == \"object\" and has(\"pull_request\")) or (type == \"array\" and any(.[]; . == \"pull_request\"))"
+          jq_query := ".on | (type == \"string\" and . == \"pull_request\") or (type == \"object\" and has(\"pull_request\")) or (type == \"array\" and any(.[]; . == \"pull_request\"))"
 
-            jq.is_true(parsed, jq_query)
+          jq.is_true(parsed, jq_query)
         }
   # Defines the configuration for alerting on the rule
   alert:

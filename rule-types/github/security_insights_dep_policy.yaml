@@ -56,12 +56,14 @@ def:
       type: deny-by-default
       def: |
         package minder
+
         import rego.v1
 
         default allow := false
+
         default message := "Dependency policy is missing from the Security Insights file"
-        
-        allow if {  
+
+        allow if {
           file.exists(input.profile.filename)
           sifile := file.read(input.profile.filename)
           si := yaml.unmarshal(sifile)

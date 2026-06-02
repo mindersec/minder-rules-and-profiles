@@ -2,6 +2,16 @@
 version: '3'
 
 tasks:
+  migrate-rego-v1:
+    desc: Migrate embedded Rego rule definitions to Rego v1 syntax
+    summary: |
+      Updates Rego policies embedded in YAML rule type `def: |` blocks by
+      running OPA's built-in v0-to-v1 formatter.
+
+      Requires OPA v1 or newer to be available on PATH.
+    cmds:
+      - python3 scripts/migrate-rego-v1.py .
+
   test:
     desc: Run rule type tests
     summary: |

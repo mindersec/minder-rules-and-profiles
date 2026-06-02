@@ -41,28 +41,31 @@ def:
       def: |
         package minder
 
+        import rego.v1
+
         default allow := false
+
         default message := "Grype GitHub Action is not enabled for container image scanning."
 
-        allow {
-            # List all workflows
-            workflows := file.ls("./.github/workflows")
+        allow if {
+          # List all workflows
+          workflows := file.ls("./.github/workflows")
 
-            # Read all workflows
-            some w
-            workflowstr := file.read(workflows[w])
+          # Read all workflows
+          some w
+          workflowstr := file.read(workflows[w])
 
-            workflow := yaml.unmarshal(workflowstr)
+          workflow := yaml.unmarshal(workflowstr)
 
-            # Iterate jobs
-            job := workflow.jobs[_]
+          # Iterate jobs
+          job := workflow.jobs[_]
 
-            # Iterate steps
-            step := job.steps[_]
+          # Iterate steps
+          step := job.steps[_]
 
-            # Check if the step is a Grype action
-            startswith(step.uses, "anchore/scan-action@")
-        
-            # Check that the "with.image" field is set
-            step["with"]["image"] != ""
+          # Check if the step is a Grype action
+          startswith(step.uses, "anchore/scan-action@")
+
+          # Check that the "with.image" field is set
+          step["with"].image != ""
         }

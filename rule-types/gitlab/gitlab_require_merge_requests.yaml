@@ -38,10 +38,13 @@ def:
       def: |
         package minder
 
+        import rego.v1
+
         default allow := false
+
         default message := "Merge requests are not required"
 
-        allow {
+        allow if {
           # Check that there is at least one protected branch
           count(input.ingested) > 0
 
@@ -51,4 +54,3 @@ def:
           # Check that the access level is to "no one"
           input.ingested[_].push_access_levels[_].access_level == 0
         }
-
