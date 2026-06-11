@@ -1,0 +1,103 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: pr_too_many_deps
+display_name: Warn on too many project dependencies
+short_failure_message: A PR has added too many dependencies
+severity:
+  value: low
+context:
+  provider: github
+description: |
+  Warns if a single PR attempts to introduce too many transitive dependencies to a project.
+guidance: |
+  This rule warns reviewers if a PR would introduce too many transitive dependencies
+  into a project.  The threshold is configurable, though not on a percentage basis.
+
+  Additional dependencies can increase the security surface area of a project,
+  increase the size of software deployments and artifacts, and introduce additional
+  maintenance work or security vulnerabilities in managing the dependencies.
+def:
+  in_entity: pull_request
+  rule_schema:
+    type: object
+    properties:
+      max_deps:
+        type: integer
+        description: "The maximum number of dependencies that can be added in a single PR."
+        default: 50
+  ingest:
+    type: deps
+    pr:
+      filter: new
+  eval:
+    type: rego
+    data_sources:
+      - name: insights
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import rego.v1
+
+        default allow := false
+
+        added := {node.name: ecosystem |
+          node := input.ingested.node_list.nodes[_]
+          ecosystem := get_ecosystem(node.properties)
+        }
+
+        get_ecosystem(properties) := eco if {
+          count(properties) >= 1
+          prop := properties[_]
+
+          prop.name == "sourceFile"
+          eco := get_ecosystem_from_file(prop.data)
+        }
+
+        get_ecosystem_from_file(file) = "pypi" if {
+          file == "requirements.txt"
+        }
+
+        get_ecosystem_from_file(file) = "npm" if {
+          file == "package.json"
+        }
+
+        get_ecosystem_from_file(file) = "go" if {
+          file == "go.mod"
+        }
+
+        get_ecosystem_from_file(file) = "crates" if {
+          file == "Cargo.toml"
+        }
+        
+        get_ecosystem_from_file(file) = "maven" if {
+          file == "pom.xml"
+        }
+
+        transitive contains pkg if {
+          added[pkg]
+        }
+        
+        transitive contains pkg if {
+          ecosystem := added[name]
+
+          lookup := minder.datasource.insights.dependencies({
+            "package": name,
+            "ecosystem": ecosystem
+          })
+          pkg := lookup.body.dependencies[_].name
+        }
+
+        allow := false # (count(transitive) <= input.profile.max_deps)
+        new_deps := concat("\n- ", transitive)
+        message := sprintf("This PR introduces %d new transitive dependencies (limit of %d):\n\n- %s\n\n",
+                           [count(transitive), input.profile.max_deps, new_deps])
+  alert:
+    type: pull_request_comment
+    pull_request_comment:
+      review_message: |
+        This pull request introduces too many dependencies.  Please consider finding libraries with fewer dependencies.
+
+        {{.EvalErrorDetails}}
