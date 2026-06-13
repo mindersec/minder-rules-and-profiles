@@ -7,9 +7,6 @@ display_name: Version control does not contain generated executable artifacts
 short_failure_message: Binary artifacts found in the repository
 severity:
   value: high
-context:
-  provider: github
-description: |
   This rule ensures that the repository does not contain any generated executable
   artifacts.  It is difficult to review and ascertain the provenance of binary
   artifacts; instead, they should be generated at build time or stored in a separate

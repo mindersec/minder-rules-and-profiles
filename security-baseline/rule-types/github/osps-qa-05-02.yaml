@@ -7,9 +7,6 @@ display_name: Version control does not contain binary artifacts
 short_failure_message: Binary artifacts found in the repository
 severity:
   value: high
-context:
-  provider: github
-description: |
   This rule ensures that the repository does not contain any unreviewable
   binary artifacts.  It is difficult to review and ascertain the provenance
   of binary artifacts such as application binaries or compressed archives.

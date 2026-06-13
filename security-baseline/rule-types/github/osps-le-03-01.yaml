@@ -6,9 +6,6 @@ display_name: LICENSE or COPYING files are available
 short_failure_message: No LICENSE or COPYING file found.
 severity:
   value: info
-context:
-  provider: github
-description: |
   Ensure that either LICENSE file, COPYING file, or LICENSE/ folder
   are available.
 guidance: |

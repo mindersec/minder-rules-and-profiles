@@ -7,9 +7,6 @@ display_name: Package management file listing dependencies is present
 short_failure_message: No package management file listing dependencies was found
 severity:
   value: info
-context:
-  provider: github
-description: |
   This rule ensures that the repository provides a dependency list that accounts 
   for the direct language dependencies when the package management system supports it.
   It checks for the presence of a Gemfile.lock, go.sum, package-lock.json or 
