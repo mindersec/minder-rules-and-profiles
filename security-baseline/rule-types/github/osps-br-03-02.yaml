@@ -6,6 +6,7 @@ display_name: Deliver releases via encrypted channels
 short_failure_message: Releases available via unsecured channels
 severity:
   value: high
+description: |
   This check determines whether the release artifacts of the project
   are delived via unsecured (unencrypted) channels.
 
