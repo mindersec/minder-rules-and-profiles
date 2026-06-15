@@ -53,27 +53,30 @@ def:
       def: |
         package minder
 
+        import rego.v1
+
         default allow := false
+
         default message := "Trivy action is not enabled"
 
-        allow {
-            # List all workflows
-            workflows := file.ls("./.github/workflows")
+        allow if {
+          # List all workflows
+          workflows := file.ls("./.github/workflows")
 
-            # Read all workflows
-            some w
-            workflowstr := file.read(workflows[w])
+          # Read all workflows
+          some w
+          workflowstr := file.read(workflows[w])
 
-            workflow := yaml.unmarshal(workflowstr)
+          workflow := yaml.unmarshal(workflowstr)
 
-            # Iterate jobs
-            job := workflow.jobs[_]
+          # Iterate jobs
+          job := workflow.jobs[_]
 
-            # Iterate steps
-            step := job.steps[_]
+          # Iterate steps
+          step := job.steps[_]
 
-            # Check if the step is a trivy action
-            startswith(step.uses, "aquasecurity/trivy-action@")
+          # Check if the step is a trivy action
+          startswith(step.uses, "aquasecurity/trivy-action@")
         }
   # Defines the configuration for alerting on the rule
   alert:

@@ -90,12 +90,15 @@ def:
         import rego.v1
 
         default allow := false
+
         default skip := false
+
         default message := "Cannot verify SLSA provenance"
-        
+
         default workflow_ref := "refs/heads/main"
+
         workflow_ref := input.profile.workflow_ref
-        
+
         artifacts_github_provenance := {artifact |
           some artifact in input.ingested
           artifact.Verification.attestation.predicate_type == "https://slsa.dev/provenance/v1"
@@ -104,7 +107,7 @@ def:
 
         allow if {
           count(artifacts_github_provenance) > 0
-        
+
           every artifact in artifacts_github_provenance {
             # we use not == false here because that handles the case where the field is not present
             # the fields are also not exposed as parameters, we might want to change them while we reword the

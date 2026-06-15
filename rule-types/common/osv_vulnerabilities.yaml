@@ -33,63 +33,60 @@ def:
       type: constraints
       def: |
         package minder
-        
+
         import rego.v1
-        
-        default skip = false
-        
+
+        default skip := false
+
         violations[{"msg": msg}] if {
           node := input.ingested.node_list.nodes[_]
-          
+
           name := node.name
           version := node.version
           ecosystem := get_ecosystem(node.properties)
-          
-          reqparams := {
-              "query": {
-                "version": version,
-                "package": {
-                  "name": name,
-                  "ecosystem": ecosystem
-                }
-              }
-            }
-          
+
+          reqparams := {"query": {
+            "version": version,
+            "package": {
+              "name": name,
+              "ecosystem": ecosystem,
+            },
+          }}
+
           out := minder.datasource.osv.query(reqparams)
           vulns := out.body.vulns
-          
+
           count(vulns) > 0
-          
+
           vulnid := vulns[_].id
-          
+
           msg := sprintf("Package %v version %v has a vulnerability %v", [name, version, vulnid])
         }
-        
+
         get_ecosystem(properties) := eco if {
           count(properties) >= 1
           prop := properties[_]
-          
+
           prop.name == "sourceFile"
           eco := get_ecosystem_from_file(prop.data)
         }
-        
-        get_ecosystem_from_file(file) = "PyPI" if {
+
+        get_ecosystem_from_file(file) := "PyPI" if {
           file == "requirements.txt"
         }
-        
-        get_ecosystem_from_file(file) = "npm" if {
+
+        get_ecosystem_from_file(file) := "npm" if {
           file == "package.json"
         }
-        
-        get_ecosystem_from_file(file) = "RubyGems" if {
+
+        get_ecosystem_from_file(file) := "RubyGems" if {
           file == "Gemfile"
         }
-        
-        get_ecosystem_from_file(file) = "Go" if {
+
+        get_ecosystem_from_file(file) := "Go" if {
           file == "go.mod"
         }
-        
-        get_ecosystem_from_file(file) = "crates.io" if {
+
+        get_ecosystem_from_file(file) := "crates.io" if {
           file == "Cargo.toml"
         }
-

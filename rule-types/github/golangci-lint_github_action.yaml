@@ -30,13 +30,15 @@ def:
       type: deny-by-default
       def: |
         package minder
-        
+
         import rego.v1
 
         actions := github_workflow.ls_actions("./.github/workflows")
 
         default message := "golangci-lint GitHub action is not configured"
+
         default allow := false
+
         allow if {
           # check that there is a golanci-lint action
           "golangci/golangci-lint-action" in actions

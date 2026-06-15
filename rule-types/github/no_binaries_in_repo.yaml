@@ -35,8 +35,7 @@ def:
       def: |
         package minder
 
-        import future.keywords.in
-        import future.keywords.if
+        import rego.v1
 
         violations[{"msg": msg}] if {
           # Walk all files in the repo
