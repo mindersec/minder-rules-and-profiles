@@ -45,24 +45,26 @@ def:
       def: |
         package minder
 
+        import rego.v1
+
         expected_set := {x | x := input.profile.actions[_]}
         actions := github_workflow.ls_actions("./.github/workflows")
 
-        violations[{"msg": msg}] {
+        violations contains {"msg": msg} if {
           extra := actions - expected_set
           not count(extra) == 0
           msg = format_message(extra, input.output_format)
         }
 
-        format_message(difference, format) = msg {
-            format == "json"
-            json_body := {"actions_not_allowed": difference}
-            msg := json.marshal(json_body)
+        format_message(difference, format) := msg if {
+          format == "json"
+          json_body := {"actions_not_allowed": difference}
+          msg := json.marshal(json_body)
         }
 
-        format_message(difference, format) = msg {
-            not format == "json"
-            msg := sprintf("extra actions found in workflows but not allowed in the profile: %v", [difference])
+        format_message(difference, format) := msg if {
+          not format == "json"
+          msg := sprintf("extra actions found in workflows but not allowed in the profile: %v", [difference])
         }
   # Defines the configuration for alerting on the rule
   alert:

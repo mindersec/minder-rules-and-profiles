@@ -34,7 +34,7 @@ def:
 
         import rego.v1
 
-        default allow = false
+        default allow := false
 
         # GitHub publishes the source code at `tarball_url`, which includes
         # the LICENSE in the repo, so we only need to check for an explicit

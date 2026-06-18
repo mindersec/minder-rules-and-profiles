@@ -53,12 +53,14 @@ def:
       type: deny-by-default
       def: |
         package minder
+
         import rego.v1
 
         default allow := false
+
         default message := "OpenSSF Best Practices Badge is missing"
 
-        levels := { "in_progress": 1, "passing": 2, "silver": 3, "gold": 4 }
+        levels := {"in_progress": 1, "passing": 2, "silver": 3, "gold": 4}
 
         allow if {
           file.exists(input.profile.filename)
@@ -67,7 +69,7 @@ def:
           badge := regex.find_all_string_submatch_n(`\[[^\]]+\]\(https:\/\/www\.bestpractices\.dev\/projects\/([\d]+)\/badge\)`, readme, 1)
           project_id := badge[0][1]
 
-          badge_data := minder.datasource.openssf_bestpractices.lookup({"id": project_id })
+          badge_data := minder.datasource.openssf_bestpractices.lookup({"id": project_id})
 
           levels[badge_data.body.badge_level] >= levels[input.profile.level]
         }

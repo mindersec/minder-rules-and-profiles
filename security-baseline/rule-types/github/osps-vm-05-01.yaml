@@ -42,15 +42,15 @@ def:
 
         # Allow if SECURITY.md exists and contains "report"
         allow if {
-            # Search specifically for SECURITY.md
-            files := file.ls_glob("./SECURITY*")
-            count(files) > 0
+          # Search specifically for SECURITY.md
+          files := file.ls_glob("./SECURITY*")
+          count(files) > 0
 
-            # Read the content of the file
-            content := lower(file.read(files[0]))
-            
-            # Check if "report" exists in the content
-            contains(content, "report")
+          # Read the content of the file
+          content := lower(file.read(files[0]))
+
+          # Check if "report" exists in the content
+          contains(content, "report")
         }
 
         # Allow if GitHub vulnerability reporting is enabled
@@ -58,8 +58,9 @@ def:
           # Query the GitHub API to check vulnerability reporting status
           out = minder.datasource.baselineghapi.private_vuln_reporting({
             "owner": input.properties["github/repo_owner"],
-            "repo": input.properties["github/repo_name"]
+            "repo": input.properties["github/repo_name"],
           })
+
           # Ensure private vulnerability reporting is enabled
           out.body.enabled == true
         }

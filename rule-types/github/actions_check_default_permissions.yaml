@@ -39,23 +39,22 @@ def:
       type: deny-by-default
       def: |
         package minder
-        
+
         import rego.v1
 
         default allow := false
-        
+
         # List all workflows
         workflows := file.ls("./.github/workflows")
-        
+
         # Read all workflows
-        
+
         allow if {
           every filename in workflows {
-            
             workflowstr := file.read(filename)
-          
+
             workflow := yaml.unmarshal(workflowstr)
-          
+
             permissions_ok(workflow)
           }
         }
@@ -69,15 +68,15 @@ def:
             count(job.permissions) >= 0
           }
         }
-        
+
         # Get the list of workflows that do not have permissions and create the error message
-        missing_permissions_workflows = [workflow_name | 
-          filename := workflows[_]  # Iterate over each workflow filename
+        missing_permissions_workflows := [workflow_name |
+          filename := workflows[_] # Iterate over each workflow filename
           workflowstr := file.read(filename)
-          workflow := yaml.unmarshal(workflowstr) 
+          workflow := yaml.unmarshal(workflowstr)
 
           not permissions_ok(workflow)
-          workflow_name = workflow.name 
+          workflow_name = workflow.name
         ]
 
         # Construct the final message

@@ -61,23 +61,26 @@ def:
       def: |
         package minder
 
+        import rego.v1
+
         default allow := false
+
         default message := "Scorecard Action is not configured for any workflow"
 
-        allow {
-            # List all workflows
-            workflows := file.ls("./.github/workflows")
+        allow if {
+          # List all workflows
+          workflows := file.ls("./.github/workflows")
 
-            # Read all workflows
-            some w
-            workflowstr := file.read(workflows[w])
+          # Read all workflows
+          some w
+          workflowstr := file.read(workflows[w])
 
-            workflow := yaml.unmarshal(workflowstr)
+          workflow := yaml.unmarshal(workflowstr)
 
-            # Ensure a workflow contains the scorecard action
-            some i
-            steps := workflow.jobs.analyze.steps[i]
-            startswith(steps.uses, "ossf/scorecard-action@")
+          # Ensure a workflow contains the scorecard action
+          some i
+          steps := workflow.jobs.analyze.steps[i]
+          startswith(steps.uses, "ossf/scorecard-action@")
         }
   remediate:
     type: pull_request
