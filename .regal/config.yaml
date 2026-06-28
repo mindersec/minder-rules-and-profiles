@@ -9,4 +9,4 @@ rules:
 capabilities:
   from:
     engine: opa
-    version: v1.15.2
+    version: v0.68.0
