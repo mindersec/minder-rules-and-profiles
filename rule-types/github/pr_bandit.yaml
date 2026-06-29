@@ -1,0 +1,68 @@
+# NOTE: This rule leverages the `http.send` function and a Cloud Run service
+# https://banditize-562949304223.us-central1.run.app, which is built from
+# https://github.com/evankanderson/banditize
+
+# This also requires https://github.com/mindersec/minder/pull/5181 to be merged,
+# and the `pr_comment_alert` feature flag enabled.
+---
+version: v1
+type: rule-type
+name: pr_bandit
+severity:
+  value: medium
+context:
+  provider: github
+release_phase: alpha
+description: |
+  Detects new python static analysis findings in a pull request.
+
+  This rule uses https://github.com/PyCQA/bandit as a code scanner,
+  running it against the base and head branches of a pull request to
+  detect new security issues.
+guidance: |
+  This pull request introduces new issues detected by the Bandit static
+  code scanner.  Generally, these indicate risky software patterns which
+  should be addressed before merging the pull request.
+def:
+  in_entity: pull_request
+  rule_schema:
+    type: object
+    properties: {}
+  ingest:
+    type: git
+    git: {}
+  # Defines the configuration for evaluating data ingested against the given profile
+  eval:
+    type: rego
+    rego:
+      type: constraints
+      def: |
+        package minder
+        import rego.v1
+
+        base_tar := base_file.archive(["."])
+        head_tar := file.archive(["."])
+
+        resp := http.send({
+          "method": "POST",
+          "url": "https://banditize-562949304223.us-central1.run.app/pull",
+          "headers": {
+            "Content-Type": "application/json",
+          },
+          "body": {
+            "base": base64.encode(base_tar),
+            "head": base64.encode(head_tar),
+          },
+        })
+
+        violations contains {"msg": resp.body.simpleFindings} if resp.body.simpleFindings != ""
+        # violations contains {"msg": "Always fail"}
+        
+        # violations contains {"msg": json.marshal(resp)}
+  alert:
+    type: pull_request_comment
+    pull_request_comment:
+      review_message: |
+        [Bandit](https://bandit.readthedocs.io/) found new issues in this pull request.  Please review and address them before merging.
+        
+        You'll need to run `minder profile status list -n Test-Bandit --detailed -o json | jq -r '.ruleEvaluationStatus[0].details'` to get the actual errors.
