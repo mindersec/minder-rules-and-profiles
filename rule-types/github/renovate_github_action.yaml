@@ -1,0 +1,50 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: renovate_github_action
+display_name: Enable Renovate for automated dependency updates
+short_failure_message: Renovate is not configured via a GitHub action
+severity:
+  value: medium
+context: {}
+description: |
+  Verifies that Renovate is configured via a GitHub action for the repository.
+guidance: |
+  Ensure that Renovate is configured and enabled for the repository.
+
+  Renovate enables automated dependency updates for repositories.
+  It is recommended that repositories have some form of automated
+  dependency updates enabled to ensure that vulnerabilities are not
+  introduced into the codebase.
+
+  For more information, see the [GitHub Action Renovate](https://github.com/renovatebot/github-action) documentation.
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties: {}
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        
+        import rego.v1
+
+        actions := github_workflow.ls_actions("./.github/workflows")
+
+        default message := "Renovate GitHub action is not configured"
+        default allow := false
+        allow if {
+          # check that there is a renovate action
+          "renovatebot/github-action" in actions
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}
