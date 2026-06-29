@@ -9,7 +9,7 @@ context:
 alert: "off"
 remediate: "off"
 repository:
-  - type: dependabot_configured
+  - type: pre_commit_github_action
     def:
       package_ecosystem: github-actions
       schedule_interval: daily
