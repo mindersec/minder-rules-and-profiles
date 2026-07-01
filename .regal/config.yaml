@@ -1,0 +1,12 @@
+rules:
+  imports:
+    use-rego-v1:
+      level: error
+  style:
+    opa-fmt:
+      level: error
+
+capabilities:
+  from:
+    engine: opa
+    version: v0.68.0
