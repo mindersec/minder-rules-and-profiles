@@ -1,0 +1,39 @@
+version: v1
+release_phase: alpha
+type: rule-type
+name: osps-ac-02-01
+display_name: Default collaborators to lowest privileges
+short_failure_message: Collaborators default to privileged access
+severity:
+  value: info
+context:
+  provider: gitlab
+description: Verifies that project collaborators default to the lowest access level.
+guidance: |
+  Reduce the risk of unauthorized access to the project's repository
+  by limiting the permissions granted to collaborators.
+  Most public version control systems (such as GitLab) are configured
+  in this manner.
+
+  Note: GitLab's "internal" visibility (visible to all authenticated
+  instance users) is treated the same as "private" by this rule, since
+  it still restricts access beyond the general public.
+def:
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: rest
+    rest:
+      endpoint: '/projects/{{.Entity.RepoId}}'
+      parse: json
+      fallback:
+        - http_code: 404
+          body: |
+            {"http_status": 404, "message": "Repo not found"}
+  eval:
+    type: jq
+    jq:
+      # Public projects on GitLab will already have minimum _default_ permissions.
+      - ingested:
+          def: ".visibility"
+        constant: "public"
