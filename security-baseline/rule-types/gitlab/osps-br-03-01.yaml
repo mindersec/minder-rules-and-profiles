@@ -6,8 +6,6 @@ display_name: Development resources use secure channels
 short_failure_message: Insecure access to VCS
 severity:
   value: info
-context:
-  provider: gitlab
 description: Verifies that websites and version control systems for development use secure channels.
 guidance: |
   Any websites and version control systems involved in the project
