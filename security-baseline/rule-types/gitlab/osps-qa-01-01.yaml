@@ -6,8 +6,6 @@ display_name: The project's source code is publicly readable
 short_failure_message: The project's source code is not publicly readable.
 severity:
   value: info
-context:
-  provider: gitlab
 description: |
   Enable users to access and review the project's source code and
   history, promoting transparency and collaboration within the project
