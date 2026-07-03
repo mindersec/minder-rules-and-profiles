@@ -6,8 +6,6 @@ display_name: The project has mechanisms for public discussion
 short_failure_message: The project does not publicize mechanisms for public discussion.
 severity:
   value: info
-context:
-  provider: gitlab
 description: |
   Projects should encourage open communication and collaboration
   within their community, enabling users to provide feedback and
