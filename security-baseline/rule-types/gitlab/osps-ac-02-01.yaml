@@ -6,8 +6,6 @@ display_name: Default collaborators to lowest privileges
 short_failure_message: Collaborators default to privileged access
 severity:
   value: info
-context:
-  provider: gitlab
 description: Verifies that project collaborators default to the lowest access level.
 guidance: |
   Reduce the risk of unauthorized access to the project's repository
