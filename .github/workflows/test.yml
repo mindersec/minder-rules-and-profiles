@@ -21,7 +21,7 @@ jobs:
           check-latest: true
 
       - name: setup task
-        uses: arduino/setup-task@b91d5d2c96a56797b48ac1e0e89220bf64044611 # v1
+        uses: arduino/setup-task@c0bc642852239c2689f73f4ea6459c29405f3c52 # v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
