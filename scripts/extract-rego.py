@@ -5,10 +5,8 @@ from __future__ import annotations
 
 import argparse
 import pathlib
-import re
 
-
-DEF_BLOCK_RE = re.compile(r"^(?P<indent>\s*)def:\s*\|[+-]?\s*$")
+import yaml
 
 
 def yaml_files(paths: list[pathlib.Path]) -> list[pathlib.Path]:
@@ -19,55 +17,19 @@ def yaml_files(paths: list[pathlib.Path]) -> list[pathlib.Path]:
             files.extend(path.rglob("*.yml"))
         elif path.suffix in {".yaml", ".yml"}:
             files.append(path)
-    return sorted(set(files))
-
-
-def leading_spaces(line: str) -> int:
-    return len(line) - len(line.lstrip(" "))
-
-
-def extract_block(lines: list[str], start: int, parent_indent: int) -> tuple[str, int]:
-    block: list[str] = []
-    current = start
-    while current < len(lines):
-        line = lines[current]
-        if line.strip() and leading_spaces(line) <= parent_indent:
-            break
-        block.append(line)
-        current += 1
-
-    nonblank_indents = [leading_spaces(line) for line in block if line.strip()]
-    if not nonblank_indents:
-        return "", current
-
-    block_indent = min(nonblank_indents)
-    source = "".join(
-        line[block_indent:] if len(line) >= block_indent else "\n"
-        for line in block
+    test_suffixes = (
+        ".test.yaml",
+        ".test.yml",
+        ".no-datasource-test.yaml",
+        ".no-datasource-test.yml",
     )
-    return source, current
+    return sorted({path for path in files if not path.name.endswith(test_suffixes)})
 
 
 def extract_policies(path: pathlib.Path) -> list[str]:
-    lines = path.read_text().splitlines(True)
-    policies: list[str] = []
-    index = 0
-
-    while index < len(lines):
-        match = DEF_BLOCK_RE.match(lines[index])
-        if not match:
-            index += 1
-            continue
-
-        source, index = extract_block(
-            lines,
-            index + 1,
-            len(match.group("indent")),
-        )
-        if source.lstrip().startswith("package "):
-            policies.append(source)
-
-    return policies
+    contents = yaml.safe_load(path.read_text()) or {}
+    rego = contents.get("def", {}).get("eval", {}).get("rego", {}).get("def", "")
+    return [rego] if rego else []
 
 
 def output_name(path: pathlib.Path, policy_index: int) -> str:

@@ -29,6 +29,9 @@ jobs:
       - name: Check embedded Rego formatting
         run: python3 scripts/migrate-rego-v1.py --check .
 
+      - name: Install PyYAML
+        run: python3 -m pip install PyYAML==6.0.3
+
       - name: Extract Rego policies
         run: >-
           python3 scripts/extract-rego.py
