@@ -23,6 +23,37 @@ jobs:
       - name: Lint Rule Types
         run: go run github.com/mindersec/minder/cmd/dev@latest ruletype lint -r rule-types/github --skip-rego
 
+      - name: Install OPA
+        run: go install github.com/open-policy-agent/opa@v1.15.2
+
+      - name: Check embedded Rego formatting
+        run: python3 scripts/migrate-rego-v1.py --check .
+
+      - name: Install PyYAML
+        run: python3 -m pip install PyYAML==6.0.3
+
+      - name: Extract Rego policies
+        run: >-
+          python3 scripts/extract-rego.py
+          --output "${RUNNER_TEMP}/rego"
+          rule-types
+          security-baseline/rule-types
+          autofill-insights/rule-types
+
+      # YAML block indentation uses spaces. Restore OPA's canonical tab
+      # indentation before asking Regal to enforce opa-fmt.
+      - name: Normalize extracted policies
+        run: find "${RUNNER_TEMP}/rego" -name '*.rego' -exec opa fmt --write {} +
+
+      - name: Enforce Rego v1
+        run: >-
+          go run github.com/open-policy-agent/regal@v0.41.1 lint
+          --disable-all
+          --enable use-rego-v1
+          --enable opa-fmt
+          --config-file .regal/config.yaml
+          "${RUNNER_TEMP}/rego"
+
       - name: Ensure rule type release_phase is set
         run: |
           # Directory containing YAML files
