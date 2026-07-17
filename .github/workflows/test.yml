@@ -20,16 +20,23 @@ jobs:
           go-version-file: 'go.mod'
           check-latest: true
 
+      - name: Checkout minder
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4
+        with:
+          repository: mindersec/minder
+          path: minder
+
+      - name: Build mindev
+        run: |
+          cd minder
+          go build -o ../mindev ./cmd/dev
+          cd ..
+          echo "$(pwd)" >> $GITHUB_PATH
+
       - name: setup task
         uses: arduino/setup-task@c0bc642852239c2689f73f4ea6459c29405f3c52 # v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      # Install gotestfmt on the VM running the action.
-      - name: Set up gotestfmt
-        uses: GoTestTools/gotestfmt-action@eba2ac97f623e866e7b1b117c99f18b43cd36d18 # v2.3.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run go mod download
         run: go mod download
