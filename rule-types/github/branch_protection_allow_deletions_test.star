@@ -1,46 +1,61 @@
+ENTITY = {"owner": "mindersec", "name": "minder", "type": "repository", "default_branch": "main"}
+URL = "/repos/mindersec/minder/branches/main/protection"
+
+def PASS(res):
+    assert.eq(res["status"], "pass")
+
+def FAIL(res):
+    assert.true(res["status"] in ("fail", "error"))
+    assert.true(res["message"] != "")
+
 def test_force_push_not_allowed():
     res = eval(
         rule="branch_protection_allow_deletions",
-        entity={"owner": "mindersec", "name": "minder", "type": "repository", "default_branch": "main"},
+        entity=ENTITY,
         profile={},
         mock_http={
-            "/repos/mindersec/minder/branches/main/protection": body("{\"allow_deletions\": {\"enabled\": false}}")
+            URL: body("""{
+              "allow_deletions": {
+                "enabled": false
+              }
+            }""")
         }
     )
-    assert.eq(res["status"], "pass")
+    PASS(res)
 
 def test_force_push_allowed():
     res = eval(
         rule="branch_protection_allow_deletions",
-        entity={"owner": "mindersec", "name": "minder", "type": "repository", "default_branch": "main"},
+        entity=ENTITY,
         profile={},
         mock_http={
-            "/repos/mindersec/minder/branches/main/protection": body("{\"allow_deletions\": {\"enabled\": true}}")
+            URL: body("""{
+              "allow_deletions": {
+                "enabled": true
+              }
+            }""")
         }
     )
-    assert.true(res["status"] in ("fail", "error"))
-    assert.true(res["message"] != "")
+    FAIL(res)
 
 def test_not_found():
     res = eval(
         rule="branch_protection_allow_deletions",
-        entity={"owner": "mindersec", "name": "minder", "type": "repository", "default_branch": "main"},
+        entity=ENTITY,
         profile={},
         mock_http={
-            "/repos/mindersec/minder/branches/main/protection": body("{\"woot\": \"woot\"}").code(404)
+            URL: body('{"woot": "woot"}').code(404)
         }
     )
-    assert.true(res["status"] in ("fail", "error"))
-    assert.true(res["message"] != "")
+    FAIL(res)
 
 def test_internal_error():
     res = eval(
         rule="branch_protection_allow_deletions",
-        entity={"owner": "mindersec", "name": "minder", "type": "repository", "default_branch": "main"},
+        entity=ENTITY,
         profile={},
         mock_http={
-            "/repos/mindersec/minder/branches/main/protection": body("{\"woot\": \"woot\"}").code(502)
+            URL: body('{"woot": "woot"}').code(502)
         }
     )
-    assert.true(res["status"] in ("fail", "error"))
-    assert.true(res["message"] != "")
+    FAIL(res)
