@@ -7,14 +7,20 @@ ENTITY = {
 
 RULE = "branch_protection_enforce_admins"
 
-def build_mock_http(enabled):
+def build_mock_http(enabled, branch="main"):
+    payload = {
+        "enforce_admins": {
+            "enabled": enabled
+        }
+    }
     return {
-        "/repos/mindersec/minder/branches/main/protection": body('{"enforce_admins": {"enabled": ' + ("true" if enabled else "false") + '}}')
+        "/repos/mindersec/minder/branches/%s/protection" % branch: body(json.encode(payload))
     }
 
-def build_mock_http_404():
+def build_mock_http_404(branch="main"):
+    payload = {"message": "Not Protected"}
     return {
-        "/repos/mindersec/minder/branches/main/protection": body('{"message": "Not Protected"}').code(404)
+        "/repos/mindersec/minder/branches/%s/protection" % branch: body(json.encode(payload)).code(404)
     }
 
 def test_branch_protection_enforce_admins_enabled():
@@ -43,3 +49,31 @@ def test_branch_protection_enforce_admins_unprotected():
         mock_http=build_mock_http_404()
     )
     assert.eq(res["status"], "fail")
+
+def test_branch_protection_enforce_admins_false_enabled():
+    res = eval(
+        rule=RULE,
+        entity=ENTITY,
+        profile={"enforce_admins": False},
+        mock_http=build_mock_http(True)
+    )
+    assert.eq(res["status"], "fail")
+
+def test_branch_protection_enforce_admins_false_disabled():
+    res = eval(
+        rule=RULE,
+        entity=ENTITY,
+        profile={"enforce_admins": False},
+        mock_http=build_mock_http(False)
+    )
+    assert.eq(res["status"], "pass")
+
+def test_branch_protection_enforce_admins_custom_branch():
+    res = eval(
+        rule=RULE,
+        entity=ENTITY,
+        params={"branch": "other"},
+        profile={"enforce_admins": True},
+        mock_http=build_mock_http(True, branch="other")
+    )
+    assert.eq(res["status"], "pass")
