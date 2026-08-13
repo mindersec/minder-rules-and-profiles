@@ -8,16 +8,9 @@ ENTITY = {
 RULE = "secret_push_protection"
 
 def build_mock_http(is_private, status):
-    payload = {
-        "private": is_private,
-        "security_and_analysis": {
-            "secret_scanning_push_protection": {
-                "status": status
-            }
-        }
-    }
+    payload = '{"private": %s, "security_and_analysis": {"secret_scanning_push_protection": {"status": "%s"}}}' % ("true" if is_private else "false", status)
     return {
-        "/repos/mindersec/minder": body(json.encode(payload))
+        "/repos/mindersec/minder": body(payload)
     }
 
 def test_secret_push_protection_enabled():

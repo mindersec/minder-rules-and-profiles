@@ -8,19 +8,15 @@ ENTITY = {
 RULE = "branch_protection_enforce_admins"
 
 def build_mock_http(enabled, branch="main"):
-    payload = {
-        "enforce_admins": {
-            "enabled": enabled
-        }
-    }
+    payload = '{"enforce_admins": {"enabled": %s}}' % ("true" if enabled else "false")
     return {
-        "/repos/mindersec/minder/branches/%s/protection" % branch: body(json.encode(payload))
+        "/repos/mindersec/minder/branches/%s/protection" % branch: body(payload)
     }
 
 def build_mock_http_404(branch="main"):
-    payload = {"message": "Not Protected"}
+    payload = '{"message": "Not Protected"}'
     return {
-        "/repos/mindersec/minder/branches/%s/protection" % branch: body(json.encode(payload)).code(404)
+        "/repos/mindersec/minder/branches/%s/protection" % branch: body(payload).code(404)
     }
 
 def test_branch_protection_enforce_admins_enabled():
