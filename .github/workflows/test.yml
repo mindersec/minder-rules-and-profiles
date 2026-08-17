@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
 
       - name: Run tests
-        uses: mindersec/minder-action/test@v1.1.0
+        uses: mindersec/minder-action/test@v1.1.1
         id: run-tests
         with:
           release: v0.3.1
