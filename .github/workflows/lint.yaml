@@ -17,7 +17,7 @@ jobs:
       - name: Install cosign
         uses: sigstore/cosign-installer@v4.1.2
       - name: Install Minder CLI
-        uses: mindersec/minder-client-installer@430dc4a6f07d6645288b5812fe9b780117963cf2 # v1.1.2
+        uses: mindersec/minder-client-installer@68946e2f8f5099d1118d588f6fd952f08ec132f9 # v1.1.3
 
       - name: Lint Rule Types
         run: mindev ruletype lint -r rule-types/github --skip-rego
