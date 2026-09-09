@@ -1,7 +1,7 @@
 version: v1
 release_phase: alpha
 type: rule-type
-name: osps-do-02-01
+name: osps-do-02-01-gitlab
 display_name: Public feedback mechanism supported
 short_failure_message: No public feedback mechanism found
 severity:
