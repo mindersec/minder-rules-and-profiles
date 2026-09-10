@@ -1,0 +1,12 @@
+name: Just Checkout
+on:
+  workflow_dispatch:
+  schedule:
+    # Run every 15 minutes
+    - cron: '0/15 * * * *'
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
