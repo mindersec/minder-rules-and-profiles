@@ -17,6 +17,7 @@ guidance: |
   instead, as that's immutable and will always point to the same
   image.
 def:
+  provider_traits: ["git"]
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts
   # of the rule.

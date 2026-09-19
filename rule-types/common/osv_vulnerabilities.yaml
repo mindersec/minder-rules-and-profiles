@@ -19,6 +19,7 @@ guidance: |
   
   - OSV: https://osv.dev
 def:
+  provider_traits: ["git"]
   in_entity: repository
   param_schema: {}
   rule_schema: {}
