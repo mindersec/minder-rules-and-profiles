@@ -20,6 +20,7 @@ guidance: |
   - Sonatype OSS Index: https://ossindex.sonatype.org/
   - Dependency management best practices: [link to relevant guide]
 def:
+  provider_traits: ["git"]
   in_entity: repository
   param_schema: {}
   rule_schema: {}

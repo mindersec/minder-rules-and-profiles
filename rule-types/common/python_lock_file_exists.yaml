@@ -31,6 +31,7 @@ guidance: |
     - Conda: https://docs.conda.io/
     - PDM: https://pdm-project.org/en/latest/
 def:
+  provider_traits: ["git"]
   in_entity: repository
   rule_schema: {}
   ingest:

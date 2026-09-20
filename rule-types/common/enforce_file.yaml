@@ -17,6 +17,7 @@ guidance: |
   CODE_OF_CONDUCT, Dependabot configuration files and many more. It can also be used to enforce the presence of specific
   content in the file so you know that the file is not just a placeholder.
 def:
+  provider_traits: ["git"]
   in_entity: repository
   rule_schema:
     type: object
