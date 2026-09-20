@@ -17,6 +17,7 @@ guidance: |
   For more information, see GitLab's documentation on
   protected branches: https://docs.gitlab.com/user/project/protected_branches/
 def:
+  provider_traits: ["rest", "gitlab"]
   in_entity: repository
   rule_schema: {}
   ingest:

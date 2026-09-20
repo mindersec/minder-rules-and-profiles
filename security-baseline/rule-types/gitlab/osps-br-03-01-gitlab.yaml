@@ -14,6 +14,7 @@ guidance: |
 
   GitLab does this by default.
 def:
+  provider_traits: ["rest", "gitlab"]
   in_entity: repository
   rule_schema: {}
   ingest:

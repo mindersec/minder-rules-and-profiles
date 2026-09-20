@@ -24,6 +24,7 @@ guidance: |
   - OSI: https://opensource.org/licenses/
   - FSF: https://www.gnu.org/licenses/license-list.html
 def:
+  provider_traits: ["rest", "github"]
   in_entity: release
   rule_schema: { }
   ingest:
