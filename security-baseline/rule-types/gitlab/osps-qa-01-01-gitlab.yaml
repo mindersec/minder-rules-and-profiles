@@ -15,6 +15,7 @@ guidance: |
   [Settings](https://docs.gitlab.com/user/public_access/)
   page on GitLab.
 def:
+  provider_traits: ["rest", "gitlab"]
   in_entity: repository
   rule_schema: {}
   ingest:

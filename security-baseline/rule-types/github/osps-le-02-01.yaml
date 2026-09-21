@@ -16,6 +16,7 @@ guidance: |
   recognized and legally enforceable open source software license,
   providing clarity on how the code can be used and shared by others.
 def:
+  provider_traits: ["rest", "github"]
   in_entity: repository
   rule_schema: {}
   ingest:

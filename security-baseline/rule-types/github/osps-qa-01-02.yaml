@@ -19,6 +19,7 @@ guidance: |
   2. Ensure force pushes are disabled in branch protection rules via the
      [Branch protection settings](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
 def:
+  provider_traits: ["rest", "github"]
   in_entity: repository
   rule_schema: {}
   ingest:

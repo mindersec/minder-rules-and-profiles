@@ -19,6 +19,7 @@ guidance: |
   equivalent to GitHub. Issue tracker availability is used as the
   proxy for public discussion mechanisms.
 def:
+  provider_traits: ["rest", "gitlab"]
   in_entity: repository
   rule_schema: {}
   ingest:

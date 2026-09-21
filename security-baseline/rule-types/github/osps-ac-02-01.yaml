@@ -16,6 +16,7 @@ guidance: |
   Most public version control systems (such as GitHub) are configured
   in this manner.
 def:
+  provider_traits: ["rest", "github"]
   in_entity: repository
   rule_schema: {}
   ingest:

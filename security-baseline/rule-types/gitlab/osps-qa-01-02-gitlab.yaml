@@ -16,6 +16,7 @@ guidance: |
   2. Ensure force pushes are disabled via the protected branches
      settings for the default branch.
 def:
+  provider_traits: ["rest", "gitlab"]
   in_entity: repository
   rule_schema: {}
   ingest:

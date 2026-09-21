@@ -17,6 +17,7 @@ guidance: |
   instance users) is treated the same as "private" by this rule, since
   it still restricts access beyond the general public.
 def:
+  provider_traits: ["rest", "gitlab"]
   in_entity: repository
   rule_schema: {}
   ingest:

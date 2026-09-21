@@ -19,6 +19,7 @@ guidance: |
 
   GitHub does this by default.
 def:
+  provider_traits: ["rest", "github"]
   in_entity: repository
   rule_schema: {}
   ingest:

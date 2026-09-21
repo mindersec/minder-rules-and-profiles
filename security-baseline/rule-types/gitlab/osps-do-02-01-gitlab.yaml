@@ -19,6 +19,7 @@ guidance: |
   This rule will not currently detect the usage of an external feedback
   system (for example, Jira or Trello).
 def:
+  provider_traits: ["rest", "gitlab"]
   in_entity: repository
   rule_schema: {}
   ingest:
