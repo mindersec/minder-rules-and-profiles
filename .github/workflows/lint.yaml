@@ -12,24 +12,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@v4.1.2
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6  # v4.1.2
       - name: Install Minder CLI
-        uses: mindersec/minder-client-installer@e33c4ed135967922432dcce5bb3d44a208cb64f5 # v1.1.4
+        uses: mindersec/minder-client-installer@e33c4ed135967922432dcce5bb3d44a208cb64f5  # v1.1.4
 
       - name: Lint Rule Types
         run: mindev ruletype lint -r rule-types/github --skip-rego
 
       - name: Set up Go
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v5
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e  # v5
         with:
           go-version: '1.26'
           check-latest: true
 
       - name: Install OPA
-        uses: open-policy-agent/setup-opa@v2
+        uses: open-policy-agent/setup-opa@b2b258e089860efaadaaf71bf6e3aecb4a3eeff1  # v2.4.0
         with:
           version: latest
 
