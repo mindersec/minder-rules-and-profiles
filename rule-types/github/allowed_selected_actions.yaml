@@ -24,6 +24,7 @@ guidance: |
   For more information, see [GitHub's
   documentation](https://docs.github.com/en/rest/actions/permissions#set-allowed-actions-and-reusable-workflows-for-a-repository).
 def:
+  provider_traits: ["rest", "github"]
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts
   # of the rule.
