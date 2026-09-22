@@ -22,6 +22,7 @@ guidance: |
   [Quote or escape branch names and other attacker-controlled content](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#understanding-the-risk-of-script-injections)
   before using them in scripts.
 def:
+  provider_traits: ["git", "github"]
   in_entity: repository
   rule_schema: {}
   ingest:
