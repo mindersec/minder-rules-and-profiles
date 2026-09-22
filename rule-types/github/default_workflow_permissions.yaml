@@ -24,6 +24,7 @@ guidance: |
   For more information, see [GitHub's
   documentation](https://docs.github.com/en/rest/actions/permissions#set-default-workflow-permissions-for-a-repository).
 def:
+  provider_traits: ["rest", "github"]
   in_entity: repository
   rule_schema:
     type: object

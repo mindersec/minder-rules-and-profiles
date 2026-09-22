@@ -24,6 +24,7 @@ guidance: |
 
   For more information, see [GitHub's documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/disabling-issues).
 def:
+  provider_traits: ["rest", "github"]
   in_entity: repository
   rule_schema: {}  # No configuration needed
   ingest:
