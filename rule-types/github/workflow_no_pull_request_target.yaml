@@ -26,6 +26,7 @@ guidance: |
   into a privileged one that uses pull_request_target and a non-privileged one
   triggered on workflow_run.
 def:
+  provider_traits: ["git", "github"]
   in_entity: repository
   rule_schema:
     type: object

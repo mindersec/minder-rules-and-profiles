@@ -22,6 +22,7 @@ guidance: |
   For more information, see [GitHub's
   documentation](https://docs.github.com/en/rest/actions/permissions#set-allowed-actions-and-reusable-workflows-for-a-repository).
 def:
+  provider_traits: ["git", "github"]
   in_entity: repository
   rule_schema:
     type: object
