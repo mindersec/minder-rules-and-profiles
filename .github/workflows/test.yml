@@ -12,17 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
       - name: Run tests
-        uses: mindersec/minder-action/test@v1.1.1
+        uses: mindersec/minder-action/test@36984c41ce733c181ce7a5cf91256075799420ea  # v1.1.2
         id: run-tests
         with:
           release: v0.3.1
           rules-directory: rule-types
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v6
+        uses: mikepenz/action-junit-report@a9170d5795813c01ab4901ffb045b52bab4ab09d  # v6.5.0
         if: success() || failure() # always run even if tests fail
         with:
           report_paths: ${{ steps.run-tests.outputs.junit-filename }}
