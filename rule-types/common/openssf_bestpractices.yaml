@@ -20,6 +20,7 @@ guidance: |
   to get a Best Practices badge, then add the badge to your project's README to
   show your certification.
 def:
+  provider_traits: ["git"]
   in_entity: repository
   # Defines the schema for writing a rule with this rule being checked
   # In this case there are no settings that need to be configured

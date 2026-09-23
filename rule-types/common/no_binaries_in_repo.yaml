@@ -23,6 +23,7 @@ guidance: |
   For more information, see [OpenSSF Scorecard's
   documentation](https://github.com/ossf/scorecard/blob/main/docs/checks.md#binary-artifacts).
 def:
+  provider_traits: ["git"]
   in_entity: repository
   rule_schema: {}
   ingest:
