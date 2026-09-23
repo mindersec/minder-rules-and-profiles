@@ -1,27 +1,20 @@
 ENTITY = {"type": "repository", "default_branch": "main"}
 
-def PASS(res):
-    assert.eq(res["status"], "pass")
-
-def FAIL(res):
-    assert.true(res["status"] in ("fail", "error"))
+files = txtar(read_file("testdata/trufflehog.txtar"))
 
 def test_should_have_trufflehog_enabled():
     res = eval(
         rule="trufflehog_github_action",
         entity=ENTITY,
-        mock_fs={
-            ".github/workflows/trufflehog.yaml": read_file("trufflehog_github_action.testdata/github_action_with_trufflehog/.github/workflows/trufflehog.yaml")
-        }
+        mock_fs=files
     )
-    PASS(res)
+    assert.eq(res["status"], "pass")
 
 def test_should_not_have_trufflehog_enabled():
     res = eval(
         rule="trufflehog_github_action",
         entity=ENTITY,
-        mock_fs={
-            ".github/workflows/not-trufflehog.yaml": read_file("trufflehog_github_action.testdata/github_action_without_trufflehog/.github/workflows/not-trufflehog.yaml")
-        }
+        # Filter the trufflehog action, keep others
+        mock_fs={k: v for k, v in files.items() if k.find("trufflehog") == -1}
     )
-    FAIL(res)
+    assert.eq(res["status"], "fail")

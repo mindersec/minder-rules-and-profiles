@@ -1,44 +1,30 @@
 ENTITY = {"owner": "coolhead", "name": "haze-wave", "type": "repository", "default_branch": "main"}
 URL = "/repos/coolhead/haze-wave"
 
-def PASS(res):
-    assert.eq(res["status"], "pass")
+responses = txtar(read_file("testdata/repo-info.txtar"))
 
-def FAIL(res):
-    assert.true(res["status"] in ("fail", "error"))
+def repo_visibility(want, json_key):
+    """Helper to build eval result for repo_visibility rule."""
+    return eval(
+        rule="repo_visibility",
+        entity=ENTITY,
+        profile={"visibility": want},
+        mock_http={
+            URL: body(responses[json_key])
+        }
+    )
 
 def test_should_be_public():
-    res = eval(
-        rule="repo_visibility",
-        entity=ENTITY,
-        profile={"visibility": "public"},
-        mock_http={
-            URL: body(read_file("repo_visibility.testdata/public.json"))
-        }
-    )
-    PASS(res)
+    res = repo_visibility("public", "good_setup.json")
+    assert.eq(res["status"], "pass")
 
 def test_should_be_private():
-    res = eval(
-        rule="repo_visibility",
-        entity=ENTITY,
-        profile={"visibility": "private"},
-        mock_http={
-            URL: body(read_file("repo_visibility.testdata/private.json"))
-        }
-    )
-    PASS(res)
+    res = repo_visibility("private", "bad_setup.json")
+    assert.eq(res["status"], "pass")
 
 def test_should_be_public_but_is_private():
-    res = eval(
-        rule="repo_visibility",
-        entity=ENTITY,
-        profile={"visibility": "public"},
-        mock_http={
-            URL: body(read_file("repo_visibility.testdata/private.json"))
-        }
-    )
-    FAIL(res)
+    res = repo_visibility("public", "bad_setup.json")
+    assert.eq(res["status"], "fail")
 
 def test_not_found_should_fail():
     res = eval(
@@ -46,12 +32,12 @@ def test_not_found_should_fail():
         entity=ENTITY,
         profile={"visibility": "public"},
         mock_http={
-            URL: body(read_file("repo_visibility.testdata/notfound.json")).code(404)
+            URL: body(responses["missing.json"]).code(404)
         }
     )
-    FAIL(res)
+    assert.eq(res["status"], "fail")
 
-def test_internal_server_error_should_fail():
+def test_internal_server_error_should_error():
     res = eval(
         rule="repo_visibility",
         entity=ENTITY,
@@ -60,4 +46,4 @@ def test_internal_server_error_should_fail():
             URL: body("").code(500)
         }
     )
-    FAIL(res)
+    assert.eq(res["status"], "error")

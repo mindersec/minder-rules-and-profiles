@@ -1,10 +1,12 @@
+files = txtar(read_file("testdata/grype-scan.txtar"))
+
 def test_should_have_grype_github_action_enabled():
     res = eval(
         rule="grype_github_action_scan_container_image",
         entity={"owner": "coolhead", "name": "haze-wave", "type": "repository", "default_branch": "main"},
         profile={},
         mock_fs={
-            ".github/workflows/wf.yml": read_file("grype_github_action_scan_container_image.testdata/action_enabled/.github/workflows/wf.yml")
+            ".github/workflows/wf.yml": files["container/workflow.yaml"]
         }
     )
     assert.eq(res["status"], "pass")
@@ -15,7 +17,7 @@ def test_action_is_missing():
         entity={"owner": "coolhead", "name": "haze-wave", "type": "repository", "default_branch": "main"},
         profile={},
         mock_fs={
-            ".github/workflows/wf.yml": read_file("grype_github_action_scan_container_image.testdata/action_missing/.github/workflows/wf.yml")
+            ".github/workflows/wf.yml": files["other/workflow.yaml"]
         }
     )
     assert.true(res["status"] in ("fail", "error"))
@@ -27,7 +29,7 @@ def test_action_is_enabled_but_not_for_container_image_scanning():
         entity={"owner": "coolhead", "name": "haze-wave", "type": "repository", "default_branch": "main"},
         profile={},
         mock_fs={
-            ".github/workflows/wf.yml": read_file("grype_github_action_scan_container_image.testdata/action_enabled_not_for_container_image_scanning/.github/workflows/wf.yml")
+            ".github/workflows/wf.yml": files["repo/workflow.yaml"]
         }
     )
     assert.true(res["status"] in ("fail", "error"))

@@ -1,0 +1,84 @@
+ENTITY = {"owner": "me", "name": "myrepo", "type": "repository", "default_branch": "main"}
+REPO_URL = "/repos/me/myrepo"
+
+# Various support documentation file scenarios
+support_files = txtar(read_file("testdata/support.txtar"))
+
+def test_do_02_01_issues_enabled():
+    res = eval(
+        rule="osps-do-02-01",
+        entity=ENTITY,
+        mock_http={
+            REPO_URL: body('{"has_issues": true, "has_discussions": false}')
+        }
+    )
+    assert.eq(res["status"], "pass")
+
+def test_do_02_01_discussions_enabled():
+    res = eval(
+        rule="osps-do-02-01",
+        entity=ENTITY,
+        mock_http={
+            REPO_URL: body('{"has_issues": false, "has_discussions": true}')
+        }
+    )
+    assert.eq(res["status"], "pass")
+
+def test_do_02_01_no_feedback():
+    res = eval(
+        rule="osps-do-02-01",
+        entity=ENTITY,
+        mock_http={
+            REPO_URL: body('{"has_issues": false, "has_discussions": false}')
+        }
+    )
+    assert.eq(res["status"], "fail")
+
+def test_do_02_01_does_not_exist():
+    res = eval(
+        rule="osps-do-02-01",
+        entity=ENTITY,
+        mock_http={
+            REPO_URL: body('').code(404)
+        }
+    )
+    assert.eq(res["status"], "error")
+
+def test_do_04_01_support_in_readme():
+    res = eval(
+        rule="osps-do-04-01",
+        entity=ENTITY,
+        mock_fs={
+            "README.md": support_files["support-README.md"]
+        }
+    )
+    assert.eq(res["status"], "pass")
+
+def test_do_04_01_support_with_eox():
+    # Note that this rule only supports a _nested_ eox file, not a top-level one
+    keep = lambda file: file.find(".eox") != -1 or file == "README.md"
+    res = eval(
+        rule="osps-do-04-01",
+        entity=ENTITY,
+        mock_fs={k: support_files[k] for k in support_files if keep(k)}
+    )
+    assert.eq(res["status"], "pass")
+
+def test_do_04_01_support_with_document():
+    keep = lambda file: file == "SUPPORT.md" or file == "README.md"
+    res = eval(
+        rule="osps-do-04-01",
+        entity=ENTITY,
+        mock_fs={k: support_files[k] for k in support_files if keep(k)}
+    )
+    assert.eq(res["status"], "pass")
+
+def test_do_04_01_no_support_policy():
+    keep = lambda file: file == "README.md"
+    res = eval(
+        rule="osps-do-04-01",
+        entity=ENTITY,
+        mock_fs={k: support_files[k] for k in support_files if keep(k)}
+    )
+    assert.eq(res["status"], "fail")
+

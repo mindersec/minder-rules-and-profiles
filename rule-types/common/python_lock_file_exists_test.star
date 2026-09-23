@@ -1,5 +1,7 @@
 ENTITY = {"owner": "coolhead", "name": "haze-wave", "type": "repository", "default_branch": "main"}
 
+files = txtar(read_file("testdata/python_lockfile.txtar"))
+
 def PASS(res):
     assert.eq(res["status"], "pass")
 
@@ -11,8 +13,8 @@ def test_project_contains_pipfile_lock():
         rule="python_lock_file_exists",
         entity=ENTITY,
         mock_fs={
-            "Pipfile": read_file("python_lock_file_exists.testdata/pipfile_lock/Pipfile"),
-            "Pipfile.lock": read_file("python_lock_file_exists.testdata/pipfile_lock/Pipfile.lock")
+            "Pipfile": files["pipfile/Pipfile"],
+            "Pipfile.lock": files["pipfile/Pipfile.lock"]
         }
     )
     PASS(res)
@@ -22,8 +24,8 @@ def test_project_contains_poetry_lock():
         rule="python_lock_file_exists",
         entity=ENTITY,
         mock_fs={
-            "pyproject.toml": read_file("python_lock_file_exists.testdata/poetry_lock/pyproject.toml"),
-            "poetry.lock": read_file("python_lock_file_exists.testdata/poetry_lock/poetry.lock")
+            "pyproject.toml": files["codegate/pyproject.toml"],
+            "poetry.lock": files["codegate/poetry.lock"]
         }
     )
     PASS(res)
@@ -33,8 +35,8 @@ def test_project_contains_pdm_lock():
         rule="python_lock_file_exists",
         entity=ENTITY,
         mock_fs={
-            "pdm.lock": read_file("python_lock_file_exists.testdata/pdm_lock/pdm.lock"),
-            "pyproject.toml": read_file("python_lock_file_exists.testdata/pdm_lock/pyproject.toml")
+            "pdm.lock": files["pdm/pdm.lock"],
+            "pyproject.toml": files["pdm/pyproject.toml"]
         }
     )
     PASS(res)
@@ -44,7 +46,7 @@ def test_project_contains_version_pinned_requirements_txt():
         rule="python_lock_file_exists",
         entity=ENTITY,
         mock_fs={
-            "requirements.txt": read_file("python_lock_file_exists.testdata/pinned_requirements_txt/requirements.txt")
+            "requirements.txt": files["pinned-requirements.txt"]
         }
     )
     PASS(res)
@@ -54,7 +56,7 @@ def test_project_contains_some_unpinned_requirements_txt():
         rule="python_lock_file_exists",
         entity=ENTITY,
         mock_fs={
-            "requirements.txt": read_file("python_lock_file_exists.testdata/some_unpinned_requirements_txt/requirements.txt")
+            "requirements.txt": files["unpinned-requirements.txt"]
         }
     )
     FAIL(res)
@@ -64,7 +66,7 @@ def test_project_contains_no_lock_files():
         rule="python_lock_file_exists",
         entity=ENTITY,
         mock_fs={
-            "pyproject.toml": read_file("python_lock_file_exists.testdata/no_lock/pyproject.toml")
+            "pyproject.toml": files["codegate/pyproject.toml"]
         }
     )
     FAIL(res)

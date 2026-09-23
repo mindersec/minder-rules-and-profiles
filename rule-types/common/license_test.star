@@ -1,10 +1,12 @@
+files = txtar(read_file("testdata/license.txtar"))
+
 def test_license_should_be_mit():
     res = eval(
         rule="license",
         entity={"type": "repository", "default_branch": "main"},
         profile={"license_filename": "LICENSE", "license_type": "MIT"},
         mock_fs={
-            "LICENSE": read_file("license.testdata/license_should_be_mit/LICENSE")
+            "LICENSE": files["MIT-LICENSE"]
         }
     )
     assert.eq(res["status"], "pass")
@@ -25,7 +27,7 @@ def test_license_doesn_t_match():
         entity={"type": "repository", "default_branch": "main"},
         profile={"license_filename": "LICENSE", "license_type": "Apache-2.0"},
         mock_fs={
-            "LICENSE": read_file("license.testdata/license_doesnt_match/LICENSE")
+            "LICENSE": files["MIT-LICENSE"]
         }
     )
     assert.true(res["status"] in ("fail", "error"))
