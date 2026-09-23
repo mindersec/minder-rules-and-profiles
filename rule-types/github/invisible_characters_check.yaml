@@ -33,6 +33,7 @@ guidance: |
   article ["Trojan Source: Invisible
   Vulnerabilities"](https://www.usenix.org/system/files/usenixsecurity23-boucher.pdf).
 def:
+  provider_traits: ["git", "github"]
   in_entity: pull_request
   param_schema:
     properties: {}

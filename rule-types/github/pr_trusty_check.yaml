@@ -19,6 +19,7 @@ guidance: |
   Ensure that the pull request does not add any dependencies with low
   Trusty scores.
 def:
+  provider_traits: ["git", "github"]
   in_entity: pull_request
   rule_schema:
     type: object
