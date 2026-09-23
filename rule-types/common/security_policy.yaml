@@ -15,6 +15,7 @@ guidance: |
   For more details on security policies, see [GitHub's
   documentation](https://docs.github.com/en/code-security/getting-started/adding-a-security-policy-to-your-repository).
 def:
+  provider_traits: ["git"]
   in_entity: repository
   rule_schema:
     type: object

@@ -25,6 +25,7 @@ guidance: |
   For more information, see [GitHub's
   documentation](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-third-party-actions).
 def:
+  provider_traits: ["git", "github"]
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts
   # of the rule.

@@ -26,6 +26,7 @@ guidance: |
   For more information on how to create one, refer to the [SI
   specification](https://github.com/ossf/security-insights-spec/).
 def:
+  provider_traits: ["git"]
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts
   # of the rule.
