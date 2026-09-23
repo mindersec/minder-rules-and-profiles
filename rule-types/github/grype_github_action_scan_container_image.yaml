@@ -29,6 +29,7 @@ guidance: |
   For more details, refer to the [Grype action documentation](https://github.com/anchore/scan-action).
 
 def:
+  provider_traits: ["git", "github"]
   in_entity: repository
   rule_schema: {}
   ingest:

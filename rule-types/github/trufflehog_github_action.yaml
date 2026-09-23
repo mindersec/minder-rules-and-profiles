@@ -22,6 +22,7 @@ guidance: |
 
   For more information, see the [TruffleHog GitHub Action](https://github.com/marketplace/actions/trufflehog-oss#octocat-trufflehog-github-action documentation.
 def:
+  provider_traits: ["git", "github"]
   in_entity: repository
   rule_schema:
     type: object

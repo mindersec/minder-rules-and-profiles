@@ -17,6 +17,7 @@ guidance: |
   [Settings](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility#changing-a-repositorys-visibility)
   page on GitHub.
 def:
+  provider_traits: ["git", "github"]
   in_entity: repository
   rule_schema: {}
   ingest:
