@@ -1,52 +1,49 @@
 ENTITY = {"owner": "me", "name": "myrepo", "type": "repository", "default_branch": "main"}
 REPO_URL = "/repos/me/myrepo"
 
-licenses = txtar(read_file("testdata/licenses.txtar"))
+licenses_files = txtar(read_file("testdata/licenses.txtar"))
 
+def filter_licenses(filter):
+    """Filter the licenses_files using a boolean filter function"""
+    return {k:licenses_files[k] for k in licenses_files if filter(k)}
 
 def test_le_03_01_copying_file():
-    keep = lambda file: file == "COPYING" or file == "README.md"
     res = eval(
         rule="osps-le-03-01",
         entity=ENTITY,
-        mock_fs={k:licenses[k] for k in licenses if keep(k)}
+        mock_fs=filter_licenses(lambda file: file == "COPYING" or file == "README.md")
     )
     assert.eq(res["status"], "pass")
 
 def test_le_03_01_license_file():
-    keep = lambda file: file == "LICENSE" or file == "README.md"
     res = eval(
         rule="osps-le-03-01",
         entity=ENTITY,
-        mock_fs={k:licenses[k] for k in licenses if keep(k)}
+        mock_fs=filter_licenses(lambda file: file == "LICENSE" or file == "README.md")
     )
     assert.eq(res["status"], "pass")
 
 def test_le_03_01_license_as_markdown():
-    keep = lambda file: file.find(".md") != -1
     res = eval(
         rule="osps-le-03-01",
         entity=ENTITY,
-        mock_fs={k:licenses[k] for k in licenses if keep(k)}
+        mock_fs=filter_licenses(lambda file: file.count(".md") > 0)
     )
     assert.eq(res["status"], "pass")
 
 def test_le_03_01_license_folder():
-    keep = lambda file: file.find("LICENSE/") != -1 or file == "README.md"
     res = eval(
         rule="osps-le-03-01",
         entity=ENTITY,
-        mock_fs={k:licenses[k] for k in licenses if keep(k)}
+        mock_fs=filter_licenses(lambda file: file.count("LICENSE/") > 0 or file == "README.md")
     )
     assert.eq(res["status"], "pass")
 
 # TODO: add support for a section in README.md
 def test_le_03_01_missing():
-    keep = lambda file: file == "README.md"
     res = eval(
         rule="osps-le-03-01",
         entity=ENTITY,
-        mock_fs={k:licenses[k] for k in licenses if keep(k)}
+        mock_fs=filter_licenses(lambda file: file == "README.md")
     )
     assert.eq(res["status"], "fail")
-

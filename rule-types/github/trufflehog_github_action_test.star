@@ -15,6 +15,6 @@ def test_should_not_have_trufflehog_enabled():
         rule="trufflehog_github_action",
         entity=ENTITY,
         # Filter the trufflehog action, keep others
-        mock_fs={k: v for k, v in files.items() if k.find("trufflehog") == -1}
+        mock_fs={k: v for k, v in files.items() if k.count("trufflehog") == 0}
     )
     assert.eq(res["status"], "fail")

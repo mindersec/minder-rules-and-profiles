@@ -1,7 +1,11 @@
 ENTITY = {"owner": "me", "name": "myrepo", "type": "repository", "default_branch": "main"}
 REPO_URL = "/repos/me/myrepo"
 
-deps = txtar(read_file("testdata/dependencies.txtar"))
+deps_files = txtar(read_file("testdata/dependencies.txtar"))
+
+def filter_deps(filter):
+    """Filter the deps_files using a boolean filter function"""
+    return {k:deps_files[k] for k in deps_files if filter(k)}
 
 def test_qa_01_01_public():
     res = eval(
@@ -45,64 +49,57 @@ def test_qa_01_01_no_clone_url():
     assert.eq(res["status"], "fail")
 
 def test_qa_02_01_go_lock():
-    keep = lambda name: name == "go.mod" or name == "go.sum"
     res = eval(
         rule="osps-qa-02-01",
         entity=ENTITY,
-        mock_fs={k:deps[k] for k in deps if keep(k)}
+        mock_fs=filter_deps(lambda name: name == "go.mod" or name == "go.sum")
     )
     assert.eq(res["status"], "pass")
 
 def test_qa_02_01_go_nolock():
-    keep = lambda name: name == "go.mod"
     res = eval(
         rule="osps-qa-02-01",
         entity=ENTITY,
-        mock_fs={k:deps[k] for k in deps if keep(k)}
+        mock_fs=filter_deps(lambda name: name == "go.mod")
     )
     assert.eq(res["status"], "fail")
 
 def test_qa_02_01_ruby_lock():
-    keep = lambda name: name.find("Gemfile") != -1
     res = eval(
         rule="osps-qa-02-01",
         entity=ENTITY,
-        mock_fs={k:deps[k] for k in deps if keep(k)}
+        mock_fs=filter_deps(lambda name: name.find("Gemfile") != -1)
     )
     assert.eq(res["status"], "pass")
 
 def test_qa_02_01_ruby_nolock():
-    keep = lambda name: name == "Gemfile"
     res = eval(
         rule="osps-qa-02-01",
         entity=ENTITY,
-        mock_fs={k:deps[k] for k in deps if keep(k)}
+        mock_fs=filter_deps(lambda name: name == "Gemfile")
     )
     assert.eq(res["status"], "fail")
 
 def test_qa_02_01_javascript_package_lock():
-    keep = lambda name: name == "package.json" or name == "package-lock.json"
     res = eval(
         rule="osps-qa-02-01",
         entity=ENTITY,
-        mock_fs={k:deps[k] for k in deps if keep(k)}
+        mock_fs=filter_deps(lambda name: name == "package.json" or name == "package-lock.json")
     )
     assert.eq(res["status"], "pass")
 
 def test_qa_02_01_javascript_yarn_lock():
-    keep = lambda name: name == "package.json" or name == "yarn.lock"
     res = eval(
         rule="osps-qa-02-01",
         entity=ENTITY,
-        mock_fs={k:deps[k] for k in deps if keep(k)}
+        mock_fs=filter_deps(lambda name: name == "package.json" or name == "yarn.lock")
     )
     assert.eq(res["status"], "pass")
 
 def test_qa_02_01_javascript_nolock():
-    keep = lambda name: name == "package.json"
     res = eval(
         rule="osps-qa-02-01",
         entity=ENTITY,
-        mock_fs={k:deps[k] for k in deps if keep(k)}
+        mock_fs=filter_deps(lambda name: name == "package.json")
     )
     assert.eq(res["status"], "fail")

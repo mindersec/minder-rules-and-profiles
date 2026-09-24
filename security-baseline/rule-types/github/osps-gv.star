@@ -1,8 +1,11 @@
 ENTITY = {"owner": "me", "name": "myrepo", "type": "repository", "default_branch": "main"}
 REPO_URL = "/repos/me/myrepo"
 
-contributing = txtar(read_file("testdata/contributing.txtar"))
+contributing_files = txtar(read_file("testdata/contributing.txtar"))
 
+def filter_contributing(filter):
+    """Filter the contributing_files using a boolean filter function"""
+    return {k:contributing_files[k] for k in contributing_files if filter(k)}
 
 def test_gv_02_01_issues_enabled():
     res = eval(
@@ -34,41 +37,35 @@ def test_gv_02_01_no_feedback():
     )
     assert.eq(res["status"], "fail")
 
-
 def test_gv_03_01_plain_file():
-    keep = lambda file: file == "CONTRIBUTING"
     res = eval(
         rule="osps-gv-03-01",
         entity=ENTITY,
-        mock_fs={k:contributing[k] for k in contributing if keep(k)}
+        mock_fs=filter_contributing(lambda file: file == "CONTRIBUTING")
     )
     assert.eq(res["status"], "pass")
 
 def test_gv_03_01_markdown():
-    keep = lambda file: file == "CONTRIBUTING.md"
     res = eval(
         rule="osps-gv-03-01",
         entity=ENTITY,
-        mock_fs={k:contributing[k] for k in contributing if keep(k)}
+        mock_fs=filter_contributing(lambda file: file == "CONTRIBUTING.md")
     )
     assert.eq(res["status"], "pass")
 
 def test_gv_03_01_directory():
-    keep = lambda file: file.find("CONTRIBUTING/") != -1
     res = eval(
         rule="osps-gv-03-01",
         entity=ENTITY,
-        mock_fs={k:contributing[k] for k in contributing if keep(k)}
+        mock_fs=filter_contributing(lambda file: file.count("CONTRIBUTING/") > 0)
     )
     assert.eq(res["status"], "pass")
 
 # TODO: add support for a section in README.md
 def test_gv_03_01_missing():
-    keep = lambda file: file == "README.md"
     res = eval(
         rule="osps-gv-03-01",
         entity=ENTITY,
-        mock_fs={k:contributing[k] for k in contributing if keep(k)}
+        mock_fs=filter_contributing(lambda file: file == "README.md")
     )
     assert.eq(res["status"], "fail")
-
