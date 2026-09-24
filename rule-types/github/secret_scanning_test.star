@@ -1,55 +1,36 @@
 ENTITY = {"owner": "coolhead", "name": "haze-wave", "type": "repository", "default_branch": "main"}
 URL = "/repos/coolhead/haze-wave"
 
-def PASS(res):
-    assert.eq(res["status"], "pass")
+responses = txtar(read_file("testdata/repo-info.txtar"))
 
-def FAIL(res):
-    assert.true(res["status"] in ("fail", "error"))
+def secret_scanning(json_key, profile=None):
+    """Helper to build eval result for secret_scanning rule"""
+    if not profile:
+        profile = {}
+    return eval(
+        rule="secret_scanning",
+        entity=ENTITY,
+        profile=profile,
+        mock_http={
+            URL: body(responses[json_key])
+        }
+    )
 
 def test_should_have_secret_scanning_enabled():
-    res = eval(
-        rule="secret_scanning",
-        entity=ENTITY,
-        profile={},
-        mock_http={
-            URL: body(read_file("secret_scanning.testdata/enabled.json"))
-        }
-    )
-    PASS(res)
+    res = secret_scanning("good_setup.json")
+    assert.eq(res["status"], "pass")
 
 def test_should_have_secret_scanning_enabled_for_private_repo():
-    res = eval(
-        rule="secret_scanning",
-        entity=ENTITY,
-        profile={"skip_private_repos": False},
-        mock_http={
-            URL: body(read_file("secret_scanning.testdata/private-enabled.json"))
-        }
-    )
-    PASS(res)
+    res = secret_scanning("private_good_setup.json", {"skip_private_repos": False})
+    assert.eq(res["status"], "pass")
 
 def test_private_repo_should_skip():
-    res = eval(
-        rule="secret_scanning",
-        entity=ENTITY,
-        profile={"skip_private_repos": True},
-        mock_http={
-            URL: body(read_file("secret_scanning.testdata/private-enabled.json"))
-        }
-    )
+    res = secret_scanning("bad_setup.json", {"skip_private_repos": True})
     assert.eq(res["status"], "skip")
 
 def test_disabled_secret_scanning_denied():
-    res = eval(
-        rule="secret_scanning",
-        entity=ENTITY,
-        profile={},
-        mock_http={
-            URL: body(read_file("secret_scanning.testdata/disabled.json"))
-        }
-    )
-    FAIL(res)
+    res = secret_scanning("bad_setup.json", {"skip_private_repos": False})
+    assert.eq(res["status"], "fail")
     assert.true(res["message"] != "")
 
 def test_not_found_should_fail():
@@ -58,13 +39,13 @@ def test_not_found_should_fail():
         entity=ENTITY,
         profile={},
         mock_http={
-            URL: body(read_file("secret_scanning.testdata/notfound.json")).code(404)
+            URL: body(responses["missing.json"]).code(404)
         }
     )
-    FAIL(res)
+    assert.eq(res["status"], "fail")
     assert.true(res["message"] != "")
 
-def test_internal_server_error_should_fail():
+def test_internal_server_error_should_error():
     res = eval(
         rule="secret_scanning",
         entity=ENTITY,
@@ -73,5 +54,5 @@ def test_internal_server_error_should_fail():
             URL: body("").code(500)
         }
     )
-    FAIL(res)
+    assert.eq(res["status"], "error")
     assert.true(res["message"] != "")
