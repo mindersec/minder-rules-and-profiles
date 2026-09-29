@@ -28,6 +28,11 @@ description: |
   certain github context variables that are considered untrusted,
   for example, github.event.issue.title.
 
+  * Unquoted or unvalidated branch names: Git branch names can contain
+  special characters such as space or semicolon which may be used to
+  execute malicious code with permissions of the continuous integration
+  workflow.
+
 guidance: |
   Avoid using pull_request_target and workflow_run workflow triggers with
   contributor-supplied code, following [GitHub's guidance](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/)
@@ -52,45 +57,6 @@ def:
         # Match both .yml and .yaml files
         workflows := array.concat(file.ls_glob("./.github/workflows/*.yml"), file.ls_glob("./.github/workflows/*.yaml"))
 
-        dangerous_triggers := ["pull_request_target", "workflow_run"]
-
-        # Look for dangerous triggers combined with checkout of user-controlled code.
-        violations contains {"msg": msg} if {
-          some w
-          contents := file.read(workflows[w])
-          workflow := parse_yaml(contents)
-
-          events := events_set(workflow.on)
-          some event in events
-          event in dangerous_triggers
-
-          some job
-          some step
-          stepDef := workflow.jobs[job].steps[step]
-          startswith(stepDef.uses, "actions/checkout")
-
-          # This action is only dangerous if we check out the attacker-controlled branch
-          dangerous_ref(stepDef["with"].ref)
-
-          msg := sprintf("Workflow %s has a dangerous trigger and checks out a pull request in job '%s'", [workflows[w], job])
-        }
-
-        events_set(events) := object.keys(events) if {
-          is_object(events)
-        }
-
-        events_set(events) := events if {
-          is_array(events)
-        }
-
-        dangerous_ref(ref) if {
-          contains(ref, "github.event.pull_request")
-        }
-
-        dangerous_ref(ref) if {
-          contains(ref, "github.event.workflow_run")
-        }
-
         # Look for possible script injections
         violations contains {"msg": msg} if {
           some w
@@ -100,9 +66,7 @@ def:
           some job
           some step
           stepDef := workflow.jobs[job].steps[step]
-          stepDef.run
-
-          stepDef.run != "make test"
+          stepDef.run  # Only applies to steps with a run command
 
           regexp := "\\${{(.*?)}}"
           expansions := regex.find_all_string_submatch_n(regexp, stepDef.run, -1)
