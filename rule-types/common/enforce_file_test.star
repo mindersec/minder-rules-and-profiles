@@ -14,7 +14,7 @@ def enforce_file(content, fs):
     )
 
 file_present = {
-    "README": read_file("enforce_file.testdata/file_present/README")
+    "README": "Test content",
 }
 
 def test_file_should_be_present():

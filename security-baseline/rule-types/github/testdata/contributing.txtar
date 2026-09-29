@@ -1,0 +1,26 @@
+Sample files that can be used to provide contribution guidance for a repository.
+
+-- CONTRIBUTING --
+** Contributing to Foo **
+
+We welcome contributions, and the rest of this doc is slap-dash!  Sorry!
+-- CONTRIBUTING.md --
+# Contributing to Foo
+
+We welcome contributions, and the rest of this doc is slap-dash!  Sorry!
+-- CONTRIBUTING/info --
+###################
+# Contributor Guide
+###################
+
+This project has a lot to read.  Get started!
+-- CONTRIBUTING/subsystem --
+################################
+# Extra details about $Subsystem
+################################
+
+$Subsystem is really complicated, and here's extra stuff you need to know!
+-- README.md --
+# Contributing
+
+Here's how to contribute
