@@ -70,6 +70,11 @@ jobs:
           BEFORE_FILE="before_files/$FILE"
           AFTER_FILE="$FILE"
 
+          if [ ! -f "$AFTER_FILE" ]; then
+            echo "Skipping compatibility check for removed $AFTER_FILE"
+            continue;
+          fi
+
           if [ -f "$BEFORE_FILE" ] && grep -q "type: rule-type" "$BEFORE_FILE"; then
             echo "Running ruletype validate-update command for $BEFORE_FILE and $AFTER_FILE..."
             # Run the go command with the before and after files

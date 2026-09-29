@@ -35,7 +35,7 @@ def:
 
         # Match both .yml and .yaml files
         workflows := array.concat(file.ls_glob("./.github/workflows/*.yml"), file.ls_glob("./.github/workflows/*.yaml"))
-        
+
         dangerous_triggers := ["pull_request_target", "workflow_run"]
 
         # Look for dangerous triggers combined with checkout of user-controlled code.
@@ -74,4 +74,3 @@ def:
         dangerous_ref(ref) if {
           contains(ref, "github.event.workflow_run")
         }
-

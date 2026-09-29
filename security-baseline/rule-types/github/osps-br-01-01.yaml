@@ -66,7 +66,7 @@ def:
           some job
           some step
           stepDef := workflow.jobs[job].steps[step]
-          stepDef.run  # Only applies to steps with a run command
+          stepDef.run # Only applies to steps with a run command
 
           regexp := "\\${{(.*?)}}"
           expansions := regex.find_all_string_submatch_n(regexp, stepDef.run, -1)
