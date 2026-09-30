@@ -34,6 +34,7 @@ guidance: |
   For more information, see the [GitHub's
   documentation](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/about-repository-security-advisories).
 def:
+  provider_traits: ["rest", "github"]
   in_entity: repository
   rule_schema:
     type: object

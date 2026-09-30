@@ -19,6 +19,7 @@ guidance: |
 
   For more information, see the [GitLab documentation](https://docs.gitlab.com/ee/user/project/protected_branches.html).
 def:
+  provider_traits: ["rest", "gitlab"]
   in_entity: repository
   rule_schema: {}
   param_schema:

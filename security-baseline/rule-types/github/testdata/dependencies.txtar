@@ -1,0 +1,86 @@
+-- go.mod --
+module github.com/mindersec/minder-rules-and-profiles
+
+go 1.23.4
+
+require (
+	github.com/rs/zerolog v1.33.0
+)
+-- go.sum --
+github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
+github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
+github.com/mattn/go-colorable v0.1.13/go.mod h1:7S9/ev0klgBDR4GtXTXX8a3vIGJpMovkB8vQcUbaXHg=
+github.com/mattn/go-isatty v0.0.16/go.mod h1:kYGgaQfpe5nmfYZH+SKPsOc2e4SrIfOl2e/yFXSvRLM=
+github.com/mattn/go-isatty v0.0.19/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
+github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+github.com/rs/xid v1.5.0/go.mod h1:trrq9SKmegXys3aeAKXMUTdJsYXVwGY3RLcfgqegfbg=
+github.com/rs/zerolog v1.33.0/go.mod h1:/7mN4D5sKwJLZQ2b/znpjC3/GQWY/xaDXUM0kKWRHss=
+golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.6.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.12.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+dependencies
+-- Gemfile --
+source 'https://rubygems.org'
+
+gem 'rails', '~> 7.0'
+gem 'sqlite3', '~> 1.4'
+-- Gemfile.lock --
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rails (7.0.4)
+      actioncable (= 7.0.4)
+      actionmailer (= 7.0.4)
+      actionpack (= 7.0.4)
+      actionview (= 7.0.4)
+      activejob (= 7.0.4)
+      activemodel (= 7.0.4)
+      activerecord (= 7.0.4)
+      activestorage (= 7.0.4)
+      activesupport (= 7.0.4)
+      railties (= 7.0.4)
+    sqlite3 (1.4.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rails (~> 7.0)
+  sqlite3 (~> 1.4)
+
+BUNDLED WITH
+   2.2.19
+-- package.json --
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "description": "A simple project with one dependency",
+  "main": "index.js",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
+-- package-lock.json --
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "lockfileVersion": 2,
+  "dependencies": {
+    "lodash": {
+      "version": "4.17.21",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
+      "integrity": "sha512-KnxlP5n7gOxlXj1SxxWnWy0xQQjjfgtA5r+DRfdGp1P0FBrw6zEhmL+u90hQH2JszQXOxj6MSLytFz2oZv0O8A=="
+    }
+  }
+}
+-- yarn.lock --
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
+  integrity sha512-KnxlP5n7gOxlXj1SxxWnWy0xQQjjfgtA5r+DRfdGp1P0FBrw6zEhmL+u90hQH2JszQXOxj6MSL

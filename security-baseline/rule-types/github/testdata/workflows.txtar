@@ -1,0 +1,76 @@
+-- README.md --
+A repo with some workflows.
+-- .github/workflows/pr_test.yaml --
+# Example test workflow for the GitHub Action feature
+name: Test PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run tests
+      run: make test
+-- .github/workflows/pr_test_ref.yaml --
+# Example test workflow for the GitHub Action feature
+name: Test PR
+
+on:
+  pull_request_target:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Run tests
+      run: make test
+-- .github/workflows/pr_title_inject.yaml --
+on: [pull_request]
+
+jobs:
+  check-title:
+    name: Check PR title
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check PR title
+        run: |
+          title="${{ github.event.issue.title }}"
+          if [[ ! $title =~ ^.*:\ .*$ ]]; then
+            echo "Bad issue title"
+            exit 1
+          fi
+-- .github/workflows/pr_workflow_ref.yaml --
+# Example test workflow for the GitHub Action feature
+name: Test PR
+
+on: [workflow_run]
+
+jobs:
+  exec:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Run tests
+      run: make test

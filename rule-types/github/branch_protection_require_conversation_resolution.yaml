@@ -21,6 +21,7 @@ guidance: |
   For more information, see [GitHub's
   documentation](https://docs.github.com/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#require-conversation-resolution-before-merging).
 def:
+  provider_traits: ["rest", "github"]
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts
   # of the rule.
