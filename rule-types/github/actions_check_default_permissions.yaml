@@ -21,6 +21,7 @@ guidance: |
   For more information, see [GitHub's
   documentation](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions).
 def:
+  provider_traits: ["git", "github"]
   in_entity: repository
   # Defines the schema for writing a rule with this rule being checked
   rule_schema:

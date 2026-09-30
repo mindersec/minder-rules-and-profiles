@@ -21,6 +21,7 @@ guidance: |
   For more information, see [GitHub's
   documentation](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file).
 def:
+  provider_traits: ["git", "github"]
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts
   # of the rule.
