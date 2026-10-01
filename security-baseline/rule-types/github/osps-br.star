@@ -19,23 +19,10 @@ def test_br01_01_safe_workflows():
     res = eval(
         rule="osps-br-01-01",
         entity=ENTITY,
-        mock_fs=filter_workflows(lambda file: file.count("ref") == 0 and file.count("inject") == 0)
+        mock_fs=filter_workflows(lambda file: file.count("inject") == 0)
     )
     assert.eq(res["status"], "pass")
 
-def test_br_01_01_unsafe_checkout():
-    res = eval(
-        rule="osps-br-01-01",
-        entity=ENTITY,
-        mock_fs=filter_workflows(lambda file: file.count("ref") > 0)
-    )
-    assert.eq(res["status"], "fail")
-    # Flag each file
-    assert.true(res["message"].count("pr_test_ref.yaml") > 0)
-    assert.true(res["message"].count("pr_workflow_ref.yaml") > 0)
-    # Explains the problem
-    assert.true(res["message"].count("has a dangerous trigger and checks out") > 0)
- 
 def test_br_01_01_var_injection():
     res = eval(
         rule="osps-br-01-01",
@@ -47,6 +34,35 @@ def test_br_01_01_var_injection():
     assert.true(res["message"].count("pr_title_inject.yaml") > 0)
     assert.true(res["message"].count("has possible event script injection in step") > 0)
 
+def test_br_01_03_no_workflows():
+    res = eval(
+        rule="osps-br-01-03",
+        entity=ENTITY,
+        mock_fs=filter_workflows(lambda file: file == "README.md")
+    )
+    assert.eq(res["status"], "pass")
+
+def test_br_01_03_safe_workflows():
+    res = eval(
+        rule="osps-br-01-03",
+        entity=ENTITY,
+        mock_fs=filter_workflows(lambda file: file.count("ref") == 0)
+    )
+    assert.eq(res["status"], "pass")
+
+def test_br_01_03_unsafe_checkout():
+    res = eval(
+        rule="osps-br-01-03",
+        entity=ENTITY,
+        mock_fs=filter_workflows(lambda file: file.count("ref") > 0)
+    )
+    assert.eq(res["status"], "fail")
+    # Flag each file
+    assert.true(res["message"].count("pr_test_ref.yaml") > 0)
+    assert.true(res["message"].count("pr_workflow_ref.yaml") > 0)
+    # Explains the problem
+    assert.true(res["message"].count("has a dangerous trigger and checks out") > 0)
+ 
 def test_br_03_01_is_public():
     res = eval(
         rule="osps-br-03-01",
