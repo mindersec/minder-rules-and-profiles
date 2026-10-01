@@ -63,10 +63,10 @@ import rego.v1
 
 default allow := false
 
-msg := "Branch deletions are allowed on the default branch"
+message := "Branch deletions are allowed on the default branch"
 
 allow if {
-  not input.allow_deletions.enabled
+  input.ingested.allow_deletions.enabled == false
 }
 
 # We also want to check the new "branch rulesets", if they exist.
@@ -78,5 +78,5 @@ applied_rulesets := minder.datasource.baselineghapi.branch_protection_status({
 
 allow if {
   some rule
-  applied_rulesets[rule].type = "deletion"
+  applied_rulesets.body[rule].type = "deletion"
 }

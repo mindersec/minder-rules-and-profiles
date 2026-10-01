@@ -1,5 +1,7 @@
-ENTITY = {"owner": "me", "name": "myrepo", "type": "repository", "default_branch": "main",
-    "properties": {"github/repo_owner": "me", "github/repo_name": "myrepo", "github/default_branch": "main"}}
+ENTITY = {
+    "owner": "me", "name": "myrepo", "type": "repository", "default_branch": "main",
+    "properties": {"github/repo_owner": "me", "github/repo_name": "myrepo", "github/default_branch": "main"}
+}
 REPO_URL = "/repos/me/myrepo"
 
 http_responses = {k: body(v) for k, v in txtar(read_file("testdata/branch-protection.txtar")).items()}
@@ -74,12 +76,35 @@ def test_ac_03_01_unprotected():
         data_sources=["../../data-sources/baselineghapi.yaml"],
     )
     assert.eq(res["status"], "fail")
-    # assert.true(res["message"].count("Force pushes are allowed on the default branch") > 0)
+    assert.true(res["message"].count("Force pushes are allowed on the default branch") > 0)
 
-# TODO: test ac-03-01 and ac-03-02 cases (these use datasources):
-# ac-03-01 covers "force_push", ac-03-02 covers "allow_deletion"
-# 1. Classic branch protection enabled
-# 2. Ruleset enabled
-# 3. Classic and ruleset enabled
-# 4. Neither enabled
-# 5. error cases (404 / 500)
+def test_ac_03_02_classic():
+    res = eval(
+        rule="osps-ac-03-02",
+        entity=ENTITY,
+        mock_http=branch_protected_endpoints("protected", "no-protection"),
+        data_sources=["../../data-sources/baselineghapi.yaml"],
+    )
+    assert.eq(res["status"], "pass")
+    assert.eq(res["message"], "")
+
+def test_ac_03_02_ruleset():
+    res = eval(
+        rule="osps-ac-03-02",
+        entity=ENTITY,
+        mock_http=branch_protected_endpoints("no-protection", "protected"),
+        data_sources=["../../data-sources/baselineghapi.yaml"],
+    )
+    assert.eq(res["status"], "pass")
+    assert.eq(res["message"], "")
+
+def test_ac_03_02_unprotected():
+    endpoints = branch_protected_endpoints("no-protection", "no-protection")
+    res = eval(
+        rule="osps-ac-03-02",
+        entity=ENTITY,
+        mock_http=branch_protected_endpoints("no-protection", "no-protection"),
+        data_sources=["../../data-sources/baselineghapi.yaml"],
+    )
+    assert.eq(res["status"], "fail")
+    assert.true(res["message"].count("Branch deletions are allowed on the default branch") > 0)

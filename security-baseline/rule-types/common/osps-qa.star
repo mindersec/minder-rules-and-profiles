@@ -62,3 +62,25 @@ def test_qa_02_01_javascript_nolock():
         mock_fs=filter_deps(lambda name: name == "package.json")
     )
     assert.eq(res["status"], "fail")
+
+# We don't currently support bytes for file values.
+def test_qa_05_01_no_binary_files():
+    res = eval(
+        rule="osps-qa-05-01",
+        entity=ENTITY,
+        mock_fs={
+            "check": "#!/bin/sh\n..."
+        }
+    )
+    assert.eq(res["status"], "pass")
+
+# We don't currently support bytes for file values.
+def test_qa_05_02_no_binary_files():
+    res = eval(
+        rule="osps-qa-05-02",
+        entity=ENTITY,
+        mock_fs={
+            "path/to/check.svg": '<?xml version="1.0" encoding="utf-8"?><svg version="1.1"></svg">'
+        }
+    )
+    assert.eq(res["status"], "pass")

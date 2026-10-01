@@ -1,4 +1,7 @@
-ENTITY = {"owner": "me", "name": "myrepo", "type": "repository", "default_branch": "main"}
+ENTITY = {
+    "owner": "me", "name": "myrepo", "type": "repository", "default_branch": "main",
+    "properties": {"github/repo_owner": "me", "github/repo_name": "myrepo"}
+}
 REPO_URL = "/repos/me/myrepo"
 
 workflow_files = txtar(read_file("testdata/workflows.txtar"))
@@ -93,3 +96,39 @@ def test_br_03_01_not_http():
         }
     )
     assert.eq(res["status"], "fail")
+
+def test_br_07_01_gitignore():
+    res = eval(
+        rule="osps-br-07-01",
+        entity=ENTITY,
+        data_sources=["../../data-sources/baselineghapi.yaml"],
+        mock_fs={".gitignore": "# Exclude secret patterns\n.secrets"},
+    )
+    assert.eq(res["status"], "pass")
+    assert.eq(res["message"], "")
+
+def test_br_07_01_api_protected():
+    res = eval(
+        rule="osps-br-07-01",
+        entity=ENTITY,
+        data_sources=["../../data-sources/baselineghapi.yaml"],
+        mock_fs={"README.md": "I use GitHub's controls"},
+        mock_http={
+            REPO_URL: body('{"security_and_analysis": {"secret_scanning_push_protection": {"status": "enabled"}}}')
+        },
+    )
+    assert.eq(res["status"], "pass")
+    assert.eq(res["message"], "")
+
+def test_br_07_01_unsafe():
+    res = eval(
+        rule="osps-br-07-01",
+        entity=ENTITY,
+        data_sources=["../../data-sources/baselineghapi.yaml"],
+        mock_fs={"README.md": "I don't care about security"},
+        mock_http={
+            REPO_URL: body('{"security_and_analysis": {"secret_scanning_push_protection": {"status": "disabled"}}}')
+        },
+    )
+    assert.eq(res["status"], "fail")
+    assert.true(res["message"].count("No .gitignore or secret push protection configured") > 0)

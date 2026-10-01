@@ -41,5 +41,5 @@ default allow := false
 
 allow if {
   not input.properties.is_private
-  not input.ingested.allow_force_pushes.enabled
+  not input.ingested.allow_force_pushes.enabled 
 }
