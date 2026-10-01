@@ -20,8 +20,8 @@
 #   def:
 #     provider_traits: ["rest", "github"]
 #     in_entity: repository
-#     rule_schema: {}  # No configuration needed
 #     ingest:
+#       type: rest
 #       rest:
 #         endpoint: "/repos/{{.Entity.Owner}}/{{.Entity.Name}}"
 #         parse: json

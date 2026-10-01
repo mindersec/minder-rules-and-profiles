@@ -1,5 +1,5 @@
 # METADATA
-
+#
 # name: osps-vm-02-01
 # title: Contacts and process for reporting vulnerabilities is published
 # description: |

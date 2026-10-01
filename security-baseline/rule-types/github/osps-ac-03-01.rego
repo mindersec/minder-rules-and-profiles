@@ -63,11 +63,12 @@ import rego.v1
 
 default allow := false
 
-msg := "Force pushes are allowed on the default branch"
+message := "Force pushes are allowed on the default branch"
 
 # The ingest endpoint checks the "classic" branch protection rule.
 allow if {
-  not input.allow_force_pushes.enabled
+  input.ingested.allow_force_pushes
+  input.ingested.allow_force_pushes.enabled == false
 }
 
 # We also want to check the new "branch rulesets", if they exist.
@@ -79,5 +80,5 @@ applied_rulesets := minder.datasource.baselineghapi.branch_protection_status({
 
 allow if { # also type: deletion
   some rule
-  applied_rulesets[rule].type = "non_fast_forward"
+  applied_rulesets.body[rule].type = "non_fast_forward"
 }

@@ -1,4 +1,4 @@
-# METADATA:
+# METADATA
 #
 # name: osps-gv-02-01
 # title: The project has mechanisms for public discussion

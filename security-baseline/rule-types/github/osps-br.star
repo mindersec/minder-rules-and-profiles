@@ -7,7 +7,7 @@ def filter_workflows(filter):
     """Filter the workflow_files using a boolean filter function"""
     return {k:workflow_files[k] for k in workflow_files if filter(k)}
 
-def test_br01_01_no_workflows():
+def test_br_01_01_no_workflows():
     res = eval(
         rule="osps-br-01-01",
         entity=ENTITY,
@@ -15,7 +15,7 @@ def test_br01_01_no_workflows():
     )
     assert.eq(res["status"], "pass")
 
-def test_br01_01_safe_workflows():
+def test_br_01_01_safe_workflows():
     res = eval(
         rule="osps-br-01-01",
         entity=ENTITY,
