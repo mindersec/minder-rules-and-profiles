@@ -9,21 +9,21 @@ jobs:
     name: Check ruletype validate-update
     steps:
     - name: Checkout current
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       with:
         # See https://stackoverflow.com/a/74268200 -- the PR branch has a single
         # commit merging the two branches, so we need the last 2 commits.
         fetch-depth: 2
 
     - name: Checkout comparison branch (main) in subdirectory
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       with:
         # Checkout the main branch into a subdirectory
         ref: main
         path: before_files
 
     - name: Install cosign
-      uses: sigstore/cosign-installer@v4.1.2
+      uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6  # v4.1.2
 
     - name: Install Minder CLI
       uses: mindersec/minder-client-installer@e33c4ed135967922432dcce5bb3d44a208cb64f5 # v1.1.4

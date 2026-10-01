@@ -34,6 +34,7 @@ guidance: |
   For more information, see [Trivy Action's
   documentation](https://github.com/marketplace/actions/aqua-security-trivy).
 def:
+  provider_traits: ["git", "github"]
   # Defines the section of the pipeline the rule will appear in.
   # This will affect the template used to render multiple parts
   # of the rule.

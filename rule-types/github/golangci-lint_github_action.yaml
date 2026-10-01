@@ -17,6 +17,7 @@ guidance: |
 
   Refer to the [golangci-lint](https://golangci-lint.run) documentation for setup and configuration details.
 def:
+  provider_traits: ["git", "github"]
   in_entity: repository
   rule_schema:
     type: object
