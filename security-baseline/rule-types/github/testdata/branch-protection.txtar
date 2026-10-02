@@ -14,10 +14,11 @@ GitHub has two APIs for branch protection:
   rulesets matching a given branch have their restrictions enforced.
 
 To re-create these API results, you'll need a repository with classic branch
-and repository rulesets enabled, and another with no protections.  You can then
+and repository rulesets enabled, one with branch protection turned on but not
+preventing force push or deletion, and another with no protections.  You can then
 use the following script to append the contents to this readme/header.
 
-head -29 branch-protection.txtar > new.txtar
+head -34 branch-protection.txtar > new.txtar
 echo "-- classic-protected.json --" >> new.txtar
 gh api /repos/$OWNER1/$REPO1/branches/$BRANCH1/protection | jq >> new.txtar
 echo "-- ruleset-protected.json --" >> new.txtar
@@ -25,7 +26,11 @@ gh api /repos/$OWNER1/$REPO1/rules/branches/$BRANCH1 | jq >> new.txtar
 echo "-- classic-no-protection.json --" >> new.txtar
 gh api /repos/$OWNER2/$REPO2/branches/$BRANCH2/protection | jq >> new.txtar
 echo "-- ruleset-no-protection.json --" >> new.txtar
-gh api /repos/$OWNER2/$REPO2/rules/branches/$BRANCH2  | jq >> new.txtar
+gh api /repos/$OWNER2/$REPO2/rules/branches/$BRANCH2 | jq >> new.txtar
+echo "-- classic-not-enabled.json --" >> new.txtar
+gh api /repos/$OWNER3/$REPO3/branches/$BRANCH3/protection | jq >> new.txtar
+echo "-- ruleset-not-enabled.json --" >> new.txtar
+gh api /repos/$OWNER3/$REPO3/rules/branches/$BRANCH3 | jq >> new.txtar
 mv new.txtar branch-protection.txtar
 -- classic-protected.json --
 {
@@ -143,3 +148,46 @@ mv new.txtar branch-protection.txtar
 }
 -- ruleset-no-protection.json --
 []
+-- classic-not-enabled.json --
+{
+  "url": "https://api.github.com/repos/evankanderson/sia/branches/master/protection",
+  "required_signatures": {
+    "url": "https://api.github.com/repos/evankanderson/sia/branches/master/protection/required_signatures",
+    "enabled": false
+  },
+  "enforce_admins": {
+    "url": "https://api.github.com/repos/evankanderson/sia/branches/master/protection/enforce_admins",
+    "enabled": false
+  },
+  "required_linear_history": {
+    "enabled": false
+  },
+  "allow_force_pushes": {
+    "enabled": true
+  },
+  "allow_deletions": {
+    "enabled": true
+  },
+  "block_creations": {
+    "enabled": false
+  },
+  "required_conversation_resolution": {
+    "enabled": true
+  },
+  "lock_branch": {
+    "enabled": false
+  },
+  "allow_fork_syncing": {
+    "enabled": false
+  }
+}
+-- ruleset-not-enabled.json --
+[]
+[
+  {
+    "type": "required_linear_history",
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "evankanderson/sia",
+    "ruleset_id": 24395885
+  }
+]

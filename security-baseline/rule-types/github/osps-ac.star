@@ -67,8 +67,17 @@ def test_ac_03_01_ruleset():
     assert.eq(res["status"], "pass")
     assert.eq(res["message"], "")
 
+def test_ac_03_01_other_rules():
+    res = eval(
+        rule="osps-ac-03-01",
+        entity=ENTITY,
+        mock_http=branch_protected_endpoints("not-enabled", "not-enabled"),
+        data_sources=["../../data-sources/baselineghapi.yaml"],
+    )
+    assert.eq(res["status"], "fail")
+    assert.true(res["message"].count("Force pushes are allowed on the default branch") > 0)
+
 def test_ac_03_01_unprotected():
-    endpoints = branch_protected_endpoints("no-protection", "no-protection")
     res = eval(
         rule="osps-ac-03-01",
         entity=ENTITY,
@@ -98,8 +107,17 @@ def test_ac_03_02_ruleset():
     assert.eq(res["status"], "pass")
     assert.eq(res["message"], "")
 
+def test_ac_03_02_other_rules():
+    res = eval(
+        rule="osps-ac-03-02",
+        entity=ENTITY,
+        mock_http=branch_protected_endpoints("not-enabled", "not-enabled"),
+        data_sources=["../../data-sources/baselineghapi.yaml"],
+    )
+    assert.eq(res["status"], "fail")
+    assert.true(res["message"].count("Branch deletions are allowed on the default branch") > 0)
+
 def test_ac_03_02_unprotected():
-    endpoints = branch_protected_endpoints("no-protection", "no-protection")
     res = eval(
         rule="osps-ac-03-02",
         entity=ENTITY,
