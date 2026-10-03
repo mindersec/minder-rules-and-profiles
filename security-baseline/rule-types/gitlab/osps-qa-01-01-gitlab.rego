@@ -38,6 +38,6 @@ import rego.v1
 default allow := false
 
 allow if {
-  input.ingested.visibility == "public"
-  input.ingested.http_url_to_repo != ""
+	input.ingested.visibility == "public"
+	input.ingested.http_url_to_repo != ""
 }

@@ -34,8 +34,8 @@ import rego.v1
 default allow := false
 
 allow if {
-  # This rule checks whether the repository is private using
-  # info tied to the entity itself.
-  input.ingested.visibility == "public"
-  input.ingested.clone_url != ""
+	# This rule checks whether the repository is private using
+	# info tied to the entity itself.
+	input.ingested.visibility == "public"
+	input.ingested.clone_url != ""
 }

@@ -42,7 +42,7 @@ allow if input.ingested.tarball_url
 allow if count(license_files) > 0
 
 license_files contains asset if {
-  some asset in input.ingested.assets
-  some prefix in ["license", "copying"]
-  startswith(lower(asset.name), prefix)
+	some asset in input.ingested.assets
+	some prefix in ["license", "copying"]
+	startswith(lower(asset.name), prefix)
 }

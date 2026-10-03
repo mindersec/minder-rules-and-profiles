@@ -47,5 +47,5 @@ default allow := false
 msg := "The default branch is not protected"
 
 allow if {
-  input.ingested.id
+	input.ingested.id
 }

@@ -42,5 +42,5 @@ default allow := false
 msg := "Force pushes are allowed on the default branch"
 
 allow if {
-  input.ingested.allow_force_push == false
+	input.ingested.allow_force_push == false
 }

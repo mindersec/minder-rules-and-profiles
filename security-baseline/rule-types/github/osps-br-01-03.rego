@@ -36,37 +36,37 @@ dangerous_triggers := ["pull_request_target", "workflow_run"]
 
 # Look for dangerous triggers combined with checkout of user-controlled code.
 violations contains {"msg": msg} if {
-  some w
-  contents := file.read(workflows[w])
-  workflow := parse_yaml(contents)
+	some w
+	contents := file.read(workflows[w])
+	workflow := parse_yaml(contents)
 
-  events := events_set(workflow.on)
-  some event in events
-  event in dangerous_triggers
+	events := events_set(workflow.on)
+	some event in events
+	event in dangerous_triggers
 
-  some job
-  some step
-  stepDef := workflow.jobs[job].steps[step]
-  startswith(stepDef.uses, "actions/checkout")
+	some job
+	some step
+	stepDef := workflow.jobs[job].steps[step]
+	startswith(stepDef.uses, "actions/checkout")
 
-  # This action is only dangerous if we check out the attacker-controlled branch
-  dangerous_ref(stepDef["with"].ref)
+	# This action is only dangerous if we check out the attacker-controlled branch
+	dangerous_ref(stepDef["with"].ref)
 
-  msg := sprintf("Workflow %s has a dangerous trigger and checks out a pull request in job '%s'", [workflows[w], job])
+	msg := sprintf("Workflow %s has a dangerous trigger and checks out a pull request in job '%s'", [workflows[w], job])
 }
 
 events_set(events) := object.keys(events) if {
-  is_object(events)
+	is_object(events)
 }
 
 events_set(events) := events if {
-  is_array(events)
+	is_array(events)
 }
 
 dangerous_ref(ref) if {
-  contains(ref, "github.event.pull_request")
+	contains(ref, "github.event.pull_request")
 }
 
 dangerous_ref(ref) if {
-  contains(ref, "github.event.workflow_run")
+	contains(ref, "github.event.workflow_run")
 }

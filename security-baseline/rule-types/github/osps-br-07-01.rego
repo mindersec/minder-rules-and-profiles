@@ -36,7 +36,7 @@
 #           This PR configures a .gitignore file which prevents common sensitive
 #           files from being committed to version control and uploaded.
 #
-#           For more information, see 
+#           For more information, see
 #           https://docs.github.com/en/get-started/git-basics/ignoring-files
 #           and https://git-scm.com/docs/gitignore
 #         contents:
@@ -63,17 +63,17 @@ default allow := false
 message := "No .gitignore or secret push protection configured"
 
 allow if {
-  content := file.read(".gitignore")
+	content := file.read(".gitignore")
 
-  # TODO: check for specific secret patterns
-  "" != content
+	# TODO: check for specific secret patterns
+	"" != content
 }
 
 repo_settings := minder.datasource.baselineghapi.repo_config({
-  "owner": input.properties["github/repo_owner"],
-  "repo": input.properties["github/repo_name"],
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
 }).body
 
 allow if {
-  repo_settings.security_and_analysis.secret_scanning_push_protection.status == "enabled"
+	repo_settings.security_and_analysis.secret_scanning_push_protection.status == "enabled"
 }

@@ -33,13 +33,13 @@ import rego.v1
 # N.B. creating this test case in a test would cause this repo to fail the check,
 # so we do not have this test case yet.
 violations contains {"msg": msg} if {
-  # Walk all files in the repo
-  files_in_repo := file.walk(".")
+	# Walk all files in the repo
+	files_in_repo := file.walk(".")
 
-  some current_file in files_in_repo
+	some current_file in files_in_repo
 
-  http_type := file.http_type(current_file)
-  http_type == "application/octet-stream"
+	http_type := file.http_type(current_file)
+	http_type == "application/octet-stream"
 
-  msg := sprintf("Binary artifact found: %s", [current_file])
+	msg := sprintf("Binary artifact found: %s", [current_file])
 }

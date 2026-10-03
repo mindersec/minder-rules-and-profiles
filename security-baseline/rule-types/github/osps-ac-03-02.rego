@@ -66,17 +66,17 @@ default allow := false
 message := "Branch deletions are allowed on the default branch"
 
 allow if {
-  input.ingested.allow_deletions.enabled == false
+	input.ingested.allow_deletions.enabled == false
 }
 
 # We also want to check the new "branch rulesets", if they exist.
 applied_rulesets := minder.datasource.baselineghapi.branch_protection_status({
-  "owner": input.properties["github/repo_owner"],
-  "repo": input.properties["github/repo_name"],
-  "branch": input.properties["github/default_branch"],
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
+	"branch": input.properties["github/default_branch"],
 })
 
 allow if {
-  some rule
-  applied_rulesets.body[rule].type = "deletion"
+	some rule
+	applied_rulesets.body[rule].type = "deletion"
 }

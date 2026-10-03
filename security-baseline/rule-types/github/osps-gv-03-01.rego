@@ -29,17 +29,17 @@ import rego.v1
 default allow := false
 
 allow if {
-  files := file.ls_glob("./CONTRIBUTING*")
+	files := file.ls_glob("./CONTRIBUTING*")
 
-  some name
-  content := file.read(files[name])
-  "" != content
+	some name
+	content := file.read(files[name])
+	"" != content
 }
 
 allow if {
-  files := file.ls_glob("./CONTRIBUTING/*")
+	files := file.ls_glob("./CONTRIBUTING/*")
 
-  some name
-  content := file.read(files[name])
-  "" != content
+	some name
+	content := file.read(files[name])
+	"" != content
 }

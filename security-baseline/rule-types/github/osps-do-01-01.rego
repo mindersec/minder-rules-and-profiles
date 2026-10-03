@@ -68,39 +68,39 @@ default allow := false
 repo := sprintf("%s/%s", [])
 
 allow if {
-  # Check the SECURITY-INSIGHTS.yaml file
-  file.exists("SECURITY-INSIGHTS.yaml")
-  si_data := yaml.unmarshal(file.read("SECURITY-INSIGHTS.yaml"))
-  count(si_data.documentation) > 0
+	# Check the SECURITY-INSIGHTS.yaml file
+	file.exists("SECURITY-INSIGHTS.yaml")
+	si_data := yaml.unmarshal(file.read("SECURITY-INSIGHTS.yaml"))
+	count(si_data.documentation) > 0
 }
 
 # TODO: these should trigger a remediation to put them in
 # SECURITY-INSIGHTS.yaml, but also still pass the check(?)
 
 allow if {
-  # Check the GitHub homepage link
-  out = minder.datasource.baselineghapi.repo_config({
-    "owner": input.properties["github/repo_owner"],
-    "repo": input.properties["github/repo_name"],
-  })
-  out.body.homepage != ""
+	# Check the GitHub homepage link
+	out = minder.datasource.baselineghapi.repo_config({
+		"owner": input.properties["github/repo_owner"],
+		"repo": input.properties["github/repo_name"],
+	})
+	out.body.homepage != ""
 }
 
 allow if {
-  # Check the docs directory
-  mdDocs := file.ls_glob("docs/*.md")
-  rstDocs := file.ls_glob("docs/*.rst")
-  htmlDocs := file.ls_glob("docs/*.html")
-  txtDocs := file.ls_glob("docs/*.txt")
-  ((count(mdDocs) + count(rstDocs)) + count(htmlDocs)) + count(txtDocs) > 0
+	# Check the docs directory
+	mdDocs := file.ls_glob("docs/*.md")
+	rstDocs := file.ls_glob("docs/*.rst")
+	htmlDocs := file.ls_glob("docs/*.html")
+	txtDocs := file.ls_glob("docs/*.txt")
+	((count(mdDocs) + count(rstDocs)) + count(htmlDocs)) + count(txtDocs) > 0
 }
 
 readme := file.read("README.md")
 allow if {
-  # Check the README.md file for preformatted text after the first line
-  regex.match("\n *```", readme)
+	# Check the README.md file for preformatted text after the first line
+	regex.match("\n *```", readme)
 }
 
 allow if {
-  regex.match("\n#+ (?i:Usage|Getting Started)", readme)
+	regex.match("\n#+ (?i:Usage|Getting Started)", readme)
 }

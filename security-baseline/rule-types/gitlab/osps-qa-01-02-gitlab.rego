@@ -39,6 +39,6 @@ import rego.v1
 default allow := false
 
 allow if {
-  not input.properties.is_private
-  input.ingested.allow_force_push == false
+	not input.properties.is_private
+	input.ingested.allow_force_push == false
 }

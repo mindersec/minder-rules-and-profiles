@@ -55,47 +55,47 @@ workflows := array.concat(file.ls_glob("./.github/workflows/*.yml"), file.ls_glo
 
 # Look for possible script injections
 violations contains {"msg": msg} if {
-  some w
-  contents := file.read(workflows[w])
-  workflow := parse_yaml(contents)
+	some w
+	contents := file.read(workflows[w])
+	workflow := parse_yaml(contents)
 
-  some job
-  some step
-  stepDef := workflow.jobs[job].steps[step]
-  stepDef.run # Only applies to steps with a run command
+	some job
+	some step
+	stepDef := workflow.jobs[job].steps[step]
+	stepDef.run # Only applies to steps with a run command
 
-  regexp := "\\${{(.*?)}}"
-  expansions := regex.find_all_string_submatch_n(regexp, stepDef.run, -1)
+	regexp := "\\${{(.*?)}}"
+	expansions := regex.find_all_string_submatch_n(regexp, stepDef.run, -1)
 
-  some expr in expansions
-  vulnerable_expansion(expr[1])
+	some expr in expansions
+	vulnerable_expansion(expr[1])
 
-  msg := sprintf("Workflow %s has possible event script injection in step %d of job '%s'", [workflows[w], step, job])
+	msg := sprintf("Workflow %s has possible event script injection in step %d of job '%s'", [workflows[w], step, job])
 }
 
 # Patterns from https://securitylab.github.com/resources/github-actions-untrusted-input/
 vulnerable_patterns := {
-  "github.event.issue.title",
-  "github.event.issue.body",
-  "github.event.pull_request.title",
-  "github.event.pull_request.body",
-  "github.event.comment.body",
-  "github.event.review.body",
-  "github.event.pages.*.page_name",
-  "github.event.commits.*.message",
-  "github.event.head_commit.message",
-  "github.event.head_commit.author.email",
-  "github.event.head_commit.author.name",
-  "github.event.commits.*.author.email",
-  "github.event.commits.*.author.name",
-  "github.event.pull_request.head.ref",
-  "github.event.pull_request.head.label",
-  "github.event.pull_request.head.repo.default_branch",
-  "github.head_ref",
+	"github.event.issue.title",
+	"github.event.issue.body",
+	"github.event.pull_request.title",
+	"github.event.pull_request.body",
+	"github.event.comment.body",
+	"github.event.review.body",
+	"github.event.pages.*.page_name",
+	"github.event.commits.*.message",
+	"github.event.head_commit.message",
+	"github.event.head_commit.author.email",
+	"github.event.head_commit.author.name",
+	"github.event.commits.*.author.email",
+	"github.event.commits.*.author.name",
+	"github.event.pull_request.head.ref",
+	"github.event.pull_request.head.label",
+	"github.event.pull_request.head.repo.default_branch",
+	"github.head_ref",
 }
 
 vulnerable_expansion(exp) if {
-  some match in vulnerable_patterns
-  matcher := concat("", ["*", match, "*"])
-  glob.match(matcher, null, exp)
+	some match in vulnerable_patterns
+	matcher := concat("", ["*", match, "*"])
+	glob.match(matcher, null, exp)
 }

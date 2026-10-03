@@ -37,22 +37,22 @@ package minder
 import rego.v1
 
 violations contains {"msg": msg} if {
-  not input.ingested.license
-  msg := "License details not found"
+	not input.ingested.license
+	msg := "License details not found"
 }
 
 violations contains {"msg": msg} if {
-  input.ingested.license
-  license := input.ingested.license.spdx_id
+	input.ingested.license
+	license := input.ingested.license.spdx_id
 
-  resp2 := minder.datasource.spdx.licenses({})
-  licenses := resp2.body.licenses
-  osi := {l.licenseId | l := licenses[_]; l.isOsiApproved}
-  fsf := {l.licenseId | l := licenses[_]; l.isFsfLibre}
-  approved_licenses := osi | fsf
+	resp2 := minder.datasource.spdx.licenses({})
+	licenses := resp2.body.licenses
+	osi := {l.licenseId | l := licenses[_]; l.isOsiApproved}
+	fsf := {l.licenseId | l := licenses[_]; l.isFsfLibre}
+	approved_licenses := osi | fsf
 
-  count(approved_licenses) != 0
-  license != null
-  not license in approved_licenses
-  msg := sprintf("License %s is not OSI/FSF approved", [license])
+	count(approved_licenses) != 0
+	license != null
+	not license in approved_licenses
+	msg := sprintf("License %s is not OSI/FSF approved", [license])
 }

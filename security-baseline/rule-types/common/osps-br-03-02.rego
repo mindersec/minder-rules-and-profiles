@@ -1,6 +1,6 @@
 # METADATA
 #
-# name: osps-br-03-02 
+# name: osps-br-03-02
 # title: Deliver releases via encrypted channels
 # description: |
 #   This check determines whether the release artifacts of the project
@@ -39,8 +39,8 @@ readme_contents := file.read("./README.md")
 http_urls := regex.find_all_string_submatch_n(`(http://\S*)`, readme_contents, -1)[0]
 
 violations contains {"msg": msg} if {
-  some url in http_urls
-  not startswith(url, "http://localhost")
+	some url in http_urls
+	not startswith(url, "http://localhost")
 
-  msg := sprintf("README.md contains non-HTTPS URL '%s'", [url])
+	msg := sprintf("README.md contains non-HTTPS URL '%s'", [url])
 }

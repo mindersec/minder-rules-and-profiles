@@ -67,18 +67,18 @@ message := "Force pushes are allowed on the default branch"
 
 # The ingest endpoint checks the "classic" branch protection rule.
 allow if {
-  input.ingested.allow_force_pushes
-  input.ingested.allow_force_pushes.enabled == false
+	input.ingested.allow_force_pushes
+	input.ingested.allow_force_pushes.enabled == false
 }
 
 # We also want to check the new "branch rulesets", if they exist.
 applied_rulesets := minder.datasource.baselineghapi.branch_protection_status({
-  "owner": input.properties["github/repo_owner"],
-  "repo": input.properties["github/repo_name"],
-  "branch": input.properties["github/default_branch"],
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
+	"branch": input.properties["github/default_branch"],
 })
 
 allow if { # also type: deletion
-  some rule
-  applied_rulesets.body[rule].type = "non_fast_forward"
+	some rule
+	applied_rulesets.body[rule].type = "non_fast_forward"
 }

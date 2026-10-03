@@ -29,25 +29,25 @@ import rego.v1
 default allow := false
 
 allow if {
-  files := file.ls_glob("./LICENSE*")
+	files := file.ls_glob("./LICENSE*")
 
-  some name
-  content := file.read(files[name])
-  "" != content
+	some name
+	content := file.read(files[name])
+	"" != content
 }
 
 allow if {
-  files := file.ls_glob("./COPYING*")
+	files := file.ls_glob("./COPYING*")
 
-  some name
-  content := file.read(files[name])
-  "" != content
+	some name
+	content := file.read(files[name])
+	"" != content
 }
 
 allow if {
-  files := file.ls_glob("./LICENSE/*")
+	files := file.ls_glob("./LICENSE/*")
 
-  some name
-  content := file.read(files[name])
-  "" != content
+	some name
+	content := file.read(files[name])
+	"" != content
 }

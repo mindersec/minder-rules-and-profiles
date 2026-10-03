@@ -3,9 +3,9 @@
 # name: osps-vm-02-01
 # title: Contacts and process for reporting vulnerabilities is published
 # description: |
-#   This rule ensures that the repository provides a clear process and contact information 
-#   for reporting vulnerabilities. 
-#   It checks for the presence of a SECURITY.md file containing relevant reporting 
+#   This rule ensures that the repository provides a clear process and contact information
+#   for reporting vulnerabilities.
+#   It checks for the presence of a SECURITY.md file containing relevant reporting
 #   details or verifies if GitHub's private vulnerability reporting feature is enabled.
 # custom:
 #   short_failure_message: No contacts or process for reporting vulnerabilities was found
@@ -39,25 +39,25 @@ default allow := false
 
 # Allow if SECURITY.md exists and contains "report"
 allow if {
-  # Search specifically for SECURITY.md
-  files := file.ls_glob("./SECURITY*")
-  count(files) > 0
+	# Search specifically for SECURITY.md
+	files := file.ls_glob("./SECURITY*")
+	count(files) > 0
 
-  # Read the content of the file
-  content := lower(file.read(files[0]))
+	# Read the content of the file
+	content := lower(file.read(files[0]))
 
-  # Check if "report" exists in the content
-  contains(content, "report")
+	# Check if "report" exists in the content
+	contains(content, "report")
 }
 
 # Allow if GitHub vulnerability reporting is enabled
 allow if {
-  # Query the GitHub API to check vulnerability reporting status
-  out = minder.datasource.baselineghapi.private_vuln_reporting({
-    "owner": input.properties["github/repo_owner"],
-    "repo": input.properties["github/repo_name"],
-  })
+	# Query the GitHub API to check vulnerability reporting status
+	out = minder.datasource.baselineghapi.private_vuln_reporting({
+		"owner": input.properties["github/repo_owner"],
+		"repo": input.properties["github/repo_name"],
+	})
 
-  # Ensure private vulnerability reporting is enabled
-  out.body.enabled == true
+	# Ensure private vulnerability reporting is enabled
+	out.body.enabled == true
 }

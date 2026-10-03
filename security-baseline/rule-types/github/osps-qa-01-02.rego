@@ -3,8 +3,8 @@
 # name: osps-qa-01-02
 # title: Maintain publicly readable change history
 # description: |
-#   Ensure that the project's change history is publicly readable and 
-#   cannot be overwritten, maintaining transparency and trust in the 
+#   Ensure that the project's change history is publicly readable and
+#   cannot be overwritten, maintaining transparency and trust in the
 #   development process. This helps maintain a complete and accurate history of all
 #   changes made to the codebase.
 # custom:
@@ -40,6 +40,6 @@ import rego.v1
 default allow := false
 
 allow if {
-  not input.properties.is_private
-  not input.ingested.allow_force_pushes.enabled 
+	not input.properties.is_private
+	not input.ingested.allow_force_pushes.enabled
 }
