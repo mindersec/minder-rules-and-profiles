@@ -1,0 +1,46 @@
+# METADATA
+#
+# name: osps-ac-03-01-gitlab
+# title: Prevent overwriting git history
+# description: Disallow force pushes to the default branch
+# custom:
+#   short_failure_message: Force pushes are allowed
+#   severity:
+#     value: info
+#   release_phase: alpha
+#   guidance: |
+#     Ensure that force pushes are disabled for the default branch
+#     protection rule.
+#
+#     This setting prevents users with push access from force pushing
+#     to the branch, preserving the integrity of the commit history.
+#
+#     For more information, see GitLab's documentation on
+#     protected branches: https://docs.gitlab.com/user/project/protected_branches/
+#   def:
+#     provider_traits: ["rest", "gitlab"]
+#     in_entity: repository
+#     ingest:
+#       type: rest
+#       rest:
+#         endpoint: '/projects/{{.Entity.RepoId}}/protected_branches/{{.Entity.DefaultBranch}}'
+#         parse: json
+#         fallback:
+#           - http_code: 404
+#             body: |
+#               {"http_status": 404, "message": "Not Protected"}
+#     eval:
+#       rego:
+#         type: deny-by-default
+
+package minder
+
+import rego.v1
+
+default allow := false
+
+msg := "Force pushes are allowed on the default branch"
+
+allow if {
+	input.ingested.allow_force_push == false
+}

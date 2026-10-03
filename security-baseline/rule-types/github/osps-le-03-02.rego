@@ -1,0 +1,48 @@
+# METADATA
+#
+# name: osps-le-03-02
+# title: LICENSE or COPYING files are included in releases
+# description: |
+#   Ensure that a LICENSE or COPYING file or LICENSE/ directory is included
+#   in either the released source code or alongside the released assets.
+# custom:
+#   short_failure_message: No LICENSE or COPYING file found.
+#   severity:
+#     value: info
+#   release_phase: alpha
+#   guidance: |
+#     Released source code or release assets must be accompanied by a `LICENSE`
+#     or `COPYING` file, or a `LICENSE/` folder alongside the assets.
+#   def:
+#     provider_traits: ["rest", "github"]
+#     in_entity: release
+#     ingest:
+#       type: rest
+#       rest:
+#         # We check the latest release as a proxy for current release processes.
+#         endpoint: "/repos/{{ mapGet .Entity.Properties \"github/owner\" }}/{{ mapGet .Entity.Properties \"github/repo\" }}/releases/{{ mapGet .Entity.Properties \"upstream_id\" }}"
+#         parse: json
+#     eval:
+#       rego:
+#         type: deny-by-default
+#         data_sources:
+#           - name: spdx
+
+package minder
+
+import rego.v1
+
+default allow := false
+
+# GitHub publishes the source code at `tarball_url`, which includes
+# the LICENSE in the repo, so we only need to check for an explicit
+# separate license when reviewing GitHub releases.
+allow if input.ingested.tarball_url
+
+allow if count(license_files) > 0
+
+license_files contains asset if {
+	some asset in input.ingested.assets
+	some prefix in ["license", "copying"]
+	startswith(lower(asset.name), prefix)
+}

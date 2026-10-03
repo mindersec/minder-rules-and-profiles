@@ -1,0 +1,86 @@
+# METADATA
+#
+# name: osps-le-02-02
+# title: Released software assets have OSI/FSF approved license
+# description: |
+#   Verifies that released software assets include a license file that meets
+#   the OSI Open Source Definition or the FSF Free Software Definition.
+# custom:
+#   short_failure_message: Released software assets do not have an OSI/FSF approved license
+#   severity:
+#     value: info
+#   release_phase: alpha
+#   guidance: |
+#     Ensure that your releases include a LICENSE file that contains
+#     an OSI-approved or FSF-approved license. Common examples include:
+#     - Apache License 2.0
+#     - BSD License
+#     - GNU General Public License
+#     - MIT License
+#
+#     For a complete list of approved licenses, see:
+#     - OSI: https://opensource.org/licenses/
+#     - FSF: https://www.gnu.org/licenses/license-list.html
+#   def:
+#     provider_traits: ["rest", "github"]
+#     in_entity: release
+#     ingest:
+#       type: rest
+#       rest:
+#         endpoint: "/repos/{{ mapGet .Entity.Properties \"github/owner\" }}/{{ mapGet .Entity.Properties \"github/repo\" }}/releases/{{ mapGet .Entity.Properties \"upstream_id\" }}/assets"
+#         parse: json
+#     eval:
+#       data_sources:
+#         - name: spdx
+#       rego:
+#         type: constraints
+
+package minder
+
+import rego.v1
+
+get_license_info(asset) := {"license_resp": license_resp, "ident_resp": ident_resp} if {
+	license_resp := http.send({
+		"method": "GET",
+		"url": asset.browser_download_url,
+		"headers": {"Accept": "application/octet-stream"},
+		"enable_redirect": true,
+		"raise_error": true,
+	})
+
+	ident_resp := http.send({
+		"method": "POST",
+		"url": "https://spdx-detector-562949304223.us-central1.run.app",
+		"headers": {
+			"Accept": "application/json",
+			"Content-Type": "text/plain",
+		},
+		"raw_body": license_resp.raw_body,
+		"raise_error": true,
+	})
+}
+
+get_approved_licenses(licenses) := approved_licenses if {
+	osi := {l.licenseId | l := licenses[_]; l.isOsiApproved}
+	fsf := {l.licenseId | l := licenses[_]; l.isFsfLibre}
+	approved_licenses := osi | fsf
+}
+
+violations contains {"msg": msg} if {
+	some asset in input.ingested
+	startswith(lower(asset.name), "license")
+
+	resp := get_license_info(asset)
+
+	msg := get_violation_message(resp)
+}
+
+get_violation_message(resp) := "No valid license identified in the license file" if {
+	resp.ident_resp.body[0] == ""
+} else := sprintf("License '%v' is not OSI/FSF approved", [license_id]) if {
+	count(resp.ident_resp.body) > 0
+	license_id := resp.ident_resp.body[0]
+	spdx_resp := minder.datasource.spdx.licenses({})
+	approved_licenses := get_approved_licenses(spdx_resp.body.licenses)
+	not license_id in approved_licenses
+}
