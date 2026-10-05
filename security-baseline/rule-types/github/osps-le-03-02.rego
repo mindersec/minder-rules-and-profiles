@@ -25,8 +25,6 @@
 #     eval:
 #       rego:
 #         type: deny-by-default
-#         data_sources:
-#           - name: spdx
 
 package minder
 

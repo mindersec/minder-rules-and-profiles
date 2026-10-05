@@ -182,7 +182,6 @@ mv new.txtar branch-protection.txtar
   }
 }
 -- ruleset-not-enabled.json --
-[]
 [
   {
     "type": "required_linear_history",
