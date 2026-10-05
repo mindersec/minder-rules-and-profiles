@@ -1,0 +1,84 @@
+# METADATA
+#
+# name: osps-ac-03-01
+# title: Prevent overwriting git history
+# description: Disallow force pushes to the branch
+# custom:
+#   short_failure_message: Force pushes are allowed
+#   severity:
+#     value: info
+#   release_phase: alpha
+#   guidance: |
+#     Ensure that the appropriate setting is disabled for the branch
+#     protection rule.
+#
+#     This setting prevents users with push access to force push to the
+#     branch.
+#
+#     For more information, see [GitHub's
+#     documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
+#   def:
+#     provider_traits: ["rest", "github"]
+#     in_entity: repository
+#     ingest:
+#       type: rest
+#       rest:
+#         endpoint: '/repos/{{.Entity.Owner}}/{{.Entity.Name}}/branches/{{ .Entity.DefaultBranch }}/protection'
+#         parse: json
+#         fallback:
+#           - http_code: 404
+#             body: |
+#               {"http_status": 404, "message": "Not Protected"}
+#     eval:
+#       data_sources:
+#         - name: baselineghapi
+#       rego:
+#         type: deny-by-default
+#     remediate:
+#       type: rest
+#       rest:
+#         method: PUT
+#         endpoint: '/repos/{{.Entity.Owner}}/{{.Entity.Name}}/rulesets'
+#         body: |
+#           {
+#             "name": "OSPS-AC-03.01: Prevent force push to default branch",
+#             "target": "branch",
+#             "enforcement": "active",
+#             "conditions": {
+#               "ref_name": {
+#                 "include": ["~DEFAULT_BRANCH"],
+#                 "exclude": []
+#               }
+#             },
+#             "rules": [
+#               {
+#                 "type": "non_fast_forward",
+#               }
+#             ]
+#           }
+
+package minder
+
+import rego.v1
+
+default allow := false
+
+message := "Force pushes are allowed on the default branch"
+
+# The ingest endpoint checks the "classic" branch protection rule.
+allow if {
+	input.ingested.allow_force_pushes
+	input.ingested.allow_force_pushes.enabled == false
+}
+
+# We also want to check the new "branch rulesets", if they exist.
+applied_rulesets := minder.datasource.baselineghapi.branch_protection_status({
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
+	"branch": input.properties["github/default_branch"],
+})
+
+allow if { # also type: deletion
+	some rule
+	applied_rulesets.body[rule].type = "non_fast_forward"
+}

@@ -1,0 +1,192 @@
+GitHub has two APIs for branch protection:
+
+* /branches/$BRANCH/protection is the _old_ branch protection API
+
+  The branch protection REST API allows checking the status of a branch, but
+  cannot necessarily edit the policy, because the policies may contain wildcards
+  (with "best match wins" semantics).
+
+* /rules/branches/$BRANCH is the _new_ repository ruleset API
+
+  Repository rulesets have two APIs -- the above for reading the composite of
+  all the rulesets, and a different API for managing each ruleset.  Unlike the
+  classic branch protection API, repository rulesets are _additive_ -- all
+  rulesets matching a given branch have their restrictions enforced.
+
+To re-create these API results, you'll need a repository with classic branch
+and repository rulesets enabled, one with branch protection turned on but not
+preventing force push or deletion, and another with no protections.  You can then
+use the following script to append the contents to this readme/header.
+
+head -34 branch-protection.txtar > new.txtar
+echo "-- classic-protected.json --" >> new.txtar
+gh api /repos/$OWNER1/$REPO1/branches/$BRANCH1/protection | jq >> new.txtar
+echo "-- ruleset-protected.json --" >> new.txtar
+gh api /repos/$OWNER1/$REPO1/rules/branches/$BRANCH1 | jq >> new.txtar
+echo "-- classic-no-protection.json --" >> new.txtar
+gh api /repos/$OWNER2/$REPO2/branches/$BRANCH2/protection | jq >> new.txtar
+echo "-- ruleset-no-protection.json --" >> new.txtar
+gh api /repos/$OWNER2/$REPO2/rules/branches/$BRANCH2 | jq >> new.txtar
+echo "-- classic-not-enabled.json --" >> new.txtar
+gh api /repos/$OWNER3/$REPO3/branches/$BRANCH3/protection | jq >> new.txtar
+echo "-- ruleset-not-enabled.json --" >> new.txtar
+gh api /repos/$OWNER3/$REPO3/rules/branches/$BRANCH3 | jq >> new.txtar
+mv new.txtar branch-protection.txtar
+-- classic-protected.json --
+{
+  "url": "https://api.github.com/repos/mindersec/minder/branches/main/protection",
+  "required_status_checks": {
+    "url": "https://api.github.com/repos/mindersec/minder/branches/main/protection/required_status_checks",
+    "strict": true,
+    "contexts": [],
+    "contexts_url": "https://api.github.com/repos/mindersec/minder/branches/main/protection/required_status_checks/contexts",
+    "checks": []
+  },
+  "required_pull_request_reviews": {
+    "url": "https://api.github.com/repos/mindersec/minder/branches/main/protection/required_pull_request_reviews",
+    "dismiss_stale_reviews": true,
+    "require_code_owner_reviews": false,
+    "require_last_push_approval": true,
+    "required_approving_review_count": 1
+  },
+  "required_signatures": {
+    "url": "https://api.github.com/repos/mindersec/minder/branches/main/protection/required_signatures",
+    "enabled": false
+  },
+  "enforce_admins": {
+    "url": "https://api.github.com/repos/mindersec/minder/branches/main/protection/enforce_admins",
+    "enabled": true
+  },
+  "required_linear_history": {
+    "enabled": false
+  },
+  "allow_force_pushes": {
+    "enabled": false
+  },
+  "allow_deletions": {
+    "enabled": false
+  },
+  "block_creations": {
+    "enabled": false
+  },
+  "required_conversation_resolution": {
+    "enabled": false
+  },
+  "lock_branch": {
+    "enabled": false
+  },
+  "allow_fork_syncing": {
+    "enabled": false
+  }
+}
+-- ruleset-protected.json --
+[
+  {
+    "type": "deletion",
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "custcodian/website",
+    "ruleset_id": 24019598
+  },
+  {
+    "type": "non_fast_forward",
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "custcodian/website",
+    "ruleset_id": 24019598
+  },
+  {
+    "type": "copilot_code_review",
+    "parameters": {
+      "review_on_push": false,
+      "review_draft_pull_requests": true
+    },
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "custcodian/website",
+    "ruleset_id": 24019598
+  },
+  {
+    "type": "deletion",
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "custcodian/website",
+    "ruleset_id": 7251508
+  },
+  {
+    "type": "non_fast_forward",
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "custcodian/website",
+    "ruleset_id": 7251508
+  },
+  {
+    "type": "pull_request",
+    "parameters": {
+      "required_approving_review_count": 0,
+      "dismiss_stale_reviews_on_push": false,
+      "required_reviewers": [],
+      "require_code_owner_review": false,
+      "dismissal_restriction": {
+        "enabled": false,
+        "allowed_actors": []
+      },
+      "require_last_push_approval": false,
+      "required_review_thread_resolution": false,
+      "require_extra_approval_for_unattributed_changes": true,
+      "allowed_merge_methods": [
+        "merge",
+        "squash",
+        "rebase"
+      ]
+    },
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "custcodian/website",
+    "ruleset_id": 7251508
+  }
+]
+-- classic-no-protection.json --
+{
+  "message": "Branch not protected",
+  "documentation_url": "https://docs.github.com/rest/branches/branch-protection#get-branch-protection",
+  "status": "404"
+}
+-- ruleset-no-protection.json --
+[]
+-- classic-not-enabled.json --
+{
+  "url": "https://api.github.com/repos/evankanderson/sia/branches/master/protection",
+  "required_signatures": {
+    "url": "https://api.github.com/repos/evankanderson/sia/branches/master/protection/required_signatures",
+    "enabled": false
+  },
+  "enforce_admins": {
+    "url": "https://api.github.com/repos/evankanderson/sia/branches/master/protection/enforce_admins",
+    "enabled": false
+  },
+  "required_linear_history": {
+    "enabled": false
+  },
+  "allow_force_pushes": {
+    "enabled": true
+  },
+  "allow_deletions": {
+    "enabled": true
+  },
+  "block_creations": {
+    "enabled": false
+  },
+  "required_conversation_resolution": {
+    "enabled": true
+  },
+  "lock_branch": {
+    "enabled": false
+  },
+  "allow_fork_syncing": {
+    "enabled": false
+  }
+}
+-- ruleset-not-enabled.json --
+[
+  {
+    "type": "required_linear_history",
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "evankanderson/sia",
+    "ruleset_id": 24395885
+  }
+]

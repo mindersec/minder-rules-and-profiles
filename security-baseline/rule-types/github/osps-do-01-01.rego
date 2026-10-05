@@ -1,0 +1,106 @@
+# METADATA
+#
+# name: osps-do-01-01
+# title: OSPS-DO-01 The project documentation MUST provide user guides for all basic functionality
+# description: |
+#   Verifies that the project documentation provides a user guide.
+#
+#   This rule attempts to locate user guides from several project documentation sources.
+#
+#   Currently, this rule checks the following:
+#
+#   * The GitHub repository's public link
+#   * A `docs` directory in the default branch of the repository with .md, .rst, .html or .txt files
+#   * A `documentation` entry in SECURITY-INSIGHTS.yaml
+#   * A `README.md` file containing preformatted text (triple-backtick) or the headings
+#    "usage" or "getting started"
+#
+#   For more information, see [OpenSSF Security Baseline](https://baseline.openssf.org/#osps-do-0101).
+# custom:
+#   short_failure_message: No user guides or project documentation found
+#   severity:
+#     value: low
+#   release_phase: alpha
+#   guidance: |
+#     Publish documentation in one of the following well-known locations:
+#
+#     * Set the repository homepage to a documentation URL.
+#     * Add a SECURITY-INSIGHTS.yaml file with a `documentation` entry
+#     * Create a `docs` directory in the default branch of the repository
+#     * Add a "usage" or "getting started" section to `README.md`
+#   def:
+#     provider_traits: ["git", "rest", "github"]
+#     in_entity: repository
+#     ingest:
+#       type: git
+#     eval:
+#       data_sources:
+#         - name: baselineghapi
+#       rego:
+#         type: deny-by-default
+#     # Remediation is a work in progress -- ideally, we could read which location(s)
+#     # contained the documentation, and automatically update SECURITY-INSIGHTS.yaml
+#     # with any missing documentation locations.
+# #    remediate:
+# #      type: pull_request
+# #      pull_request:
+# #        title: "Add documentation to security-insights.yaml"
+# #        body: |
+# #          This is a Minder automated pull request.
+# #
+# #          This pull request links the discovered documentation in the security-insights.yaml file.
+# #        method: minder.yq.evaluate
+# #        params:
+# #          # TODO: need to be able to feed output from eval into remediate
+# #          expression: |
+# #            .documentation = [ "./README.md" ]
+# #          patterns:
+# #          # TODO: need to be able to create files as well as match existing files
+# #          - pattern: "SECURITY-INSIGHTS.yaml"
+# #            type: glob
+
+package minder
+
+import rego.v1
+
+default allow := false
+
+repo := sprintf("%s/%s", [])
+
+allow if {
+	# Check the SECURITY-INSIGHTS.yaml file
+	file.exists("SECURITY-INSIGHTS.yaml")
+	si_data := yaml.unmarshal(file.read("SECURITY-INSIGHTS.yaml"))
+	count(si_data.documentation) > 0
+}
+
+# TODO: these should trigger a remediation to put them in
+# SECURITY-INSIGHTS.yaml, but also still pass the check(?)
+
+allow if {
+	# Check the GitHub homepage link
+	out = minder.datasource.baselineghapi.repo_config({
+		"owner": input.properties["github/repo_owner"],
+		"repo": input.properties["github/repo_name"],
+	})
+	out.body.homepage != ""
+}
+
+allow if {
+	# Check the docs directory
+	mdDocs := file.ls_glob("docs/*.md")
+	rstDocs := file.ls_glob("docs/*.rst")
+	htmlDocs := file.ls_glob("docs/*.html")
+	txtDocs := file.ls_glob("docs/*.txt")
+	((count(mdDocs) + count(rstDocs)) + count(htmlDocs)) + count(txtDocs) > 0
+}
+
+readme := file.read("README.md")
+allow if {
+	# Check the README.md file for preformatted text after the first line
+	regex.match("\n *```", readme)
+}
+
+allow if {
+	regex.match("\n#+ (?i:Usage|Getting Started)", readme)
+}

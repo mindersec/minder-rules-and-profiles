@@ -21,6 +21,10 @@ Expect updates to the rules to address the following (roughly in the described o
 
 ## Changelog
 
+### Testing updates
+
+Tests have been added for most of the "common" and "GitHub" rules.  In the course of testing, it was discovered that `osps-ac-03-01` and `osps-ac-03-02` rules evaluated their inputs incorrectly and would always pass.  These rules have been corrected, which may lead to new (true) failures on these rules.
+
 ### Updates from 2025-10-10
 
 * The `osbps-br-01-02` ruletype has been retired from the baseline.  This rule duplicated some of the checks in the `opsps-br-01-01` ruletype, so there is no loss of coverage.  The ruletype is no longer referenced by the `security-baseline-level-1` profile, so it should be unused and safe to delete in your project.
