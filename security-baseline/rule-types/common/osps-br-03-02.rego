@@ -36,7 +36,7 @@ import rego.v1
 # Currently, we assume that direct downloads are linked from a README
 # file, and not elsewhere in the documentation.
 readme_contents := file.read("./README.md")
-http_urls := regex.find_all_string_submatch_n(`(http://\S*)`, readme_contents, -1)[0]
+http_urls := regex.find_n(`http://\S*`, readme_contents, -1)
 
 violations contains {"msg": msg} if {
 	some url in http_urls
