@@ -1,0 +1,13 @@
+tests:
+  - name: "Should have pre-commit enabled"
+    def: {}
+    params: {}
+    expect: "pass"
+    git:
+      repo_base: good
+  - name: "Should not have pre-commit enabled"
+    def: {}
+    params: {}
+    expect: "fail"
+    git:
+      repo_base: bad
