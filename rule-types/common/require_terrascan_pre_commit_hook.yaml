@@ -1,0 +1,63 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: require_terrascan_pre_commit_hook
+display_name: Enable Terrascan Pre-commit hooks for detecting compliance and security violations
+short_failure_message: Terrascan Pre-commit hook is not configured for the repository
+severity:
+  value: medium
+context: {}
+description: |
+  Verifies that Terrascan Pre-commit hook is configured for the repository
+guidance: |
+  Ensure that Terrascan is configured as a (pre-commit)[https://pre-commit.com/]
+  hook for the repository.
+
+  Terrascan is a static code analyzer for Infrastructure as Code. Terrascan allows you to:
+    - Seamlessly scan infrastructure as code for misconfigurations.
+    - Monitor provisioned cloud infrastructure for configuration changes that introduce posture drift, and enables reverting to a secure posture.
+    - Detect security vulnerabilities and compliance violations.
+    - Mitigate risks before provisioning cloud native infrastructure.
+    - Offers flexibility to run locally or integrate with your CI\CD.
+
+  [Read more](https://runterrascan.io/)
+
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties: {}
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        import future.keywords.if
+        import future.keywords.every
+
+        default message := "Terrascan pre-commit hook is not configured for the repository"
+        default allow := false
+
+        
+        # pre-commit hook
+        precommit := file.read(".pre-commit-config.yaml")
+        
+        parsed_data := parse_yaml(precommit)
+
+         allow if {
+          some repo_id, hook_id
+          repo_data := parsed_data.repos[repo_id]
+          endswith(repo_data["repo"], "https://github.com/tenable/terrascan")
+          hooks = repo_data["hooks"]
+          hooks[hook_id].id == "terraform-pre-commit"
+        }
+
+        message := "" if allow
+  alert:
+    type: security_advisory
+    security_advisory: {}
