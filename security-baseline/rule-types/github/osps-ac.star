@@ -75,7 +75,9 @@ def test_ac_03_01_other_rules():
         data_sources=["../../data-sources/baselineghapi.yaml"],
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("Force pushes are allowed on the default branch") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("Force pushes are allowed on the default branch") > 0)
 
 def test_ac_03_01_unprotected():
     res = eval(
@@ -85,7 +87,9 @@ def test_ac_03_01_unprotected():
         data_sources=["../../data-sources/baselineghapi.yaml"],
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("Force pushes are allowed on the default branch") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("Force pushes are allowed on the default branch") > 0)
 
 def test_ac_03_02_classic():
     res = eval(
@@ -115,7 +119,9 @@ def test_ac_03_02_other_rules():
         data_sources=["../../data-sources/baselineghapi.yaml"],
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("Branch deletions are allowed on the default branch") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("Branch deletions are allowed on the default branch") > 0)
 
 def test_ac_03_02_unprotected():
     res = eval(
@@ -125,4 +131,6 @@ def test_ac_03_02_unprotected():
         data_sources=["../../data-sources/baselineghapi.yaml"],
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("Branch deletions are allowed on the default branch") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("Branch deletions are allowed on the default branch") > 0)

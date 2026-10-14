@@ -74,7 +74,9 @@ def test_le_02_01_neither():
         },
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("License CC-BY-ND-4.0 is not OSI/FSF approved") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("License CC-BY-ND-4.0 is not OSI/FSF approved") > 0)
 
 def test_le_02_01_missing():
     res = eval(
@@ -86,7 +88,9 @@ def test_le_02_01_missing():
         },
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("License details not found") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("License details not found") > 0)
 
 # The LE-02-02 rule is a bit strange, so simply test that it loads for now
 def test_le_02_02_bad_license():

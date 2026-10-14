@@ -33,9 +33,11 @@ def test_br_01_01_var_injection():
         mock_fs=filter_workflows(lambda file: file.count("inject") > 0)
     )
     assert.eq(res["status"], "fail")
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
     # Flag the file
-    assert.true(res["message"].count("pr_title_inject.yaml") > 0)
-    assert.true(res["message"].count("has possible event script injection in step") > 0)
+    assert.true(detail.count("pr_title_inject.yaml") > 0)
+    assert.true(detail.count("has possible event script injection in step") > 0)
 
 def test_br_01_03_no_workflows():
     res = eval(
@@ -60,11 +62,13 @@ def test_br_01_03_unsafe_checkout():
         mock_fs=filter_workflows(lambda file: file.count("ref") > 0)
     )
     assert.eq(res["status"], "fail")
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
     # Flag each file
-    assert.true(res["message"].count("pr_test_ref.yaml") > 0)
-    assert.true(res["message"].count("pr_workflow_ref.yaml") > 0)
+    assert.true(detail.count("pr_test_ref.yaml") > 0)
+    assert.true(detail.count("pr_workflow_ref.yaml") > 0)
     # Explains the problem
-    assert.true(res["message"].count("has a dangerous trigger and checks out") > 0)
+    assert.true(detail.count("has a dangerous trigger and checks out") > 0)
  
 def test_br_03_01_is_public():
     res = eval(
@@ -131,4 +135,6 @@ def test_br_07_01_unsafe():
         },
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("No .gitignore or secret push protection configured") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("No .gitignore or secret push protection configured") > 0)
