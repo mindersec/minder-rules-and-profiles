@@ -33,4 +33,6 @@ def test_license_type_nomatch():
         }
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("does not match the expected license type Apache-2.0") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("does not match the expected license type Apache-2.0") > 0)

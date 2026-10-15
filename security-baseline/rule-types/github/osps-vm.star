@@ -41,4 +41,6 @@ def test_vm_05_01_no_policy():
         }
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("No contacts or process for reporting vulnerabilities was found") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("No contacts or process for reporting vulnerabilities was found") > 0)

@@ -84,7 +84,9 @@ def test_do_01_01_no_docs():
         },
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("No user guides or project documentation found") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("No user guides or project documentation found") > 0)
 
 def test_do_02_01_issues_enabled():
     res = eval(

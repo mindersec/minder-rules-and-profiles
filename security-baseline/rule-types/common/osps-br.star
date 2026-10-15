@@ -38,5 +38,7 @@ def test_br_03_02_checks_all_http_urls():
         },
     )
     assert.eq(res["status"], "fail")
-    assert.true(res["message"].count("http://example.com/releases") > 0)
-    assert.true(res["message"].count("http://mirror.example.com/releases") > 0)
+    # Some versions of mindev don't expose "details" and combine it with "message"
+    detail = res.get("details", res["message"])
+    assert.true(detail.count("http://example.com/releases") > 0)
+    assert.true(detail.count("http://mirror.example.com/releases") > 0)
