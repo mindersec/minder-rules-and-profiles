@@ -31,8 +31,8 @@ def test_br_03_02_checks_all_http_urls():
         entity=ENTITY,
         mock_fs={
             "README.md": (
-                "Development mirror: http://localhost:8080/releases\n"
-                "Primary release: http://example.com/releases\n"
+                "Development mirror: http://localhost:8080/releases\n" +
+                "Primary release: http://example.com/releases\n" +
                 "Backup release: http://mirror.example.com/releases"
             ),
         },
