@@ -68,16 +68,16 @@ import rego.v1
 default output := {"patches": "{}"}
 
 insights_files := [
-  ".github/security-insights.yml",
-  ".github/security-insights.yaml",
-  ".gitlab/security-insights.yml",
-  ".gitlab/security-insights.yaml",
-  ".project/security-insights.yml",
-  ".project/security-insights.yaml",
-  "SECURITY-INSIGHTS.yml",
-  "SECURITY-INSIGHTS.yaml",
-  "security-insights.yml",
-  "security-insights.yaml",
+	".github/security-insights.yml",
+	".github/security-insights.yaml",
+	".gitlab/security-insights.yml",
+	".gitlab/security-insights.yaml",
+	".project/security-insights.yml",
+	".project/security-insights.yaml",
+	"SECURITY-INSIGHTS.yml",
+	"SECURITY-INSIGHTS.yaml",
+	"security-insights.yml",
+	"security-insights.yaml",
 ]
 
 si_files := [e | some e in insights_files; file.exists(e)]
@@ -89,7 +89,7 @@ default current := {}
 
 current := yaml.unmarshal(si_contents) if yaml.is_valid(si_contents)
 violations contains {"msg": "Security Insights file is missing or malformed"} if {
-  current == {}
+	current == {}
 }
 
 # Detected contains the detected values for the Security Insights file.
@@ -97,21 +97,21 @@ violations contains {"msg": "Security Insights file is missing or malformed"} if
 detected.header["schema-version"] := "2.2.0"
 detected.header["last-updated"] := object.get(current, ["header", "last-updated"], sprintf("%04d-%02d-%02d", time.date(time.now_ns())))
 detected.header.url := sprintf(
-  "https://raw.githubusercontent.com/%s/%s/%s/%s",
-  [input.properties["github/repo_owner"], input.properties["github/repo_name"], input.properties["github/default_branch"], si_files[0]],
+	"https://raw.githubusercontent.com/%s/%s/%s/%s",
+	[input.properties["github/repo_owner"], input.properties["github/repo_name"], input.properties["github/default_branch"], si_files[0]],
 )
 
 detected.repository.status := "active"
 detected.repository.security.assessments.self.comment := object.get(current, ["repository", "security", "assessments", "self", "comment"], "Not yet performed")
 
 base_url := sprintf(
-  "https://github.com/%s/%s",
-  [input.properties["github/repo_owner"], input.properties["github/repo_name"]],
+	"https://github.com/%s/%s",
+	[input.properties["github/repo_owner"], input.properties["github/repo_name"]],
 )
 
 blob_stub := sprintf(
-  "%s/blob/%s",
-  [base_url, input.properties["github/default_branch"]],
+	"%s/blob/%s",
+	[base_url, input.properties["github/default_branch"]],
 )
 
 reviewed_str := object.get(current, ["header", "last-reviewed"], "1970-01-01")
@@ -121,48 +121,48 @@ default review_age := 100000000000000000 # Needs to be a constant, this is about
 review_age := time.now_ns() - time.parse_ns("2006-01-02", reviewed_str)
 needs_review if review_age > time.parse_duration_ns("8760h") # 1 year
 violations contains {"msg": "Security Insights file has not been reviewed"} if {
-  needs_review
+	needs_review
 }
 
 detected.header["last-reviewed"] := sprintf("%04d-%02d-%02d", time.date(time.now_ns())) if {
-  needs_review
+	needs_review
 }
 
 detected.header["last-reviewed"] := current.header["last-reviewed"] if {
-  not needs_review
+	not needs_review
 }
 
 # File-based content discovery
 detected.repository.documentation["contributing-guide"] := sprintf("%s/CONTRIBUTING.md", [blob_stub]) if {
-  file.exists("CONTRIBUTING.md")
+	file.exists("CONTRIBUTING.md")
 }
 
 detected.repository.documentation["security-policy"] := sprintf("%s/SECURITY.md", [blob_stub]) if {
-  file.exists("SECURITY.md")
+	file.exists("SECURITY.md")
 }
 
 detected.project["vulnerability-reporting"].policy := sprintf("%s/SECURITY.md", [blob_stub]) if {
-  file.exists("SECURITY.md")
+	file.exists("SECURITY.md")
 }
 
 # API-based content discovery
 repo_config := minder.datasource.insightsghapi.repo_config({
-  "owner": input.properties["github/repo_owner"],
-  "repo": input.properties["github/repo_name"],
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
 }).body
 
 detected.project.name := object.get(current, ["project", "name"], repo_config.name)
 detected.repository.url := base_url
 
 detected.repository["accepts-change-request"] if {
-repo_config.has_pull_requests
-repo_config.pull_request_creation_policy == "all"
+	repo_config.has_pull_requests
+	repo_config.pull_request_creation_policy == "all"
 }
 
 detected.repository["accepts-automated-change-request"] := detected.repository["accepts-change-request"]
 detected.repository.license := {
-  "url": repo_config.license.url,
-  "expression": repo_config.license.spdx_id,
+	"url": repo_config.license.url,
+	"expression": repo_config.license.spdx_id,
 }
 
 detected.project.homepage := repo_config.homepage if repo_config.homepage != null
@@ -171,23 +171,23 @@ detected.project.homepage := repo_config.homepage if repo_config.homepage != nul
 
 # include existing projects
 detected.project.repositories contains e if {
-  e := object.get(current, ["project", "repositories"], [])[_]
+	e := object.get(current, ["project", "repositories"], [])[_]
 }
 
 detected.project.repositories contains e if {
-  every repo in object.get(current, ["project", "repositories"], []) {
-    repo.url != base_url
-  }
-  e := {
-    "url": base_url,
-    "comment": repo_config.description,
-    "name": input.properties["github/repo_name"],
-  }
+	every repo in object.get(current, ["project", "repositories"], []) {
+		repo.url != base_url
+	}
+	e := {
+		"url": base_url,
+		"comment": repo_config.description,
+		"name": input.properties["github/repo_name"],
+	}
 }
 
 vuln_reporting := minder.datasource.insightsghapi.private_vuln_reporting({
-  "owner": input.properties["github/repo_owner"],
-  "repo": input.properties["github/repo_name"],
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
 }).body
 
 reports_enabled if object.get(current, ["project", "vulnerability-reporting", "reports-accepted"], false) == true
@@ -197,35 +197,35 @@ detected.project["vulnerability-reporting"]["reports-accepted"] := reports_enabl
 detected.project["vulnerability-reporting"]["bug-bounty-available"] := object.get(current, ["project", "vulnerability-reporting", "bug-bounty-available"], false)
 
 members := minder.datasource.insightsghapi.members({
-  "owner": input.properties["github/repo_owner"],
-  "repo": input.properties["github/repo_name"],
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
 }).body
 
 administrators contains {"name": user.login, "primary": false} if {
-  some user in members
-  user.permissions.admin == true
+	some user in members
+	user.permissions.admin == true
 }
 
 detected.project.administrators contains e if {
-  e := object.get(current, ["project", "administrators"], [])[_]
+	e := object.get(current, ["project", "administrators"], [])[_]
 }
 
 detected.project.administrators contains {"name": user.name, "primary": false} if {
-  some user in administrators
-  every admin in object.get(current, ["project", "administrators"], []) {
-    user.name != admin.name
-  }
+	some user in administrators
+	every admin in object.get(current, ["project", "administrators"], []) {
+		user.name != admin.name
+	}
 }
 
 detected.repository["core-team"] contains e if {
-  e := object.get(current, ["repository", "core-team"], [])[_]
+	e := object.get(current, ["repository", "core-team"], [])[_]
 }
 
 detected.repository["core-team"] contains {"name": user.name, "primary": false} if {
-  some user in administrators
-  every admin in object.get(current, ["repository", "core-team"], []) {
-    user.name != admin.name
-  }
+	some user in administrators
+	every admin in object.get(current, ["repository", "core-team"], []) {
+		user.name != admin.name
+	}
 }
 
 # TODO: governance, review-policy, dependency-management-policy, etc.
@@ -235,5 +235,5 @@ merged := object.union(current, detected)
 output := {"patches": json.marshal(detected)}
 
 violations contains {"msg": "Security Insights file is not up to date with repository information"} if {
-  json.marshal(current) != json.marshal(merged)
+	json.marshal(current) != json.marshal(merged)
 }

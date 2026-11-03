@@ -35,7 +35,7 @@
 #
 #           This pull request creates the Security Insights file for the repository.  A subsequent
 #           pull request will be created to update the Security Insights file with detected values.
-# 
+#
 #           For more information, see https://security-insights.openssf.org/.
 #         contents:
 #         - path: .github/security-insights.yml
@@ -49,16 +49,16 @@ package minder
 import rego.v1
 
 insights_files := [
-  "SECURITY-INSIGHTS.yaml",
-  "SECURITY-INSIGHTS.yml",
-  "security-insights.yaml",
-  "security-insights.yml",
-  ".github/security-insights.yaml",
-  ".github/security-insights.yml",
-  ".gitlab/security-insights.yaml",
-  ".gitlab/security-insights.yml",
-  ".project/security-insights.yaml",
-  ".project/security-insights.yml",
+	"SECURITY-INSIGHTS.yaml",
+	"SECURITY-INSIGHTS.yml",
+	"security-insights.yaml",
+	"security-insights.yml",
+	".github/security-insights.yaml",
+	".github/security-insights.yml",
+	".gitlab/security-insights.yaml",
+	".gitlab/security-insights.yml",
+	".project/security-insights.yaml",
+	".project/security-insights.yml",
 ]
 
 default allow := false
@@ -69,18 +69,18 @@ message := sprintf("Could not find Security Insights in %v", [insights_files]) i
 
 today := sprintf("%04d-%02d-%02d", time.date(time.now_ns()))
 base_url := sprintf(
-  "https://github.com/%s/%s",
-  [input.properties["github/repo_owner"], input.properties["github/repo_name"]],
+	"https://github.com/%s/%s",
+	[input.properties["github/repo_owner"], input.properties["github/repo_name"]],
 )
 
 blob_stub := sprintf(
-  "%s/blob/%s",
-  [base_url, input.properties["github/default_branch"]],
+	"%s/blob/%s",
+	[base_url, input.properties["github/default_branch"]],
 )
 
 raw_stub := sprintf(
-  "https://raw.githubusercontent.com/%s/%s/%s",
-  [input.properties["github/repo_owner"], input.properties["github/repo_name"], input.properties["github/default_branch"]],
+	"https://raw.githubusercontent.com/%s/%s/%s",
+	[input.properties["github/repo_owner"], input.properties["github/repo_name"], input.properties["github/default_branch"]],
 )
 
 content.header["schema-version"] := "2.2.0"
@@ -95,27 +95,27 @@ content.repository.status := "active"
 
 # File-based content discovery
 content.repository.documentation["contributing-guide"] := sprintf("%s/CONTRIBUTING.md", [blob_stub]) if {
-  file.exists("CONTRIBUTING.md")
+	file.exists("CONTRIBUTING.md")
 }
 
 content.repository.documentation["security-policy"] := sprintf("%s/SECURITY.md", [blob_stub]) if {
-  file.exists("SECURITY.md")
+	file.exists("SECURITY.md")
 }
 
 content.project["vulnerability-reporting"].policy := sprintf("%s/SECURITY.md", [blob_stub]) if {
-  file.exists("SECURITY.md")
+	file.exists("SECURITY.md")
 }
 
 # API-based content discovery
 repo_config := minder.datasource.insightsghapi.repo_config({
-  "owner": input.properties["github/repo_owner"],
-  "repo": input.properties["github/repo_name"],
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
 }).body
 
 content.project.repositories := [{
-  "name": input.properties["github/repo_name"],
-  "url": base_url,
-  "comment": repo_config.description,
+	"name": input.properties["github/repo_name"],
+	"url": base_url,
+	"comment": repo_config.description,
 }]
 
 content.project.homepage := repo_config.homepage if repo_config.homepage != null
@@ -125,8 +125,8 @@ content.project.homepage := repo_config.homepage if repo_config.homepage != null
 content.repository.security.assessments.self.comment := "Not yet performed"
 
 content.repository["accepts-change-request"] if {
-  repo_config.has_pull_requests
-  repo_config.pull_request_creation_policy == "all"
+	repo_config.has_pull_requests
+	repo_config.pull_request_creation_policy == "all"
 }
 
 content.repository["accepts-automated-change-request"] := content.repository["accepts-change-request"]
@@ -135,21 +135,21 @@ content.repository.license.url := repo_config.license.url
 content.repository.license.expression := repo_config.license.spdx_id
 
 vuln_reporting := minder.datasource.insightsghapi.private_vuln_reporting({
-  "owner": input.properties["github/repo_owner"],
-  "repo": input.properties["github/repo_name"],
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
 }).body
 
 content.project["vulnerability-reporting"]["reports-accepted"] := vuln_reporting.enabled
 content.project["vulnerability-reporting"]["bug-bounty-available"] := false
 
 members := minder.datasource.insightsghapi.members({
-  "owner": input.properties["github/repo_owner"],
-  "repo": input.properties["github/repo_name"],
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
 }).body
 
 administrators contains {"name": user.login, "primary": false} if {
-  some user in members
-  user.permissions.admin == true
+	some user in members
+	user.permissions.admin == true
 }
 
 content.project.administrators := administrators
