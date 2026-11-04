@@ -1,0 +1,87 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: python_pyproject_toml_exists
+display_name: Python project has a pyproject.toml
+short_failure_message: pyproject.toml is missing
+severity:
+  value: low
+context: {}
+description: |
+  Checks that a Python repository contains a pyproject.toml file. This is the
+  modern standard for Python project configuration (PEP 517/518) and is
+  required by most current build tools (Poetry, Hatch, PDM, Flit, etc.).
+
+  The rule is skipped for repositories that show no signs of being a Python
+  project (no requirements.txt, setup.py, setup.cfg, or Pipfile).
+guidance: |
+  Add a pyproject.toml to your Python project. At minimum it should contain:
+
+    [build-system]
+    requires = ["setuptools"]
+    build-backend = "setuptools.build_meta"
+
+  Most modern build tools (Poetry, Hatch, PDM) will generate this for you.
+def:
+  provider_traits: ["git"]
+  in_entity: repository
+  rule_schema: {}
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import rego.v1
+
+        default allow := false
+
+        default skip := false
+
+        # Skip if this doesn't look like a Python project
+        skip if {
+          not file.exists("requirements.txt")
+          not file.exists("setup.py")
+          not file.exists("setup.cfg")
+          not file.exists("Pipfile")
+        }
+
+        allow if {
+          not skip
+          file.exists("pyproject.toml")
+        }
+
+        message := "pyproject.toml is missing; consider migrating to the modern Python project standard" if {
+          not allow
+          not skip
+        }
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Add pyproject.toml"
+      body: |
+        This is a Minder automated pull request.
+
+        A `pyproject.toml` file is the modern standard for Python project
+        configuration (PEP 517/518). This PR adds a minimal template to get
+        started. Update the `[project]` section with your project's details.
+      contents:
+        - path: "pyproject.toml"
+          action: replace
+          content: |
+            [build-system]
+            requires = ["setuptools>=68"]
+            build-backend = "setuptools.build_meta"
+
+            [project]
+            name = "your-project-name"
+            version = "0.1.0"
+            requires-python = ">=3.9"
+  alert:
+    type: security_advisory
+    security_advisory: {}
