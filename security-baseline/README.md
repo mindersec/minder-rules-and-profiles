@@ -25,7 +25,7 @@ Expect updates to the rules to address the following (roughly in the described o
 
 Tests have been added for most of the "common" and "GitHub" rules.  In the course of testing, it was discovered that `osps-ac-03-01` and `osps-ac-03-02` rules evaluated their inputs incorrectly and would always pass.  These rules have been corrected, which may lead to new (true) failures on these rules.
 
-It was also discovered that `osps-qa-01-02` would incorrectly pass on public repositories with no branch protection at all, and did not recognize repositories protected via GitHub repository rulesets. Both issues have been fixed; this may surface new (correct) failures on this rule.
+It was also discovered that `osps-qa-01-02` would incorrectly pass on public repositories with no branch protection at all, and did not recognize repositories protected via GitHub repository rulesets. Both issues have been fixed; evaluation results may change due to these fixes.
 
 ### Updates from 2025-10-10
 
