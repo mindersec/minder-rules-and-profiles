@@ -3,7 +3,7 @@ REPO_URL = "/repos/me/myrepo/license"
 
 RELEASE_ENTITY = {
     "owner": "me", "name": "myrepo", "type": "release",
-    "roperties": {"github/owner": "me", "github/repo": "myrepo", "upstream_id": 368090433}}
+    "properties": {"github/owner": "me", "github/repo": "myrepo", "upstream_id": 368090433}}
 
 SPDX_URL = "/spdx/license-list-data/refs/heads/main/json/licenses.json"
 spdx_licenses = body("""{"licenses": [
@@ -99,7 +99,7 @@ def test_le_02_02_bad_license():
         entity=RELEASE_ENTITY,
         data_sources=["../../data-sources/spdx.yaml"],
         mock_http={
-            "repos/me/myrepo/releases/368090433/assets": body("""[
+            "/repos/me/myrepo/releases/368090433/assets": body("""[
             {"name": "LICENSE.txt", "browser_download_url": "https://foo/"}
             ]"""),
             "https://spdx-detector-562949304223.us-central1.run.app/": body('["Apache-2.0"]'),
@@ -114,7 +114,7 @@ def test_le_03_02_no_license_asset():
         rule="osps-le-03-02",
         entity=RELEASE_ENTITY,
         mock_http={
-            "repos/me/myrepo/releases/368090433": body("""{
+            "/repos/me/myrepo/releases/368090433": body("""{
             "tarball_url": "https://api.github.com/repos/me/myrepo/tarball/v0.1.0",
             "assets": [
             ]}"""),
