@@ -30,6 +30,8 @@
 #             body: |
 #               {"http_status": 404, "message": "Not Protected"}
 #     eval:
+#       data_sources:
+#         - name: baselineghapi
 #       rego:
 #         type: deny-by-default
 
@@ -39,7 +41,22 @@ import rego.v1
 
 default allow := false
 
+# Classic branch protection.
 allow if {
 	not input.properties.is_private
-	not input.ingested.allow_force_pushes.enabled
+	input.ingested.allow_force_pushes.enabled == false
+}
+
+# Retrieve applied repository rulesets.
+applied_rulesets := minder.datasource.baselineghapi.branch_protection_status({
+	"owner": input.properties["github/repo_owner"],
+	"repo": input.properties["github/repo_name"],
+	"branch": input.properties["github/default_branch"],
+})
+
+# Ruleset-based protection.
+allow if {
+	not input.properties.is_private
+	some rule
+	applied_rulesets.body[rule].type == "non_fast_forward"
 }
