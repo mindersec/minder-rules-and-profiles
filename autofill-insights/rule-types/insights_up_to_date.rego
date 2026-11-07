@@ -17,6 +17,7 @@
 #     For more information, see [OpenSSF Security Insights](https://security-insights.openssf.org/).
 #   def:
 #     in_entity: repository
+#     provider_traits: ["github", "rest", "git"]
 #     ingest:
 #       type: git
 #     eval:

@@ -8,8 +8,6 @@
 #   severity:
 #     value: info
 #   release_phase: beta
-#   context:
-#     provider: github
 #   guidance: |
 #     Ensure that the Security Insights file exists in the repository.
 #     Security Insights provides a mechanism for projects to report information
@@ -19,6 +17,7 @@
 #     For more information, see [OpenSSF Security Insights](https://security-insights.openssf.org/).
 #   def:
 #     in_entity: repository
+#     provider_traits: ["github", "rest", "git"]
 #     ingest:
 #       type: git
 #     eval:
