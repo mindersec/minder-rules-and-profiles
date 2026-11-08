@@ -65,8 +65,6 @@ import rego.v1
 
 default allow := false
 
-repo := sprintf("%s/%s", [])
-
 allow if {
 	# Check the SECURITY-INSIGHTS.yaml file
 	file.exists("SECURITY-INSIGHTS.yaml")

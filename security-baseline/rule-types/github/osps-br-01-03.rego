@@ -1,7 +1,7 @@
 # METADATA
 #
 # name: osps-br-01-03
-# title: Prevent access to to privileged assets from untrusted workflows
+# title: Prevent access to privileged assets from untrusted workflows
 # description: |
 #   This check determines whether the project's GitHub Action workflows
 #   have dangerous code patterns that could allow untrusted workflows

@@ -5,16 +5,8 @@
 # description: |
 #   This check determines whether the project's GitHub Action workflows
 #   have dangerous code patterns. Some examples of these patterns are
-#   untrusted code checkouts, logging github context and secrets, or use
-#   of potentially untrusted inputs in scripts. The following patterns
-#   are checked:
-#
-#   * Untrusted Code Checkout: This is the misuse of potentially
-#   dangerous triggers. This checks if a pull_request_target or
-#   workflow_run workflow trigger was used in conjunction with an
-#   explicit pull request checkout. Workflows triggered with
-#   pull_request_target / workflow_run have write permission to the
-#   target repository and access to target repository secrets.
+#   use of potentially untrusted inputs in scripts or unquoted branch
+#   names. The following patterns are checked:
 #
 #   * Script Injection with Untrusted Context Variables: This pattern
 #   detects whether a workflow's inline script may execute untrusted
@@ -32,9 +24,6 @@
 #     value: critical
 #   release_phase: alpha
 #   guidance: |
-#     Avoid using pull_request_target and workflow_run workflow triggers with
-#     contributor-supplied code, following [GitHub's guidance](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/)
-#
 #     [Quote or escape untrusted context variables](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#understanding-the-risk-of-script-injections)
 #     before using them in scripts.
 #   def:
