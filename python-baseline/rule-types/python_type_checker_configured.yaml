@@ -1,0 +1,138 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: python_type_checker_configured
+display_name: Type checker configured for Python repository
+short_failure_message: No type checker configuration found
+severity:
+  value: medium
+context: {}
+description: |
+  Checks that a Python repository has a type checker configured. The check is
+  tool-agnostic: it passes if any of mypy, pyright, or pytype is present via
+  pyproject.toml, a tool-specific config file, or a CI workflow step.
+
+  Remediation is only triggered when none of these are found, so existing tool
+  choices are always respected.
+guidance: |
+  Add a type checker to your Python project. Common options:
+
+    - mypy: add [tool.mypy] to pyproject.toml or a mypy.ini / .mypy.ini file
+    - pyright: add a pyrightconfig.json file or [tool.pyright] in pyproject.toml
+    - pytype: add [tool.pytype] to pyproject.toml or a .pytype directory
+
+  If you are already running a type checker in CI without a config file, Minder
+  will still detect it.
+def:
+  provider_traits: ["git"]
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties:
+      default_type_checker:
+        type: string
+        description: |
+          The type checker to configure when none is found. Used only for
+          remediation; detection always accepts any supported tool.
+        default: mypy
+        enum:
+          - mypy
+          - pyright
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+
+        import rego.v1
+
+        default allow := false
+
+        default skip := false
+
+        # Skip if this doesn't look like a Python project
+        skip if {
+          not file.exists("pyproject.toml")
+          not file.exists("requirements.txt")
+          not file.exists("setup.py")
+          not file.exists("setup.cfg")
+          not file.exists("Pipfile")
+        }
+
+        # mypy via pyproject.toml [tool.mypy]
+        allow if {
+          not skip
+          content := file.read("pyproject.toml")
+          regex.match(`(?m)^\[tool\.mypy\]`, content)
+        }
+
+        # mypy via dedicated config file
+        allow if {
+          not skip
+          file.exists("mypy.ini")
+        }
+
+        allow if {
+          not skip
+          file.exists(".mypy.ini")
+        }
+
+        # pyright via pyrightconfig.json
+        allow if {
+          not skip
+          file.exists("pyrightconfig.json")
+        }
+
+        # pyright via pyproject.toml [tool.pyright]
+        allow if {
+          not skip
+          content := file.read("pyproject.toml")
+          regex.match(`(?m)^\[tool\.pyright\]`, content)
+        }
+
+        # pytype via pyproject.toml [tool.pytype]
+        allow if {
+          not skip
+          content := file.read("pyproject.toml")
+          regex.match(`(?m)^\[tool\.pytype\]`, content)
+        }
+
+        # type checker present in a GitHub Actions workflow
+        # file.ls returns full paths; read f directly
+        allow if {
+          not skip
+          some f in file.ls(".github/workflows")
+          workflow := file.read(f)
+          regex.match(`(mypy|pyright|pytype)`, workflow)
+        }
+
+        message := "No type checker (mypy, pyright, or pytype) configuration found" if {
+          not allow
+          not skip
+        }
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Add type checker configuration"
+      body: |
+        This is a Minder automated pull request.
+
+        No type checker configuration was found in this repository. This PR
+        adds a minimal `mypy.ini` to get started. Replace it with your
+        preferred tool if you'd like — Minder detects mypy, pyright, and
+        pytype.
+      contents:
+        - path: "mypy.ini"
+          action: replace
+          content: |
+            [mypy]
+            python_version = 3.9
+            strict = false
+  alert:
+    type: security_advisory
+    security_advisory: {}

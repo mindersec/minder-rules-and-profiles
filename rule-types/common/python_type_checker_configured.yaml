@@ -27,7 +27,18 @@ guidance: |
 def:
   provider_traits: ["git"]
   in_entity: repository
-  rule_schema: {}
+  rule_schema:
+    type: object
+    properties:
+      default_type_checker:
+        type: string
+        description: |
+          The type checker to configure when none is found. Used only for
+          remediation; detection always accepts any supported tool.
+        default: mypy
+        enum:
+          - mypy
+          - pyright
   ingest:
     type: git
     git: {}
@@ -92,10 +103,11 @@ def:
         }
 
         # type checker present in a GitHub Actions workflow
+        # file.ls returns full paths; read f directly
         allow if {
           not skip
           some f in file.ls(".github/workflows")
-          workflow := file.read(concat("/", [".github/workflows", f]))
+          workflow := file.read(f)
           regex.match(`(mypy|pyright|pytype)`, workflow)
         }
 
@@ -103,3 +115,24 @@ def:
           not allow
           not skip
         }
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Add type checker configuration"
+      body: |
+        This is a Minder automated pull request.
+
+        No type checker configuration was found in this repository. This PR
+        adds a minimal `mypy.ini` to get started. Replace it with your
+        preferred tool if you'd like — Minder detects mypy, pyright, and
+        pytype.
+      contents:
+        - path: "mypy.ini"
+          action: replace
+          content: |
+            [mypy]
+            python_version = 3.9
+            strict = false
+  alert:
+    type: security_advisory
+    security_advisory: {}

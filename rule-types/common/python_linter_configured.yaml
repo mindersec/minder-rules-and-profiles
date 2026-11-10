@@ -10,8 +10,8 @@ severity:
 context: {}
 description: |
   Checks that a Python repository has a linter configured. The check is
-  tool-agnostic: it passes if any of ruff, flake8, pylint, or pylama is
-  present via pyproject.toml, a tool-specific config file, or a CI workflow.
+  tool-agnostic: it passes if any of ruff, flake8, or pylint is present
+  via pyproject.toml, a tool-specific config file, or a CI workflow.
 
   Existing tool choices are always respected; remediation only triggers when
   no linter is found at all.
@@ -26,7 +26,18 @@ guidance: |
 def:
   provider_traits: ["git"]
   in_entity: repository
-  rule_schema: {}
+  rule_schema:
+    type: object
+    properties:
+      default_linter:
+        type: string
+        description: |
+          The linter to configure when none is found. Used only for
+          remediation; detection always accepts any supported tool.
+        default: ruff
+        enum:
+          - ruff
+          - flake8
   ingest:
     type: git
     git: {}
@@ -76,9 +87,10 @@ def:
           file.exists(".flake8")
         }
 
-        # flake8 via setup.cfg [flake8]
+        # flake8 via setup.cfg [flake8] — guard existence before reading
         allow if {
           not skip
+          file.exists("setup.cfg")
           content := file.read("setup.cfg")
           regex.match(`(?m)^\[flake8\]`, content)
         }
@@ -97,14 +109,34 @@ def:
         }
 
         # linter present in a GitHub Actions workflow
+        # file.ls returns full paths; read f directly
         allow if {
           not skip
           some f in file.ls(".github/workflows")
-          workflow := file.read(concat("/", [".github/workflows", f]))
-          regex.match(`(ruff|flake8|pylint|pylama)`, workflow)
+          workflow := file.read(f)
+          regex.match(`(ruff|flake8|pylint)`, workflow)
         }
 
         message := "No linter (ruff, flake8, or pylint) configuration found" if {
           not allow
           not skip
         }
+  remediate:
+    type: pull_request
+    pull_request:
+      title: "Add linter configuration"
+      body: |
+        This is a Minder automated pull request.
+
+        No linter configuration was found in this repository. This PR adds a
+        minimal `ruff.toml` to get started. Replace it with your preferred
+        tool if you'd like — Minder detects ruff, flake8, and pylint.
+      contents:
+        - path: "ruff.toml"
+          action: replace
+          content: |
+            line-length = 88
+            target-version = "py39"
+  alert:
+    type: security_advisory
+    security_advisory: {}

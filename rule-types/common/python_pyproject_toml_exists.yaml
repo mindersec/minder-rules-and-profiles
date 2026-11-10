@@ -14,7 +14,9 @@ description: |
   required by most current build tools (Poetry, Hatch, PDM, Flit, etc.).
 
   The rule is skipped for repositories that show no signs of being a Python
-  project (no requirements.txt, setup.py, setup.cfg, or Pipfile).
+  project (no requirements.txt, setup.py, setup.cfg, or Pipfile). Note that
+  unlike the other Python rules, pyproject.toml itself is not in the skip
+  condition — that is intentional, as it is the file this rule enforces.
 guidance: |
   Add a pyproject.toml to your Python project. At minimum it should contain:
 
@@ -43,7 +45,9 @@ def:
 
         default skip := false
 
-        # Skip if this doesn't look like a Python project
+        # Skip if no other Python project markers are present.
+        # Unlike the other Python rules, pyproject.toml is intentionally
+        # excluded here because it is the file this rule enforces.
         skip if {
           not file.exists("requirements.txt")
           not file.exists("setup.py")
@@ -68,8 +72,8 @@ def:
         This is a Minder automated pull request.
 
         A `pyproject.toml` file is the modern standard for Python project
-        configuration (PEP 517/518). This PR adds a minimal template to get
-        started. Update the `[project]` section with your project's details.
+        configuration (PEP 517/518). This PR adds a minimal `[build-system]`
+        table. Update it to match your build tool of choice.
       contents:
         - path: "pyproject.toml"
           action: replace
@@ -77,11 +81,3 @@ def:
             [build-system]
             requires = ["setuptools>=68"]
             build-backend = "setuptools.build_meta"
-
-            [project]
-            name = "your-project-name"
-            version = "0.1.0"
-            requires-python = ">=3.9"
-  alert:
-    type: security_advisory
-    security_advisory: {}

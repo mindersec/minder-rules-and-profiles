@@ -1,0 +1,25 @@
+---
+version: v1
+type: profile
+name: python-baseline
+display_name: Python Baseline
+context:
+  provider: github
+alert: "on"
+remediate: "off"
+repository:
+  - type: python_lock_file_exists
+    name: python_lock_file_exists
+    def: {}
+
+  - type: python_pyproject_toml_exists
+    name: python_pyproject_toml_exists
+    def: {}
+
+  - type: python_type_checker_configured
+    name: python_type_checker_configured
+    def: {}
+
+  - type: python_linter_configured
+    name: python_linter_configured
+    def: {}
