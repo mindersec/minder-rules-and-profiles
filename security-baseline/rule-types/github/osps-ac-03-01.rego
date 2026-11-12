@@ -78,7 +78,7 @@ applied_rulesets := minder.datasource.baselineghapi.branch_protection_status({
 	"branch": input.properties["github/default_branch"],
 })
 
-allow if { # also type: deletion
+allow if {
 	some rule
 	applied_rulesets.body[rule].type = "non_fast_forward"
 }
