@@ -97,6 +97,8 @@ def:
         - path: .github/workflows/scorecard-analysis.yml
           action: replace
           content: |
+            {{- $sarif_file := or (index .Profile "sarif_file") "results.sarif" -}}
+            {{- $retention_days := or (index .Profile "retention_days") 5 -}}
             # Adapted from https://raw.githubusercontent.com/ossf/scorecard/main/.github/workflows/scorecard-analysis.yml
             name: Scorecard analysis workflow
             on:
@@ -122,7 +124,7 @@ def:
                   - name: "Run analysis"
                     uses: ossf/scorecard-action@v2.3.3
                     with:
-                      results_file: '{{ .Profile.sarif_file }}'
+                      results_file: '{{ $sarif_file }}'
                       results_format: sarif
                       publish_results: '{{ .Profile.publish_results }}'
 
@@ -133,14 +135,14 @@ def:
                     uses: actions/upload-artifact@v4.3.4
                     with:
                       name: SARIF file
-                      path: '{{ .Profile.sarif_file }}'
-                      retention-days: '{{ .Profile.retention_days }}'
+                      path: '{{ $sarif_file }}'
+                      retention-days: '{{ $retention_days }}'
                   # Upload the results to GitHub's code scanning dashboard (optional).
                   # Commenting out will disable upload of results to your repo's Code Scanning dashboard
                   - name: "Upload to code-scanning"
                     uses: github/codeql-action/upload-sarif@v3.25.11
                     with:
-                      sarif_file: '{{ .Profile.sarif_file }}'
+                      sarif_file: '{{ $sarif_file }}'
   # Defines the configuration for alerting on the rule
   alert:
     type: security_advisory
