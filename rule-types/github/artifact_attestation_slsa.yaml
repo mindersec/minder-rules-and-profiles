@@ -49,6 +49,18 @@ def:
         default: "tuf-repo-cdn.sigstore.dev"
     required:
       - tags
+    # tags and tag_regex are mutually exclusive. tags is required, so
+    # tag_regex is used with an empty tags list; reject only a non-empty
+    # tags list combined with a non-empty tag_regex.
+    not:
+      required:
+        - tags
+        - tag_regex
+      properties:
+        tags:
+          minItems: 1
+        tag_regex:
+          minLength: 1
   # Defines the schema for writing a rule with this rule being checked
   rule_schema:
     type: "object"
