@@ -37,7 +37,7 @@
 #     remediate:
 #       type: rest
 #       rest:
-#         method: PUT
+#         method: POST
 #         endpoint: '/repos/{{.Entity.Owner}}/{{.Entity.Name}}/rulesets'
 #         body: |
 #           {
@@ -52,7 +52,7 @@
 #             },
 #             "rules": [
 #               {
-#                 "type": "deletion",
+#                 "type": "deletion"
 #               }
 #             ]
 #           }
