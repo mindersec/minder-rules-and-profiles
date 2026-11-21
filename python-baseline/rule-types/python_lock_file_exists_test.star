@@ -1,0 +1,1 @@
+../../rule-types/common/python_lock_file_exists_test.star
