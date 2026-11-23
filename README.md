@@ -52,7 +52,7 @@ Apart from that, you can also check the reference rules and profiles in this rep
   reference profile recommended for GitHub, use the following command - `minder profile create -f profiles/github/profile.yaml`.
 - Data sources: the reference data sources are available in the `data-sources` directory. To take a data source
   into use, you'll need to instantiate it in a Minder instance. For example, to instantiate the
-  reference data source for using OSV as a data source, use the following command - `minder datasource create -f data-sources osv.yaml`.
+  reference data source for using OSV as a data source, use the following command - `minder datasource create -f data-sources/osv.yaml`.
 
 ### Migrating Rego rule definitions to v1
 
