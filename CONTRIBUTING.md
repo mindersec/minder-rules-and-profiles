@@ -20,7 +20,7 @@ Please adhere to the [Minder Code of Conduct](https://github.com/mindersec/commu
 
 ## Reporting Issues
 
-If you encounter any issues, please report them in the [issue tracker](https://github.com/mindersec/rules-and-profiles/issues). Provide as much detail as possible to help us resolve the issue quickly.
+If you encounter any issues, please report them in the [issue tracker](https://github.com/mindersec/minder-rules-and-profiles/issues). Provide as much detail as possible to help us resolve the issue quickly.
 
 ## Chat / Questions
 
