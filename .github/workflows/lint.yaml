@@ -20,7 +20,15 @@ jobs:
         uses: mindersec/minder-client-installer@e33c4ed135967922432dcce5bb3d44a208cb64f5  # v1.1.4
 
       - name: Lint Rule Types
-        run: mindev ruletype lint -r rule-types/github --skip-rego
+        run: |
+          for dir in rule-types/github rule-types/common rule-types/gitlab \
+                     security-baseline/rule-types/github \
+                     security-baseline/rule-types/common \
+                     security-baseline/rule-types/gitlab; do
+            echo "::group::Linting rule types in ${dir}"
+            mindev ruletype lint -r "${dir}" --skip-rego
+            echo "::endgroup::"
+          done
 
       - name: Set up Go
         uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5  # v5
@@ -63,45 +71,57 @@ jobs:
 
       - name: Ensure rule type release_phase is set
         run: |
-          # Directory containing YAML files
-          DIRECTORY="rule-types/github"
+          # Directories containing YAML rule types
+          DIRECTORIES=(
+            "rule-types/github"
+            "rule-types/common"
+            "rule-types/gitlab"
+            "security-baseline/rule-types/github"
+            "security-baseline/rule-types/common"
+            "security-baseline/rule-types/gitlab"
+          )
 
           # Allowed values for the "release_phase" field
           ALLOWED_VALUES=("alpha" "beta" "ga" "deprecated")
 
-          # Iterate over all YAML files in the directory
-          for file in "$DIRECTORY"/*.yaml; do
-            echo "Checking file: $file"
-          
-            # Skip .test.yaml and .test.yml files
-            if [[ "$file" == *".test.yaml" ]] || [[ "$file" == *".test.yml" ]]; then
-              echo "Skipping test file: $file"
-              continue
-            fi
+          # Skip empty globs (e.g. directories without any YAML rule types)
+          shopt -s nullglob
 
-            # Extract the value of the "release_phase" field
-            release_phase_value=$(yq e '.release_phase' "$file")
+          for DIRECTORY in "${DIRECTORIES[@]}"; do
+            # Iterate over all YAML files in the directory
+            for file in "$DIRECTORY"/*.yaml; do
+              echo "Checking file: $file"
+            
+              # Skip .test.yaml and .test.yml files
+              if [[ "$file" == *".test.yaml" ]] || [[ "$file" == *".test.yml" ]]; then
+                echo "Skipping test file: $file"
+                continue
+              fi
 
-            # Check if the "release_phase" field is null or missing
-            if [ "$release_phase_value" == "null" ] || [ -z "$release_phase_value" ]; then
-              echo "Error: The file '$file' does not have the 'release_phase' field set or it is empty."
-              exit 1
-            else
-              # Validate if the "release_phase" value is one of the allowed values
-              is_valid=false
-              for allowed_value in "${ALLOWED_VALUES[@]}"; do
-                if [ "$release_phase_value" == "$allowed_value" ]; then
-                  is_valid=true
-                  break
-                fi
-              done
+              # Extract the value of the "release_phase" field
+              release_phase_value=$(yq e '.release_phase' "$file")
 
-              if [ "$is_valid" == false ]; then
-                echo "Error: The file '$file' has an invalid 'release_phase' value: $release_phase_value"
-                echo "       Allowed values are: ${ALLOWED_VALUES[*]}"
+              # Check if the "release_phase" field is null or missing
+              if [ "$release_phase_value" == "null" ] || [ -z "$release_phase_value" ]; then
+                echo "Error: The file '$file' does not have the 'release_phase' field set or it is empty."
                 exit 1
               else
-                echo "The file '$file' has a valid 'release_phase' field set to: $release_phase_value"
+                # Validate if the "release_phase" value is one of the allowed values
+                is_valid=false
+                for allowed_value in "${ALLOWED_VALUES[@]}"; do
+                  if [ "$release_phase_value" == "$allowed_value" ]; then
+                    is_valid=true
+                    break
+                  fi
+                done
+
+                if [ "$is_valid" == false ]; then
+                  echo "Error: The file '$file' has an invalid 'release_phase' value: $release_phase_value"
+                  echo "       Allowed values are: ${ALLOWED_VALUES[*]}"
+                  exit 1
+                else
+                  echo "The file '$file' has a valid 'release_phase' field set to: $release_phase_value"
+                fi
               fi
-            fi
+            done
           done
