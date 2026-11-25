@@ -103,9 +103,9 @@ def:
         This is a Minder automated pull request.
 
         No type checker configuration was found in this repository. This PR
-        adds a minimal `mypy.ini` to get started. Replace it with your
-        preferred tool if you'd like -- Minder detects mypy, pyright, and
-        pytype.
+        adds a minimal `mypy.ini` to get started. If you prefer pyright or
+        pytype, delete `mypy.ini` and add your own config -- Minder detects
+        all three.
       contents:
         - path: "mypy.ini"
           action: replace
@@ -113,6 +113,3 @@ def:
             [mypy]
             python_version = 3.9
             strict = false
-  alert:
-    type: security_advisory
-    security_advisory: {}

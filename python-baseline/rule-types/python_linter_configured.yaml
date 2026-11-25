@@ -116,6 +116,3 @@ def:
           content: |
             line-length = 88
             target-version = "py39"
-  alert:
-    type: security_advisory
-    security_advisory: {}
