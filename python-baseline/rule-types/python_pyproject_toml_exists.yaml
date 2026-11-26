@@ -3,7 +3,7 @@ version: v1
 release_phase: alpha
 type: rule-type
 name: python_pyproject_toml_exists
-display_name: Python project has a pyproject.toml
+display_name: Python project has a pyproject file
 short_failure_message: pyproject.toml is missing
 severity:
   value: low
