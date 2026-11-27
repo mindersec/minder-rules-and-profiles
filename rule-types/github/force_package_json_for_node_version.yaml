@@ -1,0 +1,77 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: force_package_json_for_node_version
+display_name: Force GitHub Actions to use the node version specified in package.json
+short_failure_message: GitHub Actions need to specify node version using `node-version-file`
+severity:
+  value: medium
+context: {}
+description: |
+  Verifies that the Node version used in GitHub Actions workflow files is the same as the one specified
+  in `package.json`. This ensures that the application is tested with the same Node version in GitHub Actions 
+  that it is meant to be locally developed with.
+guidance: |
+  To make sure you are running GitHub Actions with the same Node version that your application is meant
+  to be developed and deploy with, one step you can take is manage your Node version through `package.json`.
+
+  In the `actions/setup-node` GitHub Action, you can use the `node-version-file` input set to `package.json`.
+  This helps establish a single source of truth for the Node version.
+
+  For more information, check out `actions/setup-node`'s [documentation](https://github.com/actions/setup-node/blob/main/docs/advanced-usage.md#node-version-file).
+
+  This approach is recommended for Node applications that are meant to be deployed in the cloud directly,
+  but might not be as well suited for libraries that need to be tested against various different versions of Node.
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties: {}
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        import future.keywords.if
+        import future.keywords.every
+
+        default message := "For GitHub Actions workflows, Node version has to be specified through the `node-version-file` argument."
+        default allow := false
+
+        workflows := file.ls(".github/workflows/")
+
+        all_args[args] {
+         some w
+
+         file.read(workflows[w])
+         workflowstr := file.read(workflows[w])
+         workflow := parse_yaml(workflowstr)
+
+         some job_id
+         job := workflow.jobs[job_id]
+
+         some step_id
+         step := job.steps[step_id]
+
+         startswith(step.uses, "actions/setup-node@")
+
+         args := step["with"]
+        }
+
+        allow if {
+         every args in all_args {
+           print(args)
+           args["node-version-file"] == "package.json"
+           not args["node-version"]
+         }
+        }
+
+        message := "" if allow
+  alert:
+    type: security_advisory
+    security_advisory: {}
