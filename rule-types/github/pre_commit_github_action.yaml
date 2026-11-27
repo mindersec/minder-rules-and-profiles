@@ -1,0 +1,41 @@
+---
+version: v1
+release_phase: alpha
+type: rule-type
+name: pre_commit_github_action
+display_name: Require running `pre-commit` using GitHub Actions
+short_failure_message: "`https://github.com/pre-commit/action` action is not configured"
+severity:
+  value: medium
+context: {}
+description: |
+  Verifies that `pre-commit` is configured via a GitHub action for the repository.
+guidance: |
+  Run your `pre-commit` checks in GitHub Actions as well.
+def:
+  in_entity: repository
+  rule_schema:
+    type: object
+    properties: {}
+  ingest:
+    type: git
+    git: {}
+  eval:
+    type: rego
+    rego:
+      type: deny-by-default
+      def: |
+        package minder
+        
+        import rego.v1
+        actions := github_workflow.ls_actions("./.github/workflows")
+        default message := "pre-commit GitHub action is not configured"
+        default allow := false
+        allow if {
+          print(actions)
+          "pre-commit/action" in actions
+        }
+  # Defines the configuration for alerting on the rule
+  alert:
+    type: security_advisory
+    security_advisory: {}
